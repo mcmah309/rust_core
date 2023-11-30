@@ -1,3 +1,4 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:rust_core/rust_core.dart';
 import 'package:test/test.dart';
 
@@ -419,5 +420,40 @@ void main() {
     // expect(Ok(0).into().unwrap(),0);
   });
 
+  //************************************************************************//
+
+  test('Do Notation No Exit',()
+  {
+    Result<int,String> innerFn(){
+      return Ok(1);
+    }
+    Result<int, String> testDotNotation() {
+      return Result.$(($) {
+        int x = $(innerFn());
+        int y = Ok<int, String>(1).$($);
+        int z = Ok<int, int>(1).mapErr((err) => err.toString()).$($);
+        x + y + z;
+        return x + y + z;
+      });
+    }
+    expect(testDotNotation().unwrap(), 3);
+  });
+
+  test('Do Notation With Exit',()
+  {
+    Result<int,String> innerFn(){
+      return Err("message");
+    }
+    Result<int, String> testDotNotation() {
+      return Result.$(($) {
+        int y = Ok<int, String>(1).$($);
+        int z = Ok<int, int>(1).mapErr((err) => err.toString()).$($);
+        int x = $(innerFn());
+        x + y + z;
+        return x + y + z;
+      });
+    }
+    expect(testDotNotation().unwrapErr(), "message");
+  });
 
 }

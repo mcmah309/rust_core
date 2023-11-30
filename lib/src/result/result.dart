@@ -9,6 +9,14 @@ import '../../rust_core.dart';
 /// .org/std/result/enum.Result.html
 /// {@endtemplate}
 sealed class Result<S, F extends Object> {
+  factory Result.$(_DoFunctionResult<S, F> fn) {
+    try {
+      return Ok<S, F>(fn(_doAdapter<F>()));
+    } on _ResultDoNotationThrow<F> catch (e) {
+      return Err<S, F>(e.value);
+    }
+  }
+
   /// Returns the ok value if [Result] is [Ok].
   /// Throws a [Panic] if the [Result] is [Err].
   S unwrap();
@@ -150,6 +158,10 @@ sealed class Result<S, F extends Object> {
   /// Note how above, the [S2] value is inferred by Dart, this is usually what be want rather than being explicit.
   /// In Rust, "intoUnchecked" is handled by the "?" operator, but there is no equivalent in Dart.
   Result<S2, F> intoUnchecked<S2>();
+
+  //************************************************************************//
+
+  S $(DoAdapterResult<F> fn);
 }
 
 /// {@template ok}
@@ -186,9 +198,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   F unwrapErr() {
-    throw Panic(
-        onValue: this,
-        reason: "called `unwrapErr` on a value that was not an Err");
+    throw Panic(onValue: this, reason: "called `unwrapErr` on a value that was not an Err");
   }
 
   @override
@@ -230,6 +240,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   //************************************************************************//
 
+  @override
   Iterable<S> iter() sync* {
     yield ok;
   }
@@ -314,7 +325,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
     if (ok is S2) {
       return Ok(ok as S2);
     }
-    throw Panic(onValue: this, reason: "attempted to cast ${S} to ${S2}");
+    throw Panic(onValue: this, reason: "attempted to cast $S to $S2");
   }
 
   /// Changes the [Err] type to [F2]. This is usually used when "this" is known to be an [Ok] and you want to return to
@@ -325,6 +336,13 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   /// be an error
   Ok<S, F2> into<F2 extends Object>() {
     return Ok(ok);
+  }
+
+  //************************************************************************//
+
+  @override
+  S $(DoAdapterResult<F> fn) {
+    return ok;
   }
 
   //************************************************************************//
@@ -359,8 +377,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   S unwrap() {
-    throw Panic(
-        onValue: this, reason: "called `unwrap` on a value that was not an Ok");
+    throw Panic(onValue: this, reason: "called `unwrap` on a value that was not an Ok");
   }
 
   @override
@@ -418,6 +435,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   //************************************************************************//
 
+  @override
   Iterable<S> iter() sync* {}
 
   //************************************************************************//
@@ -523,6 +541,13 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  S $(DoAdapterResult<F> fn) {
+    return fn(this);
+  }
+
+  //************************************************************************//
+
+  @override
   int get hashCode => err.hashCode;
 
   @override
@@ -533,3 +558,22 @@ final class Err<S, F extends Object> implements Result<S, F> {
     return "$err";
   }
 }
+
+//************************************************************************//
+
+/// Thrown from a do notation context
+final class _ResultDoNotationThrow<F extends Object> {
+  final F value;
+
+  const _ResultDoNotationThrow(this.value);
+}
+
+/// The function that throws [_ResultDoNotationThrow] or returns the [Ok] value
+typedef DoAdapterResult<F extends Object> = S Function<S>(Result<S, F>);
+
+/// Implementation of [DoAdapterResult]
+DoAdapterResult<F> _doAdapter<F extends Object>() =>
+    <S>(Result<S, F> result) => result.unwrapOrElse((f) => throw _ResultDoNotationThrow(f));
+
+/// A function (original) that provides a function to do do notation value resolving inside the original function.
+typedef _DoFunctionResult<S, F extends Object> = S Function(DoAdapterResult<F> $);
