@@ -19,15 +19,15 @@ void main() {
 
   group('andThenError', () {
     test('async ', () async {
-      final result = await Future.value(bail(1)).andThenErr(
-          (error) async => bail(error.downcast<int>().unwrap() * 2));
-      expect(result.unwrapErrOrNull()!.downcast<int>().unwrap(), 2);
+      final result = await Future.value(Err(2)).andThenErr(
+          (error) async => Err(error * 2));
+      expect(result.unwrapErrOrNull(), 4);
     });
 
     test('sink', () async {
-      final result = await Future.value(bail(1))
-          .andThenErr((error) => bail(error.downcast<int>().unwrap() * 2));
-      expect(result.unwrapErrOrNull()!.downcast<int>().unwrap(), 2);
+      final result = await Future.value(Err(2))
+          .andThenErr((error) => Err(error * 2));
+      expect(result.unwrapErrOrNull(), 4);
     });
   });
 
@@ -39,9 +39,9 @@ void main() {
     });
 
     test('Error', () async {
-      final result = Future.value(bail(0));
+      final result = Future.value(Err(0));
       final futureValue =
-          result.match(err: (e) => e.downcast<int>().unwrap(), ok: (x) => x);
+          result.match(err: (e) => e, ok: (x) => x);
       expect(futureValue, completion(0));
     });
   });
@@ -50,13 +50,13 @@ void main() {
     final result = await Future.value(const Ok(1)).map((ok) => ok * 2);
 
     expect(result.unwrapOrNull(), 2);
-    expect(Future.value(bail(2)).map((x) => x), completes);
+    expect(Future.value(Err(2)).map((x) => x), completes);
   });
 
   test('mapErr', () async {
-    final result = await Future.value(bail(1))
-        .mapErr((error) => Error(error.downcast<int>().unwrap() * 2));
-    expect(result.unwrapErrOrNull()!.downcast<int>().unwrap(), 2);
+    final result = await Future.value(Err(1))
+        .mapErr((error) => Err(error * 2));
+    expect(result.unwrapErrOrNull()?.unwrapErrOrNull(), 2);
     expect(Future.value(const Ok(2)).mapErr((x) => x), completes);
   });
 
@@ -68,9 +68,9 @@ void main() {
     });
 
     test('Error', () async {
-      final result = Future.value(bail(0));
+      final result = Future.value(Err(0));
       final futureValue =
-          result.mapOrElse((e) => e.downcast<int>().unwrap(), (x) => x);
+          result.mapOrElse((e) => e, (x) => x);
       expect(futureValue, completion(0));
     });
   });
@@ -84,10 +84,10 @@ void main() {
     });
 
     test('Error', () async {
-      final result = Future.value(bail(0));
+      final result = Future.value(Err(0));
 
       expect(result.isErr(), completion(true));
-      expect(result.unwrapErr().downcast<int>().unwrap(), completion(0));
+      expect(result.unwrapErr(), completion(0));
     });
   });
 
@@ -98,7 +98,7 @@ void main() {
     });
 
     test('Error', () {
-      final result = Future.value(bail(0));
+      final result = Future.value(Err(0));
       expect(result.unwrap, throwsA(isA<Panic>()));
     });
   });
@@ -111,7 +111,7 @@ void main() {
     });
 
     test('Error', () {
-      final result = Future.value(bail(0));
+      final result = Future.value(Err(0));
       final value = result.unwrapOrElse((f) => 2);
       expect(value, completion(2));
     });
@@ -125,7 +125,7 @@ void main() {
     });
 
     test('Error', () {
-      final result = Future.value(bail(0));
+      final result = Future.value(Err(0));
       final value = result.unwrapOr(2);
       expect(value, completion(2));
     });
@@ -143,10 +143,10 @@ void main() {
     });
 
     test('Error', () {
-      Future.value(bail('error')).inspect((ok) {}).inspectErr(
+      Future.value(Err('error')).inspect((ok) {}).inspectErr(
         expectAsync1(
           (value) {
-            expect(value, Error('error'));
+            expect(value, 'error');
           },
         ),
       );

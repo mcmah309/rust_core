@@ -1,16 +1,370 @@
-import 'package:anyhow/anyhow.dart' as anyhow;
-import 'package:anyhow/base.dart';
+import 'package:rust_core/rust_core.dart';
 import 'package:test/test.dart';
 
-/// Tests specific to the base Result, most other methods are tested with Anyhow
 void main() {
-  test("Unit", () {
-    Result<Unit, void> x = Ok(());
-    Result<(), void> y = Ok(unit);
-    expect(x, y);
-    Result<void, Unit> a = Err(());
-    Result<Unit, ()> b = Err(unit);
-    expect(a, b);
+  test('Ok Null', () {
+    final result = Ok(null);
+    expect(result.unwrap(), null);
+  });
+
+  test('Ok Null Result', () {
+    Result<Null, Object> fn() {
+      return Ok(null);
+    }
+
+    final result = fn();
+    expect(result.unwrap(), null);
+  });
+
+  test('Ok', () {
+    final result = Ok(0);
+    expect(result.unwrap(), 0);
+  });
+
+  test('Err', () {
+    final result = Err(0);
+    expect(result.unwrapErr(), 0);
+  });
+
+  test("isOk", () {
+    Result result = Ok(0);
+    late int ok;
+    if (result.isOk()) {
+      ok = result.unwrap();
+    }
+
+    expect(ok, isA<int>());
+    expect(result.isErr(), isFalse);
+  });
+
+  test("isOkAnd", () {
+    Result result = Ok(0);
+    late int ok;
+    if (result.isOkAnd((r) => true)) {
+      ok = result.unwrap();
+    }
+
+    expect(ok, isA<int>());
+    expect(result.isErr(), isFalse);
+  });
+
+  test("isErr", () {
+    Result<dynamic, int> result = Err(0);
+    late int err;
+    if (result.isErr()) {
+      err = result.unwrapErr();
+    }
+
+    expect(err, isA<int>());
+    expect(result.isOk(), isFalse);
+  });
+
+  test("isErrAnd", () {
+    Result<dynamic, int> result = Err(0);
+    late int err;
+    if (result.isErrAnd((r) => true)) {
+      err = result.unwrapErr();
+    }
+
+    expect(err, isA<int>());
+    expect(result.isOk(), isFalse);
+  });
+
+  test("iter", () {
+    Result<int, Object> result = Ok(10000);
+    int calls = 0;
+    for (final _ in result.iter()) {
+      calls++;
+    }
+    expect(calls, 1);
+    result = Err(1);
+    for (final _ in result.iter()) {
+      calls++;
+    }
+    expect(calls, 1);
+  });
+
+  test("and", () {
+    Result<int, Object> x = Ok(2);
+    Result<String, Object> y = Err("late error");
+    expect(x.and(y), Err("late error"));
+
+    x = Err("early error");
+    y = Ok("foo");
+    expect(x.and(y), Err("early error"));
+
+    x = Err("not a 2");
+    y = Err("late error");
+    expect(x.and(y), Err("not a 2"));
+
+    x = Ok(2);
+    y = Err("different result type");
+    expect(x.and(y), Err("different result type"));
+  });
+
+  test("or", () {
+    Result<int, Object> x = Ok(2);
+    Result<int, String> y = Err("late error");
+    expect(x.or(y), Ok(2));
+
+    x = Err("early error");
+    y = Ok(2);
+    expect(x.or(y), Ok(2));
+
+    x = Err("not a 2");
+    y = Err("late error");
+    expect(x.or(y), Err("late error"));
+
+    x = Ok(2);
+    y = Ok(100);
+    expect(x.or(y), Ok(2));
+  });
+
+  test('equatable', () {
+    expect(const Ok(1) == const Ok(1), isTrue);
+    expect(const Ok(1).hashCode == const Ok(1).hashCode, isTrue);
+
+    expect(Err(1) == Err(1), isTrue);
+    expect(Err(1).hashCode == Err(1).hashCode, isTrue);
+  });
+
+  group('map', () {
+    test('Ok', () {
+      final result = Ok(4);
+      final result2 = result.map((ok) => '=' * ok);
+
+      expect(result2.unwrapOrNull(), '====');
+    });
+
+    test('Err', () {
+      final result = Err<int, Object>(4);
+      final result2 = result.map((ok) => 'change');
+
+      expect(result2.unwrapOrNull(), isNull);
+      expect(result2.unwrapErrOrNull(), 4);
+    });
+  });
+
+  group('mapOr', () {
+    test('Ok', () {
+      final result = Ok(1).mapOr(2, (ok) => 3);
+      expect(result, 3);
+    });
+
+    test('Err', () {
+      final result = Err(1).mapOr(2, (ok) => 3);
+      expect(result, 2);
+    });
+  });
+
+  group('mapOrElse', () {
+    test('Ok', () {
+      final result = Ok(1).mapOrElse((err) => 2, (ok) => 3);
+      expect(result, 3);
+    });
+
+    test('Err', () {
+      final result = Err(1).mapOrElse((err) => 2, (ok) => 3);
+      expect(result, 2);
+    });
+  });
+
+  group('mapErr', () {
+    test('Ok', () {
+      const result = Ok<int, int>(4);
+      final result2 =
+      result.mapErr((error) => '=' * error);
+
+      expect(result2.unwrapOrNull(), 4);
+      expect(result2.unwrapErrOrNull(), isNull);
+    });
+
+    test('Err', () {
+      final result = 4.toErr();
+      final result2 = result.mapErr((error) => 'change');
+
+      expect(result2.unwrapOrNull(), isNull);
+      expect(result2.unwrapErrOrNull(), 'change');
+    });
+  });
+
+  group('andThan', () {
+    test('Ok', () {
+      final result = 4.toOk();
+      final result2 = result.andThen((ok) => Ok('=' * ok));
+
+      expect(result2.unwrapOrNull(), '====');
+    });
+
+    test('Err', () {
+      final result = 4.toErr();
+      final result2 = result.andThen(Ok.new);
+
+      expect(result2.unwrapOrNull(), isNull);
+      expect(result2.unwrapErrOrNull(), 4);
+    });
+  });
+
+  group('andThenErr', () {
+    test('Err', () {
+      final result = 4.toErr();
+      final result2 = result.andThenErr(
+              (error) => ('=' * error).toErr());
+
+      expect(result2.unwrapErrOrNull(), '====');
+    });
+
+    test('Ok', () {
+      const result = Ok(4);
+      final result2 = result.andThenErr(Err.new);
+
+      expect(result2.unwrapOrNull(), 4);
+      expect(result2.unwrapErrOrNull(), isNull);
+    });
+  });
+
+  group('match', () {
+    test('Ok', () {
+      const result = Ok(0);
+      final futureValue = result.match(err: (e) => -1, ok: (x) => x);
+      expect(futureValue, 0);
+    });
+
+    test('Err', () {
+      final result = 0.toErr();
+      final futureValue = result.match(err: (x) => x, ok: (ok) => -1);
+      expect(futureValue, 0);
+    });
+  });
+
+  group('unwrap', () {
+    test('Ok', () {
+      const result = Ok(0);
+      expect(result.unwrap(), 0);
+    });
+
+    test('Err', () {
+      final result = 0.toErr();
+      expect(result.unwrap, throwsA(isA<Panic>()));
+    });
+  });
+
+  group('unwrapOr', () {
+    test('Ok', () {
+      final result = Ok(0);
+      final value = result.unwrapOr(-1);
+      expect(value, 0);
+    });
+
+    test('Err', () {
+      final result = Err(0);
+      final value = result.unwrapOr(2);
+      expect(value, 2);
+    });
+  });
+
+  group('unwrapOrElse', () {
+    test('Ok', () {
+      final result = Ok(0);
+      final value = result.unwrapOrElse((f) => -1);
+      expect(value, 0);
+    });
+
+    test('Err', () {
+      final result = Err(0);
+      final value = result.unwrapOrElse((f) => 2);
+      expect(value, 2);
+    });
+  });
+
+  group('unwrapOrNull', () {
+    test('Ok', () {
+      const result = Ok<int, int>(0);
+      final value = result.unwrapOrNull();
+      expect(value, 0);
+    });
+
+    test('Err', () {
+      final result = Err(0);
+      final value = result.unwrapOrNull();
+      expect(value, null);
+    });
+  });
+
+  group('unwrapErr', () {
+    test('Ok', () {
+      const result = Ok(0);
+      expect(result.unwrapErr, throwsA(isA<Panic>()));
+    });
+
+    test('Err', () {
+      final result = Err(0);
+      expect(result.unwrapErr(), 0);
+    });
+  });
+
+  group('unwrapErrOr', () {
+    test('Ok', () {
+      final result = Ok(0);
+      final value = result.unwrapErrOr("");
+      expect(value, "");
+    });
+
+    test('Err', () {
+      final result = Err<bool,Object>(0);
+      final value = result.unwrapErrOr("");
+      expect(value, 0);
+    });
+  });
+
+  group('inspect', () {
+    test('Ok', () {
+      const Ok(0).inspectErr((error) {}).inspect(
+        expectAsync1(
+              (value) {
+            expect(value, 0);
+          },
+        ),
+      );
+    });
+
+    test('Err', () {
+      Err('error').inspect((ok) {}).inspectErr(
+        expectAsync1(
+              (value) {
+            expect(value, 'error');
+          },
+        ),
+      );
+    });
+  });
+
+  group('unwrapErrOrElse', () {
+    test('Ok', () {
+      const result = Ok(0);
+      final value = result.unwrapErrOrElse((f) => "");
+      expect(value, "");
+    });
+
+    test('Err', () {
+      final result = Err(0);
+      final value = result.unwrapErrOrElse((f) => 2);
+      expect(value, 0);
+    });
+  });
+
+  group('unwrapErrOrNull', () {
+    test('Ok', () {
+      const result = Ok(0);
+      final value = result.unwrapErrOrNull();
+      expect(value, null);
+    });
+
+    test('Err', () {
+      final result = Err<int, String>("");
+      final value = result.unwrapErrOrNull();
+      expect(value, "");
+    });
   });
 
   Result<int, int> sq(int x) => Ok(x * x);
@@ -65,140 +419,5 @@ void main() {
     // expect(Ok(0).into().unwrap(),0);
   });
 
-  test("toAnyhowResult", () {
-    Result<int, String> x = Ok(1);
-    expect(x.toAnyhowResult().unwrap(), 1);
-    x = Err("err");
-    expect(x.toAnyhowResult().unwrapErr().downcast<String>().unwrap(), "err");
-    expect(identical(x, x.toAnyhowResult()), false);
 
-    Ok<int, String> y = Ok(1);
-    expect(y.toAnyhowResult().unwrap(), 1);
-    Err<int, String> w = Err("err");
-    expect(w.toAnyhowResult().unwrapErr().downcast<String>().unwrap(), "err");
-    expect(identical(y, y.toAnyhowResult()), false);
-    expect(identical(w, w.toAnyhowResult()), false);
-
-    anyhow.Result<int> z = anyhow.Ok(1);
-    expect(z.toAnyhowResult().unwrap(), 1);
-    z = anyhow.bail("err");
-    expect(z.toAnyhowResult().unwrapErr().downcast<String>().unwrap(), "err");
-    expect(identical(z, z.toAnyhowResult()), true);
-  });
-
-  test("toFutureResult", () async {
-    FutureResult<int, String> x = Ok<int, String>(1).toFutureResult();
-    expect(await x.unwrap(), 1);
-    FutureResult<int, String> y = Err<int, String>("err").toFutureResult();
-    expect(await y.unwrapErr(), "err");
-
-    // converts to Future<Result<int,String>> rather than Future<Result<Future<int>,String>>
-    Result<Future<int>, String> z = Ok(Future.value(1));
-    expect(await z.toFutureResult().unwrap(), 1);
-    z = Err("err");
-    expect(await z.toFutureResult().unwrapErr(), "err");
-  });
-
-  test("toResultEager on Iterable", () {
-    var result = [Ok(1), Ok(2), Ok(3)].toResultEager();
-    expect(result.unwrap(), [1, 2, 3]);
-
-    result =
-        [Ok<int, int>(1), Err<int, int>(2), Ok<int, int>(3)].toResultEager();
-    expect(result.unwrapErr(), 2);
-
-    result =
-        [Ok<int, int>(1), Err<int, int>(2), Err<int, int>(3)].toResultEager();
-    expect(result.unwrapErr(), 2);
-
-    result = [
-      Ok<int, int>(1),
-      Err<int, int>(3),
-      Err<int, int>(2),
-      Ok<int, int>(4)
-    ].toResultEager();
-    expect(result.unwrapErr(), 3);
-  });
-
-  test("toResult on Iterable", () {
-    var result = [Ok(1), Ok(2), Ok(3)].toResult();
-    expect(result.unwrap(), [1, 2, 3]);
-
-    result = [Ok<int, int>(1), Err<int, int>(2), Ok<int, int>(3)].toResult();
-    expect(result.unwrapErr(), [2]);
-
-    result = [Ok<int, int>(1), Err<int, int>(2), Err<int, int>(3)].toResult();
-    expect(result.unwrapErr(), [2, 3]);
-
-    result = [
-      Ok<int, int>(1),
-      Err<int, int>(3),
-      Err<int, int>(2),
-      Ok<int, int>(4)
-    ].toResult();
-    expect(result.unwrapErr(), [3, 2]);
-  });
-
-  test("toResultEager on Future Iterable", () async {
-    var result =
-        await [_delay(Ok(3)), _delay(Ok(1)), _delay(Ok(2))].toResultEager();
-    expect(result.unwrap(), [1, 2, 3]);
-
-    result = await [
-      _delay(Ok<int, int>(3)),
-      _delay(Err<int, int>(1)),
-      _delay(Ok<int, int>(2))
-    ].toResultEager();
-    expect(result.unwrapErr(), 1);
-
-    result = await [
-      _delay(Ok<int, int>(1)),
-      _delay(Err<int, int>(3)),
-      _delay(Err<int, int>(2))
-    ].toResultEager();
-    expect(result.unwrapErr(), 2);
-
-    result = await [
-      _delay(Ok<int, int>(1)),
-      _delay(Err<int, int>(2)),
-      _delay(Err<int, int>(3)),
-      _delay(Ok<int, int>(4))
-    ].toResultEager();
-    expect(result.unwrapErr(), 2);
-  });
-
-  test("toResult on Future Iterable", () async {
-    var result = await [_delay(Ok(3)), _delay(Ok(1)), _delay(Ok(2))].toResult();
-    expect(result.unwrap(), [3, 1, 2]);
-
-    result = await [
-      _delay(Ok<int, int>(3)),
-      _delay(Err<int, int>(1)),
-      _delay(Ok<int, int>(2))
-    ].toResult();
-    expect(result.unwrapErr(), [1]);
-
-    result = await [
-      _delay(Ok<int, int>(1)),
-      _delay(Err<int, int>(3)),
-      _delay(Err<int, int>(2))
-    ].toResult();
-    expect(result.unwrapErr(), [3, 2]);
-
-    result = await [
-      _delay(Ok<int, int>(1)),
-      _delay(Err<int, int>(2)),
-      _delay(Err<int, int>(3)),
-      _delay(Ok<int, int>(4))
-    ].toResult();
-    expect(result.unwrapErr(), [2, 3]);
-  });
-}
-
-FutureResult<int, int> _delay(Result<int, int> result) {
-  int delay = result.isOk() ? result.unwrap() : result.unwrapErr();
-  return Future.value(result).then((value) async {
-    await Future.delayed(Duration(seconds: delay));
-    return result;
-  });
 }
