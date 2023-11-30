@@ -9,10 +9,31 @@ import '../../rust_core.dart';
 /// .org/std/result/enum.Result.html
 /// {@endtemplate}
 sealed class Result<S, F extends Object> {
-  factory Result.$(_DoFunctionResult<S, F> fn) {
+
+  /// Creates a context for doing "do notation". "Do notation" works similar to the Rust "?" operator, which is a
+  /// "Early Return Operator". Here "$" is usually used to "Early Return Operator". when "$" is used on a type [Err],
+  /// immediately the context that "$" belongs to returned with that [Err]. e.g.
+  /// ```
+  /// Result<int,String> innerFn(){
+  ///       return Err("message");
+  ///     }
+  ///     Result<int, String> testDotNotation() {
+  ///       return Result.$(($) {
+  ///         int y = Ok<int, String>(1).$($);
+  ///         int z = Ok<int, int>(1).mapErr((err) => err.toString()).$($);
+  ///         // the function will stop here since an Err was return
+  ///         int x = $(innerFn());
+  ///         x + y + z;
+  ///         return x + y + z;
+  ///       });
+  ///     }
+  ///     expect(testDotNotation().unwrapErr(), "message");
+  ///```
+  /// Passing "$" to any other functions or nesting, should probably be avoided.
+  factory Result.$(_EarlyReturnFunctionResult<S, F> fn) {
     try {
-      return Ok<S, F>(fn(_doAdapter<F>()));
-    } on _ResultDoNotationThrow<F> catch (e) {
+      return Ok<S, F>(fn(_earlyReturnAdapter<F>()));
+    } on _EarlyReturnNotification<F> catch (e) {
       return Err<S, F>(e.value);
     }
   }
@@ -161,7 +182,8 @@ sealed class Result<S, F extends Object> {
 
   //************************************************************************//
 
-  S $(DoAdapterResult<F> fn);
+  /// Declarative way to work with the "$" operator (Early Return Operator). See [Result.$] for more information.
+  S $(EarlyReturnOperator<F> op);
 }
 
 /// {@template ok}
@@ -341,7 +363,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S $(DoAdapterResult<F> fn) {
+  S $(EarlyReturnOperator<F> op) {
     return ok;
   }
 
@@ -541,8 +563,8 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S $(DoAdapterResult<F> fn) {
-    return fn(this);
+  S $(EarlyReturnOperator<F> op) {
+    return op(this);
   }
 
   //************************************************************************//
@@ -562,18 +584,19 @@ final class Err<S, F extends Object> implements Result<S, F> {
 //************************************************************************//
 
 /// Thrown from a do notation context
-final class _ResultDoNotationThrow<F extends Object> {
+final class _EarlyReturnNotification<F extends Object> {
   final F value;
 
-  const _ResultDoNotationThrow(this.value);
+  const _EarlyReturnNotification(this.value);
 }
 
-/// The function that throws [_ResultDoNotationThrow] or returns the [Ok] value
-typedef DoAdapterResult<F extends Object> = S Function<S>(Result<S, F>);
+/// The function that throws [_EarlyReturnNotification] or returns the [Ok] value
+typedef EarlyReturnOperator<F extends Object> = S Function<S>(Result<S, F>);
 
-/// Implementation of [DoAdapterResult]
-DoAdapterResult<F> _doAdapter<F extends Object>() =>
-    <S>(Result<S, F> result) => result.unwrapOrElse((f) => throw _ResultDoNotationThrow(f));
+/// Creation of a [EarlyReturnOperator]
+EarlyReturnOperator<F> _earlyReturnAdapter<F extends Object>() =>
+    <S>(Result<S, F> result) => result.unwrapOrElse((f) => throw _EarlyReturnNotification(f));
 
-/// A function (original) that provides a function to do do notation value resolving inside the original function.
-typedef _DoFunctionResult<S, F extends Object> = S Function(DoAdapterResult<F> $);
+/// A function (original) that provides a function to do "do notation" value resolving (early return) inside the
+/// original function.
+typedef _EarlyReturnFunctionResult<S, F extends Object> = S Function(EarlyReturnOperator<F> $);
