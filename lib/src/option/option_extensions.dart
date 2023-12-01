@@ -1,4 +1,4 @@
-import '../../rust_core.dart';
+import 'package:rust_core/option.dart';
 
 
 extension ToOption1<T extends Object> on T? {

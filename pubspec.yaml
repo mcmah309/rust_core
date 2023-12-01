@@ -10,6 +10,7 @@ environment:
 # Add regular dependencies here.
 dependencies:
   # path: ^1.8.0
+  meta: ^1.11.0 #todo remove
 
 dev_dependencies:
   lints: ^2.1.0

@@ -1,4 +1,4 @@
-import 'lazy_cell_base.dart';
+import 'package:rust_core/cell.dart';
 
 class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
   static final _cache = Expando();

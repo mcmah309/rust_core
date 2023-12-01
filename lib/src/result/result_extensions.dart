@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../rust_core.dart';
+import 'package:rust_core/result.dart';
 
 extension FlattenExtension<S, F extends Object> on Result<Result<S, F>, F> {
   /// Converts a [Result] of a [Result] into a single [Result]

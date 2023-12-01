@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../rust_core.dart';
+import 'package:rust_core/result.dart';
 
 
 /// {@macro futureResult}

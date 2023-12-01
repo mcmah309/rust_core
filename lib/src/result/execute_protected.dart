@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../rust_core.dart';
+import 'package:rust_core/result.dart';
 
 /// Executes the function in a protected context. [func] is called inside a try catch block. If the result is not
 /// catch, then return value [func] returned inside an [Ok]. If [func] throws, then the thrown value is returned

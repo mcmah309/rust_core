@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
-import '../../rust_core.dart';
+import 'package:rust_core/result.dart';
+import 'package:rust_core/panic.dart';
 
 sealed class Option<T extends Object> {
 

@@ -1,6 +1,5 @@
-import 'package:meta/meta.dart';
-
-import '../../rust_core.dart';
+import 'package:rust_core/typedefs.dart';
+import 'package:rust_core/panic.dart';
 
 /// {@template result}
 /// [Result] class representing the type union between [Ok] and [Err].
@@ -597,3 +596,8 @@ final class _ResultEarlyReturnNotification<F extends Object> {
 
 
 typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S,F> Function(_ResultEarlyReturnOp<F>);
+
+//************************************************************************//
+
+const okay = Ok(unit);
+const error = Err(unit);

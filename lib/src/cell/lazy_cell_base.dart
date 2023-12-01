@@ -1,4 +1,4 @@
-import 'lazy_cell.dart';
+import 'package:rust_core/cell.dart';
 
 abstract interface class LazyCell<T extends Object> implements NullableLazyCell<T> {
   const factory LazyCell(T Function() func) = ConstNonNullableLazyCell;

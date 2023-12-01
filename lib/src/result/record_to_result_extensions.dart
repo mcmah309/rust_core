@@ -1,4 +1,5 @@
-import '../../rust_core.dart';
+
+import 'package:rust_core/result.dart';
 
 
 extension RecordToResult2<A,B,Z extends Object> on (Result<A,Z>,Result<B,Z>){

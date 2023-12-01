@@ -1,5 +1,6 @@
-import '../../rust_core.dart';
-import 'once_cell_base.dart';
+import 'package:rust_core/cell.dart';
+import 'package:rust_core/option.dart';
+import 'package:rust_core/result.dart';
 
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation that allows [T] to be null, does not
