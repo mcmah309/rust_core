@@ -34,9 +34,9 @@ sealed class Result<S, F extends Object> {
   /// attempting to bring "$" out of the original scope should be avoided.
   factory Result.$(_ResultEarlyReturnFunction<S, F> fn) {
     try {
-      return Ok<S, F>(fn(_ResultEarlyReturnOp<F>._()));
+      return fn(_ResultEarlyReturnOp<F>._());
     } on _ResultEarlyReturnNotification<F> catch (e) {
-      return Err<S, F>(e.value);
+      return e.value;
     }
   }
 
@@ -566,7 +566,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   S $(_ResultEarlyReturnOp<F> op) { // ignore: library_private_types_in_public_api
-    throw _ResultEarlyReturnNotification(err);
+    throw _ResultEarlyReturnNotification(this.into());
   }
 
   //************************************************************************//
@@ -593,10 +593,10 @@ final class _ResultEarlyReturnOp<F extends Object> {
 
 /// Thrown from a do notation context
 final class _ResultEarlyReturnNotification<F extends Object> {
-  final F value;
+  final Err<Infallible,F> value;
 
   const _ResultEarlyReturnNotification(this.value);
 }
 
 
-typedef _ResultEarlyReturnFunction<S, F extends Object> = S Function(_ResultEarlyReturnOp<F>);
+typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S,F> Function(_ResultEarlyReturnOp<F>);
