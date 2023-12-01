@@ -16,13 +16,13 @@ sealed class Option<T extends Object> {
 
   // todo flatten
 
-  T getOrInsert(T value);
+  // T getOrInsert(T value); // not possible, otherwise would not be const
 
-  T getOrInsertWith(T Function() f);
+  // T getOrInsertWith(T Function() f); // not possible, otherwise cannot be const
 
-  // insert is not possible, otherwise lose const
+  // T insert(T value); // not possible, otherwise lose const
 
-  T inspect(Function(T) f);
+  Option<T> inspect(Function(T) f);
 
   bool isNone();
 
@@ -46,11 +46,11 @@ sealed class Option<T extends Object> {
 
   Option<T> orElse(Option<T> Function() f);
 
-  // replace is not possible, otherwise not const
+  // Option<T> replace(value); // not possible, otherwise not const
 
-  // take is not possible, can't transmute into None
+  // Option<T> take(); // not possible, can't transmute into None
 
-  // takeIf is not possible, can't transmute into None
+  // Option<T> takeIf(bool Function(T) predicate); // not possible, can't transmute into None
 
   //todo transpose
 
@@ -73,6 +73,7 @@ sealed class Option<T extends Object> {
   /// Returns the inner type as the nullable version of [T]
   T? toNullable();
 }
+
 
 final class Some<T extends Object> implements Option<T> {
   final T v;
@@ -108,19 +109,9 @@ final class Some<T extends Object> implements Option<T> {
   }
 
   @override
-  T getOrInsert(T value) {
-    return v;
-  }
-
-  @override
-  T getOrInsertWith(T Function() f) {
-    return v;
-  }
-
-  @override
-  T inspect(Function(T self) f) {
+  Option<T> inspect(Function(T self) f) {
     f(v);
-    return v;
+    return this;
   }
 
   @override
@@ -239,158 +230,125 @@ final class None<T extends Object> implements Option<T> {
 
   @override
   Option<U> and<U extends Object>(Option<U> other) {
-    // TODO: implement and
-    throw UnimplementedError();
+    return const None();
   }
 
   @override
   Option<U> andThen<U extends Object>(Option<U> Function(T self) f) {
-    // TODO: implement andThen
-    throw UnimplementedError();
+    return const None();
   }
 
   @override
   Option<T> copy() {
-    // TODO: implement copy
-    throw UnimplementedError();
+    return const None();
   }
 
   @override
   T expect(String msg) {
-    // TODO: implement expect
-    throw UnimplementedError();
+    throw Panic(onValue: this, reason: msg);
   }
 
   @override
   Option<T> filter(bool Function(T self) predicate) {
-    // TODO: implement filter
-    throw UnimplementedError();
+    return const None();
   }
 
   @override
-  T getOrInsert(T value) {
-    // TODO: implement getOrInsert
-    throw UnimplementedError();
-  }
-
-  @override
-  T getOrInsertWith(T Function() f) {
-    // TODO: implement getOrInsertWith
-    throw UnimplementedError();
-  }
-
-  @override
-  T inspect(Function(T self) f) {
-    // TODO: implement inspect
-    throw UnimplementedError();
+  Option<T> inspect(Function(T self) f) {
+    return this;
   }
 
   @override
   bool isNone() {
-    // TODO: implement isNone
-    throw UnimplementedError();
+    return true;
   }
 
   @override
   bool isSome() {
-    // TODO: implement isSome
-    throw UnimplementedError();
+    return false;
   }
 
   @override
   bool isSomeAnd(bool Function(T self) f) {
-    // TODO: implement isSomeAnd
-    throw UnimplementedError();
+    return false;
   }
 
   @override
-  Iterable<T> iter() {
-    // TODO: implement iter
-    throw UnimplementedError();
-  }
+  Iterable<T> iter() sync* {}
 
   @override
   Option<U> map<U extends Object>(U Function(T self) f) {
-    // TODO: implement map
-    throw UnimplementedError();
+    return const None();
   }
 
   @override
   U mapOr<U extends Object>(U defaultValue, U Function(T) f) {
-    // TODO: implement mapOr
-    throw UnimplementedError();
+    return defaultValue;
   }
 
   @override
   U mapOrElse<U extends Object>(U Function() defaultFn, U Function(T) f) {
-    // TODO: implement mapOrElse
-    throw UnimplementedError();
+    return defaultFn();
   }
 
   @override
   Result<T, E> okOr<E extends Object>(E err) {
-    // TODO: implement okOr
-    throw UnimplementedError();
+    return Err(err);
   }
 
   @override
   Result<T, E> okOrElse<E extends Object>(E Function() errFn) {
-    // TODO: implement okOrElse
-    throw UnimplementedError();
+    return Err(errFn());
   }
 
   @override
   Option<T> or(Option<T> other) {
-    // TODO: implement or
-    throw UnimplementedError();
+    return other;
   }
 
   @override
   Option<T> orElse(Option<T> Function() f) {
-    // TODO: implement orElse
-    throw UnimplementedError();
-  }
-
-  @override
-  T? toNullable() {
-    // TODO: implement toNullable
-    throw UnimplementedError();
+    return f();
   }
 
   @override
   T unwrap() {
-    // TODO: implement unwrap
-    throw UnimplementedError();
+    throw Panic(reason: "called `unwrap` a None type");
   }
 
   @override
   T unwrapOr(T defaultValue) {
-    // TODO: implement unwrapOr
-    throw UnimplementedError();
+    return defaultValue;
   }
 
   @override
   T unwrapOrElse(T Function() f) {
-    // TODO: implement unwrapOrElse
-    throw UnimplementedError();
+    return f();
   }
 
   @override
   Option<T> xor(Option<T> other) {
-    // TODO: implement xor
-    throw UnimplementedError();
+    if(other.isSome()){
+      return other;
+    }
+    return const None();
   }
 
   @override
   Option<(T, U)> zip<U extends Object>(Option<U> other) {
-    // TODO: implement zip
-    throw UnimplementedError();
+    return const None();
   }
 
   @override
   Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T p1, U p2) f) {
-    // TODO: implement zipWith
-    throw UnimplementedError();
+    return const None();
+  }
+
+  //************************************************************************//
+
+  @override
+  T? toNullable() {
+    return null;
   }
 
   //************************************************************************//
@@ -400,5 +358,5 @@ final class None<T extends Object> implements Option<T> {
 
   // @override
   // bool operator ==(Object other);
-  //todo write tests if override is needed
+  //todo write tests if override is needed, should all hash and equal eachother
 }
