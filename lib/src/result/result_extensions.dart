@@ -19,7 +19,7 @@ extension FlattenFutureExtension<S, F extends Object>
   }
 }
 
-extension TransposeResultExtension<S, F extends Object> on Result<S?, F> {
+extension ResultNullExtension<S, F extends Object> on Result<S?, F> {
   /// transposes a [Result] of a nullable type into a nullable [Result].
   Result<S, F>? transpose() {
     if (isOk()) {
@@ -35,12 +35,47 @@ extension TransposeResultExtension<S, F extends Object> on Result<S?, F> {
   }
 }
 
-extension TransposeFutureResultExtension<S, F extends Object>
+extension FutureResultNullExtension<S, F extends Object>
     on FutureResult<S?, F> {
   Future<Result<S, F>?> transpose() {
     return then((result) => result.transpose());
   }
 }
+
+extension NullResultExtension<S, F extends Object> on Result<S, F>? {
+  // Note: Needs to be named [transposeNull] instead of [transpose] otherwise there is ambiguity between
+  // [ResultNullExtension] and [NullResultExtension].
+  /// transposes a nullable [Result] into a non-nullable [Result].
+  Result<S?, F> transposeNullable() {
+    if (this != null) {
+      if (this!.isOk()) {
+        return Ok(this!.unwrap());
+      }
+      else {
+        return Err(this!.unwrapErr());
+      }
+    }
+    return Ok(null);
+  }
+}
+
+extension NullFutureResultExtension<S, F extends Object> on FutureResult<S, F>? {
+  Future<Result<S?, F>> transposeNullable() {
+    if(this == null){
+      return Future.value(Ok(null));
+    }
+    return this!.then((result){
+      if (result.isOk()) {
+        return Ok(result.unwrap());
+      }
+      else {
+        return Err(result.unwrapErr());
+      }
+    });
+  }
+}
+
+//************************************************************************//
 
 extension IterableResultExtensions<S, F extends Object>
     on Iterable<Result<S, F>> {
