@@ -426,10 +426,9 @@ void main() {
 
     Result<int, String> add3(int val) {
       return Result.$(($){
-        int x = anotherResultFn().$($);
-        int y = Ok(1).$($);
-        int z = Ok(1).mapErr((err) => err.toString()).$($);
-        x + y + z;
+        int x = anotherResultFn()[$];
+        int y = Ok(1)[$];
+        int z = Ok(1).mapErr((err) => err.toString())[$];
         return Ok(val + x + y + z);
       });
     }
@@ -442,12 +441,22 @@ void main() {
     }
 
     Result<int, String> testDoNotation() => Result.$(($) {
-          int y = Ok(1).$($);
-          int z = Ok(1).mapErr((err) => err.toString()).$($);
-          int x = innerFn().$($);
-          x + y + z;
+          int y = Ok(1)[$];
+          int z = Ok(1).mapErr((err) => err.toString())[$];
+          int x = innerFn()[$];
           return Ok(x + y + z);
         });
     expect(testDoNotation().unwrapErr(), "message");
+  });
+
+  test('Do Notation With Return Err', () {
+    Result<int, String> innerFn() {
+      return Err("message");
+    }
+
+    Result<int, String> testDoNotation() => Result.$(($) {
+      return Err("return error");
+    });
+    expect(testDoNotation().unwrapErr(), "return error");
   });
 }

@@ -185,7 +185,7 @@ sealed class Result<S, F extends Object> {
   //************************************************************************//
 
   /// Declarative way to work with the "$" operator (Early Return Operator). See [Result.$] for more information.
-  S $(_ResultEarlyReturnOp<F> op); // ignore: library_private_types_in_public_api
+  S operator[](_ResultEarlyReturnOp<F> op); // ignore: library_private_types_in_public_api
 }
 
 /// {@template ok}
@@ -362,7 +362,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S $(_ResultEarlyReturnOp<F> op) {// ignore: library_private_types_in_public_api
+  S operator[](_ResultEarlyReturnOp<F> op) {// ignore: library_private_types_in_public_api
     return ok;
   }
 
@@ -562,7 +562,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S $(_ResultEarlyReturnOp<F> op) { // ignore: library_private_types_in_public_api
+  S operator[](_ResultEarlyReturnOp<F> op) { // ignore: library_private_types_in_public_api
     throw _ResultEarlyReturnNotification(this.into());
   }
 
