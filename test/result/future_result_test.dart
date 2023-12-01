@@ -152,4 +152,20 @@ void main() {
       );
     });
   });
+
+  //************************************************************************//
+
+  test('transpose Future Result Null', () async {
+    FutureResult<String?, int> x = Future.value(Ok(null));
+    expect((await x.transpose()), null);
+    x = Future.value(Ok(""));
+    expect((await x.transpose())?.unwrap(), "");
+  });
+
+  test('transpose Future Null Result', () async {
+    Future<Result<String, int>?> x = Future.value(null);
+    expect((await x).transposeNullable().unwrap(), null);
+    FutureResult<String?, int> y = Future.value(Ok<String?,int>(""));
+    expect((await y.transposeNullable()).unwrap(), "");
+  });
 }
