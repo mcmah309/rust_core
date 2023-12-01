@@ -1,4 +1,3 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:rust_core/rust_core.dart';
 import 'package:test/test.dart';
 
@@ -173,8 +172,7 @@ void main() {
   group('mapErr', () {
     test('Ok', () {
       const result = Ok<int, int>(4);
-      final result2 =
-      result.mapErr((error) => '=' * error);
+      final result2 = result.mapErr((error) => '=' * error);
 
       expect(result2.unwrapOrNull(), 4);
       expect(result2.unwrapErrOrNull(), isNull);
@@ -209,8 +207,7 @@ void main() {
   group('andThenErr', () {
     test('Err', () {
       final result = 4.toErr();
-      final result2 = result.andThenErr(
-              (error) => ('=' * error).toErr());
+      final result2 = result.andThenErr((error) => ('=' * error).toErr());
 
       expect(result2.unwrapErrOrNull(), '====');
     });
@@ -312,7 +309,7 @@ void main() {
     });
 
     test('Err', () {
-      final result = Err<bool,Object>(0);
+      final result = Err<bool, Object>(0);
       final value = result.unwrapErrOr("");
       expect(value, 0);
     });
@@ -322,7 +319,7 @@ void main() {
     test('Ok', () {
       const Ok(0).inspectErr((error) {}).inspect(
         expectAsync1(
-              (value) {
+          (value) {
             expect(value, 0);
           },
         ),
@@ -332,7 +329,7 @@ void main() {
     test('Err', () {
       Err('error').inspect((ok) {}).inspectErr(
         expectAsync1(
-              (value) {
+          (value) {
             expect(value, 'error');
           },
         ),
@@ -422,38 +419,35 @@ void main() {
 
   //************************************************************************//
 
-  test('Do Notation No Exit',()
-  {
-    Result<int,String> innerFn(){
+  test('Do Notation No Exit', () {
+    Result<int, String> anotherResultFn() {
       return Ok(1);
     }
-    Result<int, String> testDotNotation() {
-      return Result.$(($) {
-        int x = $(innerFn());
+
+    Result<int, String> add3(int val) {
+      return Result.$(($){
+        int x = anotherResultFn().$($);
         int y = Ok<int, String>(1).$($);
         int z = Ok<int, int>(1).mapErr((err) => err.toString()).$($);
         x + y + z;
-        return x + y + z;
+        return val + x + y + z;
       });
     }
-    expect(testDotNotation().unwrap(), 3);
+      expect(add3(2).unwrap(), 5);
   });
 
-  test('Do Notation With Exit',()
-  {
-    Result<int,String> innerFn(){
+  test('Do Notation With Exit', () {
+    Result<int, String> innerFn() {
       return Err("message");
     }
-    Result<int, String> testDotNotation() {
-      return Result.$(($) {
-        int y = Ok<int, String>(1).$($);
-        int z = Ok<int, int>(1).mapErr((err) => err.toString()).$($);
-        int x = $(innerFn());
-        x + y + z;
-        return x + y + z;
-      });
-    }
-    expect(testDotNotation().unwrapErr(), "message");
-  });
 
+    Result<int, String> testDoNotation() => Result.$(($) {
+          int y = Ok<int, String>(1).$($);
+          int z = Ok<int, int>(1).mapErr((err) => err.toString()).$($);
+          int x = innerFn().$($);
+          x + y + z;
+          return x + y + z;
+        });
+    expect(testDoNotation().unwrapErr(), "message");
+  });
 }
