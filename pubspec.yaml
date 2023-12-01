@@ -1,8 +1,8 @@
 name: rust_core
 description: Implementation of Rust's core library in a Dart friendly way. Usable by itself, but also a base for 
   libraries that want to build on Rust Semantics.
-version: 0.0.1
-# repository: https://github.com/my_org/my_repo
+version: 0.1.0
+repository: https://github.com/mcmah309/rust_core
 
 environment:
   sdk: ^3.2.0
