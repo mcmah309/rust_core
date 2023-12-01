@@ -1,7 +1,9 @@
 import 'package:rust_core/cell.dart';
 
 abstract interface class LazyCell<T extends Object> implements NullableLazyCell<T> {
-  const factory LazyCell(T Function() func) = ConstNonNullableLazyCell;
+  factory LazyCell(T Function() func) = NonNullableLazyCell;
+
+  const factory LazyCell.constant(T Function() func) = ConstNonNullableLazyCell;
 }
 
 class NullableLazyCell<T> {
@@ -11,7 +13,6 @@ class NullableLazyCell<T> {
 
   NullableLazyCell(this._func);
 
-  @override
   T call() {
     if(_isSet){
       return _val!;

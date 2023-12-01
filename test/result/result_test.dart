@@ -8,7 +8,7 @@ void main() {
   });
 
   test('Ok Null Result', () {
-    Result<Null, Object> fn() {
+    Result<String?, Object> fn() {
       return Ok(null);
     }
 
@@ -450,9 +450,6 @@ void main() {
   });
 
   test('Do Notation With Return Err', () {
-    Result<int, String> innerFn() {
-      return Err("message");
-    }
 
     Result<int, String> testDoNotation() => Result.$(($) {
       return Err("return error");
