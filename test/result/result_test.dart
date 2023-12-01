@@ -390,7 +390,7 @@ void main() {
 
     expect(someFunction2().unwrapErr(), "err");
     expect(Err(0).intoUnchecked<String>().unwrapErr(), 0);
-    expect(() => Ok(0).intoUnchecked<String>(), throwsA(isA<Panic>()));
+    expect(() => Ok(0).intoUnchecked<String>(), throwsA(isA<Error>()));
     expect(Ok(0).intoUnchecked<num>().unwrap(), 0);
     expect(Err(0).intoUnchecked().unwrapErr(), 0);
     expect(Ok(0).intoUnchecked().unwrap(), 0);
