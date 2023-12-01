@@ -166,7 +166,7 @@ sealed class Result<S, F extends Object> {
   /// when "this" is known to be an [Err] and you want to return to
   /// the calling function, but the returning function's [Ok] type is different from this [Ok] type.
   ///
-  /// Throws a [Panic] if this is not an [Err] and cannot cast the [Ok] value to [S2].
+  /// Throws an [Error] if cannot cast the [Ok] value to [S2].
   /// Example of proper use:
   /// ```dart
   /// Result<int,String> someFunction1 () {...}
@@ -346,10 +346,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   Ok<S2, F> intoUnchecked<S2>() {
-    if (ok is S2) {
       return Ok(ok as S2);
-    }
-    throw Panic(onValue: this, reason: "attempted to cast $S to $S2");
   }
 
   /// Changes the [Err] type to [F2]. This is usually used when "this" is known to be an [Ok] and you want to return to
