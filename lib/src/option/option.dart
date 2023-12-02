@@ -19,6 +19,8 @@ sealed class Option<T extends Object> {
   T expect(String msg);
 
   /// Returns None if the option is None, otherwise calls predicate with the wrapped value and returns
+  /// Some(t) if predicate returns true (where t is the wrapped value), and
+  // None if predicate returns false
   Option<T> filter(bool Function(T) predicate);
 
   // flatten: Added as extension
