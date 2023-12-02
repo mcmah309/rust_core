@@ -253,6 +253,26 @@ void main(){
     expect(x.zipWith(nonePoint, (a, b) => Point(a, b.x)), const None());
   });
 
+  group("Option Early Return",(){
+    Option<int> intSome() => Some(1);
+    Option<int> intNone() => const None();
+
+    test('Do Notation No Exit', () {
+      Option<int> earlyReturn(int val) => Option.$(($){
+          int x = intSome()[$];
+          return Some(val + 3);
+        });
+      expect(earlyReturn(2).unwrap(), 5);
+    });
+
+    test('Do Notation With Exit', () {
+      Option<int> earlyReturn(int val) => Option.$(($){
+        int x = intNone()[$];
+        return Some(val + 3);
+      });
+      expect(earlyReturn(2), const None());
+    });
+  });
 }
 
 class Point {

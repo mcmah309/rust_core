@@ -5,6 +5,26 @@ import 'package:rust_core/panic.dart';
 
 sealed class Option<T extends Object> {
 
+  /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
+  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
+  /// immediately the context that "$" belongs to is returned with None(). e.g.
+  /// ```
+  ///   Option<int> earlyReturn(int val) => Option.$(($){
+  ///     int x = intNone()[$];
+  ///     return Some(val + 3);
+  ///   });
+  ///   expect(earlyReturn(2), const None());
+  ///```
+  /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
+  /// attempting to bring "$" out of the original scope should be avoided.
+  factory Option.$(_OptionEarlyReturnFunction<T> fn) {
+    try {
+      return fn(const _OptionEarlyReturnKey._());
+    } on _OptionEarlyReturnNotification catch (e) {
+      return const None();
+    }
+  }
+
   /// Returns None if the option is None, otherwise returns [other].
   Option<U> and<U extends Object>(Option<U> other);
 
@@ -100,6 +120,11 @@ sealed class Option<T extends Object> {
 
   /// Returns the inner type as the nullable version of [T]
   T? toNullable();
+
+  //************************************************************************//
+
+  /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
+  T operator[](_OptionEarlyReturnKey op); // ignore: library_private_types_in_public_api
 }
 
 
@@ -239,6 +264,13 @@ final class Some<T extends Object> implements Option<T> {
       return Some(f(v,other.unwrap()));
     }
     return const None();
+  }
+
+  //************************************************************************//
+
+  @override
+  T operator[](_OptionEarlyReturnKey op) { // ignore: library_private_types_in_public_api
+    return v;
   }
 
   //************************************************************************//
@@ -387,6 +419,13 @@ final class None<T extends Object> implements Option<T> {
   //************************************************************************//
 
   @override
+  T operator[](_OptionEarlyReturnKey op) { // ignore: library_private_types_in_public_api
+    throw const _OptionEarlyReturnNotification();
+  }
+
+  //************************************************************************//
+
+  @override
   int get hashCode => 0;
 
   @override
@@ -395,3 +434,24 @@ final class None<T extends Object> implements Option<T> {
   @override
   String toString() => "None";
 }
+
+//************************************************************************//
+
+/// The key that allows early returns for [Option]. The key to the lock.
+final class _OptionEarlyReturnKey {
+  const _OptionEarlyReturnKey._();
+}
+
+
+/// Thrown from a do notation context
+final class _OptionEarlyReturnNotification {
+
+  const _OptionEarlyReturnNotification();
+}
+
+
+typedef _OptionEarlyReturnFunction<T extends Object> = Option<T> Function(_OptionEarlyReturnKey);
+
+//************************************************************************//
+
+const none = None();
