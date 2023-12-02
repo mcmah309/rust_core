@@ -52,3 +52,13 @@ extension OptionResultExtension<S extends Object, F extends Object> on Option<Re
     return Ok(const None());
   }
 }
+
+
+extension OptionOptionExtension<T extends Object> on Option<Option<T>> {
+  Option<T> flatten(){
+    if(isSome()){
+      return unwrap();
+    }
+    return const None();
+  }
+}
