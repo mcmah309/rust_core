@@ -254,7 +254,7 @@ void main(){
   });
 
   group("Option Early Return",(){
-    Option<int> int3Some() => Some(1);
+    Option<int> int3Some() => Some(3);
     Option<int> intNone() => const None();
 
     test('Do Notation No Exit', () {
