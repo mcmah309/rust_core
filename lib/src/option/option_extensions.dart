@@ -19,3 +19,22 @@ extension ToOption2<T extends Object> on T {
     return Some(this);
   }
 }
+
+extension OptionOptionExtension<T extends Object> on Option<Option<T>> {
+  Option<T> flatten(){
+    if(isSome()){
+      return unwrap();
+    }
+    return const None();
+  }
+}
+
+extension OptionRecord2Extension<T extends Object, U extends Object> on Option<(T,U)> {
+  (Option<T>, Option<U>) unzip(){
+    if(isSome()){
+      final (one, two) = unwrap();
+      return (Some(one), Some(two));
+    }
+    return (const None(), const None());
+  }
+}

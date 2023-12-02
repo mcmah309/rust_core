@@ -15,7 +15,7 @@ sealed class Option<T extends Object> {
 
   Option<T> filter(bool Function(T) predicate);
 
-  // todo flatten
+  // flatten: Added as extension
 
   // T getOrInsert(T value); // not possible, otherwise would not be const
 
@@ -53,7 +53,7 @@ sealed class Option<T extends Object> {
 
   // Option<T> takeIf(bool Function(T) predicate); // not possible, can't transmute into None
 
-  //todo transpose
+  // transpose: Added as extension
 
   T unwrap();
 
@@ -61,7 +61,7 @@ sealed class Option<T extends Object> {
 
   T unwrapOrElse(T Function() f);
 
-  // todo unzip
+  // unzip: Added as extension
 
   Option<T> xor(Option<T> other);
 
