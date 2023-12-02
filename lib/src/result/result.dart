@@ -19,12 +19,11 @@ sealed class Result<S, F extends Object> {
   ///         return Err("message");
   ///     }
   ///     Result<int, String> earlyReturn() => Result.$(($) {
-  ///         int y = Ok<int, String>(1).$($);
-  ///         int z = Ok<int, int>(1).mapErr((err) => err.toString()).$($);
+  ///         int y = Ok(1)[$];
+  ///         int z = Ok(1).mapErr((err) => err.toString())[$];
   ///         // the function will stop here since an Err was returned
-  ///         int x = innerFn().$($);
-  ///         x + y + z;
-  ///         return x + y + z;
+  ///         int x = innerFn()[$];
+  ///         return Ok(x + y + z);
   ///       });
   ///     }
   ///     expect(earlyReturn().unwrapErr(), "message");
