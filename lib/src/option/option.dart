@@ -5,14 +5,20 @@ import 'package:rust_core/panic.dart';
 
 sealed class Option<T extends Object> {
 
+  /// Returns None if the option is None, otherwise returns [other].
   Option<U> and<U extends Object>(Option<U> other);
 
+  ///Returns None if the option is None, otherwise calls f with the wrapped value and returns the result. Some
+  ///languages call this operation flatmap.
   Option<U> andThen<U extends Object>(Option<U> Function(T) f);
 
+  /// Shallow copies this Option
   Option<T> copy();
 
+  /// Returns the contained Some value if [Some], otherwise throws a [Panic].
   T expect(String msg);
 
+  /// Returns None if the option is None, otherwise calls predicate with the wrapped value and returns
   Option<T> filter(bool Function(T) predicate);
 
   // flatten: Added as extension
@@ -23,28 +29,41 @@ sealed class Option<T extends Object> {
 
   // T insert(T value); // not possible, otherwise lose const
 
+  /// Calls the provided closure with a reference to the contained value
   Option<T> inspect(Function(T) f);
 
+  /// Returns true if the option is a None value.
   bool isNone();
 
+  /// Returns true if the option is a Some value.
   bool isSome();
 
+  /// Returns true if the option is a Some and the value inside of it matches a predicate.
   bool isSomeAnd(bool Function(T) f);
 
+  /// Returns an iterable over the possibly contained value.
   Iterable<T> iter();
 
+  /// Maps an this Option<T> to Option<U> by applying a function to a contained value (if Some) or returns None (if
+  /// None).
   Option<U> map<U extends Object>(U Function(T) f);
 
+  /// Returns the provided default result (if none), or applies a function to the contained value (if any).
   U mapOr<U extends Object>(U defaultValue, U Function(T) f);
 
+  /// Computes a default function result (if none), or applies a different function to the contained value (if any).
   U mapOrElse<U extends Object>(U Function() defaultFn, U Function(T) f);
 
+  /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err).
   Result<T,E> okOr<E extends Object>(E err);
 
+  /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err()).
   Result<T,E> okOrElse<E extends Object>(E Function() errFn);
 
+  /// Returns the option if it contains a value, otherwise returns other.
   Option<T> or(Option<T> other);
 
+  /// Returns the option if it contains a value, otherwise calls f and returns the result.
   Option<T> orElse(Option<T> Function() f);
 
   // Option<T> replace(value); // not possible, otherwise not const
@@ -55,18 +74,24 @@ sealed class Option<T extends Object> {
 
   // transpose: Added as extension
 
+  /// Returns the contained Some value, consuming the self value.
   T unwrap();
 
+  /// Returns the contained Some value or a provided default.
   T unwrapOr(T defaultValue);
 
+  /// Returns the contained Some value or computes it from a closure.
   T unwrapOrElse(T Function() f);
 
   // unzip: Added as extension
 
+  /// Returns Some if exactly one of self, [other] is Some, otherwise returns None.
   Option<T> xor(Option<T> other);
 
+  /// Zips self with another Option.
   Option<(T,U)> zip<U extends Object>(Option<U> other);
 
+  /// Zips self and another Option with function f
   Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T,U) f);
 
   //************************************************************************//

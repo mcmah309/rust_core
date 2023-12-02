@@ -21,6 +21,7 @@ extension ToOption2<T extends Object> on T {
 }
 
 extension OptionOptionExtension<T extends Object> on Option<Option<T>> {
+  /// Converts from Option<Option<T>> to Option<T>.
   Option<T> flatten(){
     if(isSome()){
       return unwrap();
@@ -30,6 +31,8 @@ extension OptionOptionExtension<T extends Object> on Option<Option<T>> {
 }
 
 extension OptionRecord2Extension<T extends Object, U extends Object> on Option<(T,U)> {
+  /// Unzips an option containing a tuple of two options.
+  /// If self is Some((a, b)) this method returns (Some(a), Some(b)). Otherwise, (None, None) is returned.
   (Option<T>, Option<U>) unzip(){
     if(isSome()){
       final (one, two) = unwrap();
