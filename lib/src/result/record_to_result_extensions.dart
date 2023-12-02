@@ -4,8 +4,44 @@ import 'package:rust_core/result.dart';
 
 extension RecordToResult2<A,B,Z extends Object> on (Result<A,Z>,Result<B,Z>){
   /// {@template RecordToResult.toResult}
-  /// Transforms a Record of [Result]s into a single [Result], [Ok] is a Record of all Results [Ok] values, if all are
-  /// [Ok], and is [Err] the List of all [Err] values if any are [Err]
+  /// Transforms a Record of [Result]s into a single [Result]. The [Ok] value is a Record of all Result's [Ok]
+  /// values. The [Err] value is the List of all [Err] values.
+  ///
+  /// Instead of writing code like this
+  ///```
+  ///     final a, b, c;
+  ///     final boolResult = boolOk();
+  ///     switch(boolResult){
+  ///       case Ok(:final ok):
+  ///         a = ok;
+  ///       case Err():
+  ///         return boolResult;
+  ///     }
+  ///     final intResult = intOk();
+  ///     switch(intResult){
+  ///       case Ok(:final ok):
+  ///         b = ok;
+  ///       case Err():
+  ///         return intResult;
+  ///     }
+  ///     final doubleResult = doubleOk();
+  ///     switch(doubleResult){
+  ///       case Ok(:final ok):
+  ///         c = ok;
+  ///       case Err():
+  ///         return doubleResult;
+  ///     }
+  ///```
+  /// You can now write it like this
+  /// ```
+  ///     final a, b, c;
+  ///     switch((boolOk(), intOk(), doubleOk()).toResult()){
+  ///       case Ok(:final ok):
+  ///         (a, b, c) = ok;
+  ///       case Err():
+  ///         throw Exception();
+  ///     }
+  ///```
   /// {@endtemplate}
   Result<(A, B), List<Z>> toResult(){
     List<Z> z = [];
@@ -31,8 +67,44 @@ extension RecordToResult2<A,B,Z extends Object> on (Result<A,Z>,Result<B,Z>){
   }
 
   /// {@template RecordToResult.toResultEager}
-  /// Transforms a Record of [Result]s into a single [Result], [Ok] is a Record of all Results [Ok] values, if all are
-  /// [Ok], and is [Err] the first [Err] encountered if any
+  /// Transforms a Record of [Result]s into a single [Result]. The [Ok] value is a Record of all Result's [Ok]
+  /// values. The [Err] value is the first [Err] encountered.
+  ///
+  /// Instead of writing code like this
+  ///```
+  ///     final a, b, c;
+  ///     final boolResult = boolOk();
+  ///     switch(boolResult){
+  ///       case Ok(:final ok):
+  ///         a = ok;
+  ///       case Err():
+  ///         return boolResult;
+  ///     }
+  ///     final intResult = intOk();
+  ///     switch(intResult){
+  ///       case Ok(:final ok):
+  ///         b = ok;
+  ///       case Err():
+  ///         return intResult;
+  ///     }
+  ///     final doubleResult = doubleOk();
+  ///     switch(doubleResult){
+  ///       case Ok(:final ok):
+  ///         c = ok;
+  ///       case Err():
+  ///         return doubleResult;
+  ///     }
+  ///```
+  /// You can now write it like this
+  /// ```
+  ///     final a, b, c;
+  ///     switch((boolOk(), intOk(), doubleOk()).toResultEager()){
+  ///       case Ok(:final ok):
+  ///         (a, b, c) = ok;
+  ///       case Err():
+  ///         throw Exception();
+  ///     }
+  ///```
   /// {@endtemplate}
   Result<(A, B), Z> toResultEager(){
     A a;
