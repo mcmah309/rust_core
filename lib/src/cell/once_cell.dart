@@ -3,12 +3,16 @@ import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 
 
+
 /// OnceCell, A cell which can be written to only once. OnceCell implementation that allows [T] to be null, does not
 /// use [Option], and has a const constructor.
 class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   static final _cache = Expando();
+  /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
+  /// will be the same instance. Therefore, if you need multiple const versions, an [id] is needed.
+  final Object id;
 
-  const ConstNullableOnceCell();
+  const ConstNullableOnceCell(this.id);
 
   @override
   T? getOrNull(){
@@ -64,6 +68,17 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
     }
     return null;
   }
+
+  @override
+  int get hashCode {
+    var valueHash = _cache[this]?.hashCode ?? 0;
+    return id.hashCode ^ valueHash;
+  }
+
+    @override
+    bool operator ==(Object other) {
+    return runtimeType == other.runtimeType && _cache[this] == _cache[other];
+  }
 }
 
 //************************************************************************//
@@ -73,7 +88,7 @@ abstract interface class OnceCell<T extends Object> implements NullableOnceCell<
 
   factory OnceCell() = NonNullableOnceCell;
 
-  const factory OnceCell.constant() = ConstNonNullableOnceCell;
+  const factory OnceCell.constant(Object id) = ConstNonNullableOnceCell;
 
   factory OnceCell.withValue(T val) = NonNullableOnceCell.withValue;
 
@@ -91,8 +106,11 @@ abstract interface class OnceCell<T extends Object> implements NullableOnceCell<
 /// constructor
 class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   static final _cache = Expando();
+  /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
+  /// will be the same instance. Therefore, if you need multiple const versions, an [id] is needed.
+  final Object id;
 
-  const ConstNonNullableOnceCell();
+  const ConstNonNullableOnceCell(this.id);
 
   @override
   Option<T> get(){
@@ -168,6 +186,17 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
     }
     return const None();
   }
+
+  @override
+  int get hashCode {
+    var valueHash = _cache[this]?.hashCode ?? 0;
+    return id.hashCode ^ valueHash;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return runtimeType == other.runtimeType && _cache[this] == _cache[other];
+  }
 }
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation based off [Option]
@@ -242,6 +271,19 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
     if(_val == null){
       return const None();
     }
-    return Some(_val!);
+    final val = _val;
+    _val = null;
+    return Some(val!);
+  }
+
+  @override
+  int get hashCode {
+    final valueHash = _val?.hashCode ?? 0;
+    return valueHash;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is NonNullableOnceCell && runtimeType == other.runtimeType && _val == other._val;
   }
 }

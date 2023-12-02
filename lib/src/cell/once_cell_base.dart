@@ -53,7 +53,9 @@ class NullableOnceCell<T> {
   T? takeOrNull(){
     if(_isSet){
       _isSet = false;
-      return _val;
+      final val = _val;
+      _val = null;
+      return val;
     }
     return null;
   }
