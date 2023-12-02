@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:rust_core/result.dart';
+import 'package:rust_core/typedefs.dart';
 
 extension FlattenExtension<S, F extends Object> on Result<Result<S, F>, F> {
   /// Converts a [Result] of a [Result] into a single [Result]
@@ -214,6 +215,31 @@ extension ToErrExtension<E extends Object> on E {
   }
 }
 
+extension InfallibleOkExtension<S> on Result<S, Infallible> {
+  S intoOk() {
+    return unwrap();
+  }
+}
+
+extension InfallibleErrExtension<F extends Object> on Result<Infallible, F> {
+  F intoErr() {
+    return unwrapErr();
+  }
+}
+
+extension InfallibleFutureOkExtension<S> on FutureResult<S, Infallible> {
+  Future<S> intoOk() {
+    return then((result) => result.intoOk());
+  }
+}
+
+extension InfallibleFutureErrExtension<F extends Object>
+on FutureResult<Infallible, F> {
+  Future<F> intoErr() {
+    return then((result) => result.intoErr());
+  }
+}
+
 //************************************************************************//
 
 /// Returns futures in the order they complete
@@ -231,8 +257,10 @@ Stream<T> _streamFuturesInOrderOfCompletion<T>(Iterable<Future<T>> futures) {
       if (yetToComplete == 0) {
         controller.close();
       }
-    }).catchError((error) {
-      controller.addError(error);
+    }).catchError((dynamic error) {
+      if(error is Object) {
+        controller.addError(error);
+      }
       yetToComplete--;
       if (yetToComplete == 0) {
         controller.close();

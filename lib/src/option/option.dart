@@ -239,6 +239,8 @@ final class Some<T extends Object> implements Option<T> {
     return const None();
   }
 
+  //************************************************************************//
+
   @override
   int get hashCode => v.hashCode;
 
@@ -246,6 +248,9 @@ final class Some<T extends Object> implements Option<T> {
   bool operator ==(Object other) {
     return other is Some && other.v == v;
   }
+
+  @override
+  String toString() => 'Some($v)';
 }
 
 
@@ -379,10 +384,12 @@ final class None<T extends Object> implements Option<T> {
 
   //************************************************************************//
 
-  // @override
-  // int get hashCode;
+  @override
+  int get hashCode => 0;
 
-  // @override
-  // bool operator ==(Object other);
-  //todo write tests if override is needed, should all hash and equal eachother
+  @override
+  bool operator ==(Object other) => other is None;
+
+  @override
+  String toString() => "None";
 }
