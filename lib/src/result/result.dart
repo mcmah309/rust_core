@@ -12,18 +12,17 @@ import 'package:rust_core/panic.dart';
 sealed class Result<S, F extends Object> {
 
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
-  /// "Early Return Operator". Here "$" is used as the "Early Return Operator". when "$" is used on a type [Err],
+  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
   /// immediately the context that "$" belongs to is returned with that [Err]. e.g.
   /// ```
   ///     Result<int,String> innerFn(){
   ///         return Err("message");
   ///     }
   ///     Result<int, String> earlyReturn() => Result.$(($) {
-  ///         int y = Ok(1)[$];
-  ///         int z = Ok(1).mapErr((err) => err.toString())[$];
+  ///         int y = 2;
   ///         // the function will stop here since an Err was returned
   ///         int x = innerFn()[$];
-  ///         return Ok(x + y + z);
+  ///         return Ok(x.unwrap() + y);
   ///       });
   ///     }
   ///     expect(earlyReturn().unwrapErr(), "message");
@@ -32,7 +31,7 @@ sealed class Result<S, F extends Object> {
   /// attempting to bring "$" out of the original scope should be avoided.
   factory Result.$(_ResultEarlyReturnFunction<S, F> fn) {
     try {
-      return fn(_ResultEarlyReturnOp<F>._());
+      return fn(_ResultEarlyReturnKey<F>._());
     } on _ResultEarlyReturnNotification<F> catch (e) {
       return e.value;
     }
@@ -182,8 +181,8 @@ sealed class Result<S, F extends Object> {
 
   //************************************************************************//
 
-  /// Declarative way to work with the "$" operator (Early Return Operator). See [Result.$] for more information.
-  S operator[](_ResultEarlyReturnOp<F> op); // ignore: library_private_types_in_public_api
+  /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Result.$] for more information.
+  S operator[](_ResultEarlyReturnKey<F> op); // ignore: library_private_types_in_public_api
 }
 
 /// {@template ok}
@@ -360,7 +359,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S operator[](_ResultEarlyReturnOp<F> op) {// ignore: library_private_types_in_public_api
+  S operator[](_ResultEarlyReturnKey<F> op) {// ignore: library_private_types_in_public_api
     return ok;
   }
 
@@ -560,7 +559,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S operator[](_ResultEarlyReturnOp<F> op) { // ignore: library_private_types_in_public_api
+  S operator[](_ResultEarlyReturnKey<F> op) { // ignore: library_private_types_in_public_api
     throw _ResultEarlyReturnNotification(this.into());
   }
 
@@ -580,9 +579,9 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
 //************************************************************************//
 
-/// The operator that allows early returns for [Result]. The key to the lock.
-final class _ResultEarlyReturnOp<F extends Object> {
-  const _ResultEarlyReturnOp._();
+/// The key that allows early returns for [Result]. The key to the lock.
+final class _ResultEarlyReturnKey<F extends Object> {
+  const _ResultEarlyReturnKey._();
 }
 
 
@@ -594,7 +593,7 @@ final class _ResultEarlyReturnNotification<F extends Object> {
 }
 
 
-typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S,F> Function(_ResultEarlyReturnOp<F>);
+typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S,F> Function(_ResultEarlyReturnKey<F>);
 
 //************************************************************************//
 
