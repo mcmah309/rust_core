@@ -1,6 +1,10 @@
 import 'package:rust_core/cell.dart';
 
-/// A value which is initialized on the first access. Const Non-nullable implementation of [LazyCell]
+/// A value which is initialized on the first access. Const Non-nullable implementation of [LazyCell].
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their evaluated or unevaluated value
 class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
   static final _cache = Expando();
   final T Function() _func;
@@ -47,6 +51,10 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
 }
 
 /// A value which is initialized on the first access. Nullable implementation of [LazyCell]
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their evaluated or unevaluated value
 class ConstNullableLazyCell<T> implements NullableLazyCell<T>{
   static final _cache = Expando();
   final T Function() _func;
@@ -91,6 +99,10 @@ class ConstNullableLazyCell<T> implements NullableLazyCell<T>{
 }
 
 /// A value which is initialized on the first access. Non-nullable implementation of [LazyCell]
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their evaluated or unevaluated value
 class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
   T? _val;
   final T Function() _func;

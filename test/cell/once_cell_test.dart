@@ -76,6 +76,20 @@ void main() {
       var value = cell.takeOrNull();
       expect(value, isNull);
     });
+
+    test('Equality and hashCode', () {
+      cell = const ConstNullableOnceCell<int>(12);
+      var anotherCell = const ConstNullableOnceCell<int>(13);
+
+      expect(cell, equals(anotherCell));
+      expect(cell.hashCode, equals(anotherCell.hashCode));
+      anotherCell.setOrNull(1);
+      expect(cell, isNot(equals(anotherCell)));
+      expect(cell.hashCode, isNot(equals(anotherCell.hashCode)));
+      cell.setOrNull(1);
+      expect(cell, equals(anotherCell));
+      expect(cell.hashCode, equals(anotherCell.hashCode));
+    });
   });
 
   group('ConstNullableOnceCell Tests for int?', () {
@@ -268,6 +282,20 @@ void main() {
       var value = cell.takeOrNull();
       expect(value, isNull);
     });
+
+    test('Equality and hashCode', () {
+      cell = const ConstNonNullableOnceCell<int>(12);
+      var anotherCell = const ConstNonNullableOnceCell<int>(13);
+
+      expect(cell, equals(anotherCell));
+      expect(cell.hashCode, equals(anotherCell.hashCode));
+      anotherCell.set(1);
+      expect(cell, isNot(equals(anotherCell)));
+      expect(cell.hashCode, isNot(equals(anotherCell.hashCode)));
+      cell.set(1);
+      expect(cell, equals(anotherCell));
+      expect(cell.hashCode, equals(anotherCell.hashCode));
+    });
   });
 
   group('NonNullableOnceCell Tests', () {
@@ -368,6 +396,8 @@ void main() {
       expect(cell.hashCode, equals(cell2.hashCode));
 
       cell.setOrNull(13);
+      expect(cell, isNot(equals(cell2)));
+      expect(cell.hashCode, isNot(equals(cell2.hashCode)));
       cell2.setOrNull(13);
       expect(cell, equals(cell2));
       expect(cell.hashCode, equals(cell2.hashCode));

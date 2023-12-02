@@ -6,6 +6,10 @@ import 'package:rust_core/result.dart';
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation that allows [T] to be null, does not
 /// use [Option], and has a const constructor.
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their existing or non-existing value
 class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   static final _cache = Expando();
   /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
@@ -72,18 +76,35 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   @override
   int get hashCode {
     var valueHash = _cache[this]?.hashCode ?? 0;
-    return id.hashCode ^ valueHash;
+    return valueHash;
   }
 
-    @override
-    bool operator ==(Object other) {
-    return runtimeType == other.runtimeType && _cache[this] == _cache[other];
+  @override
+  bool operator ==(Object other) {
+    return other is ConstNullableOnceCell && runtimeType == other.runtimeType && _cache[this] == _cache[other];
+  }
+
+  @override
+  String toString(){
+    (T,)? cacheResult = _cache[this] as (T,)?;
+    String initializedState;
+    if(cacheResult == null){
+      initializedState = "Uninitialized ";
+    }
+    else{
+      initializedState = "Initialized ";
+    }
+    return initializedState + runtimeType.toString();
   }
 }
 
 //************************************************************************//
 
 /// OnceCell, A cell which can be written to only once.
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their existing or non-existing value
 abstract interface class OnceCell<T extends Object> implements NullableOnceCell<T> {
 
   factory OnceCell() = NonNullableOnceCell;
@@ -104,6 +125,10 @@ abstract interface class OnceCell<T extends Object> implements NullableOnceCell<
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation based off [Option] with a const
 /// constructor
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their existing or non-existing value
 class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   static final _cache = Expando();
   /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
@@ -190,16 +215,35 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   @override
   int get hashCode {
     var valueHash = _cache[this]?.hashCode ?? 0;
-    return id.hashCode ^ valueHash;
+    return valueHash;
   }
 
   @override
   bool operator ==(Object other) {
-    return runtimeType == other.runtimeType && _cache[this] == _cache[other];
+    return other is ConstNonNullableOnceCell
+        && runtimeType == other.runtimeType
+        && _cache[this] == _cache[other];
+  }
+
+  @override
+  String toString(){
+    T? cacheResult = _cache[this] as T?;
+    String initializedState;
+    if(cacheResult == null){
+      initializedState = "Uninitialized ";
+    }
+    else{
+      initializedState = "Initialized ";
+    }
+    return initializedState + runtimeType.toString();
   }
 }
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation based off [Option]
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their existing or non-existing value
 class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
   T? _val;
 
@@ -284,6 +328,13 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NonNullableOnceCell && runtimeType == other.runtimeType && _val == other._val;
+    return other is NonNullableOnceCell
+        && runtimeType == other.runtimeType
+        && _val == other._val;
+  }
+
+  @override
+  String toString(){
+    return (_val == null ? "Uninitialized " : "Initialized ") + runtimeType.toString();
   }
 }

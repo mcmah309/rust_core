@@ -2,6 +2,10 @@ import 'package:rust_core/result.dart';
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation that allows [T] to be null and does
 /// not use [Option]
+///
+/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+///
+/// Hash: Cells hash to their existing or non-existing value
 class NullableOnceCell<T> {
   T? _val;
   bool _isSet = false;
@@ -58,5 +62,23 @@ class NullableOnceCell<T> {
       return val;
     }
     return null;
+  }
+
+  @override
+  int get hashCode {
+    final valueHash = _isSet ? _val.hashCode : 0;
+    return valueHash;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is NullableOnceCell
+        && runtimeType == other.runtimeType
+        && _val == other._val;
+  }
+
+  @override
+  String toString(){
+    return (_isSet ? "Initialized " : "Uninitialized ") + runtimeType.toString();
   }
 }
