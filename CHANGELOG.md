@@ -1,3 +1,14 @@
+## 0.2.0
+
+- Add Option Early Return (Do Notation)
+- Add all methods for FutureOption
+- OnceCell fixes
+- LazyCell fixes
+- Option fixes
+- More Tests
+- More extensions
+
+
 ## 0.1.0
 
 - Various extensions
