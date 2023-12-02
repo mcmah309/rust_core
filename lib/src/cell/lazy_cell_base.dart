@@ -4,7 +4,7 @@ import 'package:rust_core/cell.dart';
 abstract interface class LazyCell<T extends Object> implements NullableLazyCell<T> {
   factory LazyCell(T Function() func) = NonNullableLazyCell;
 
-  const factory LazyCell.constant(T Function() func) = ConstNonNullableLazyCell;
+  const factory LazyCell.constant(T Function() func, Object id) = ConstNonNullableLazyCell;
 }
 
 /// A value which is initialized on the first access. Nullable implementation of [LazyCell]
@@ -23,5 +23,23 @@ class NullableLazyCell<T> {
     _isSet = true;
     _val = _func();
     return _val;
+  }
+
+  @override
+  int get hashCode {
+    final valueHash = _isSet ? _val.hashCode : 0;
+    return valueHash;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is NullableLazyCell
+        && runtimeType == other.runtimeType
+        && _val == other._val;
+  }
+
+  @override
+  String toString(){
+    return (_isSet ? "Initialized " : "Uninitialized ") + runtimeType.toString();
   }
 }
