@@ -1,5 +1,6 @@
 import 'package:rust_core/cell.dart';
 
+/// A value which is initialized on the first access. Const Non-nullable implementation of [LazyCell]
 class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
   static final _cache = Expando();
   final T Function() _func;
@@ -16,6 +17,7 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
   }
 }
 
+/// A value which is initialized on the first access. Nullable implementation of [LazyCell]
 class ConstNullableLazyCell<T> implements NullableLazyCell<T>{
   static final _cache = Expando();
   final T Function() _func;
@@ -32,6 +34,7 @@ class ConstNullableLazyCell<T> implements NullableLazyCell<T>{
   }
 }
 
+/// A value which is initialized on the first access. Non-nullable implementation of [LazyCell]
 class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
   T? _val;
   final T Function() _func;
