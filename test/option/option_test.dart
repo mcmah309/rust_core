@@ -34,8 +34,28 @@ void main(){
     expect(Err<int,String>("not a number").andThen(sqThenToString), Err("not a number"));
   });
 
-  test("expect",(){
-    //todo
+  test("expect", () {
+    final x = Ok(1);
+    expect(x.expect("Error"), 1);
+
+    final y = Err<String, String>("Failure");
+    try {
+      y.expect("Error occurred");
+      fail("Should have thrown an error");
+    } catch (e) {
+      expect(e.toString(), contains("Error occurred"));
+    }
+
+    final some = Some(1);
+    expect(some.expect("Error"), 1);
+
+    final none = const None<int>();
+    try {
+      none.expect("Error occurred");
+      fail("Should have thrown an error");
+    } catch (e) {
+      expect(e.toString(), contains("Error occurred"));
+    }
   });
 
   test("filter",(){
