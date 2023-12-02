@@ -254,20 +254,20 @@ void main(){
   });
 
   group("Option Early Return",(){
-    Option<int> intSome() => Some(1);
+    Option<int> int3Some() => Some(1);
     Option<int> intNone() => const None();
 
     test('Do Notation No Exit', () {
       Option<int> earlyReturn(int val) => Option.$(($){
-          int x = intSome()[$];
-          return Some(val + 3);
+          int x = int3Some()[$];
+          return Some(val + x);
         });
       expect(earlyReturn(2).unwrap(), 5);
     });
 
     test('Do Notation With Exit', () {
       Option<int> earlyReturn(int val) => Option.$(($){
-        int x = intNone()[$];
+        int _ = intNone()[$];
         return Some(val + 3);
       });
       expect(earlyReturn(2), const None());

@@ -20,7 +20,7 @@ sealed class Option<T extends Object> {
   factory Option.$(_OptionEarlyReturnFunction<T> fn) {
     try {
       return fn(const _OptionEarlyReturnKey._());
-    } on _OptionEarlyReturnNotification catch (e) {
+    } on _OptionEarlyReturnNotification catch (_) {
       return const None();
     }
   }
