@@ -27,7 +27,7 @@ void main() {
   });
 
   test("isOk", () {
-    Result result = Ok(0);
+    Result<int,String> result = Ok(0);
     late int ok;
     if (result.isOk()) {
       ok = result.unwrap();
@@ -38,7 +38,7 @@ void main() {
   });
 
   test("isOkAnd", () {
-    Result result = Ok(0);
+    Result<int,String> result = Ok(0);
     late int ok;
     if (result.isOkAnd((r) => true)) {
       ok = result.unwrap();
