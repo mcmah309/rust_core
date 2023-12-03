@@ -278,25 +278,25 @@ void main() {
 
     test('With different types None', () {
       Option<int> earlyReturn(int val) => Option(($) {
-        double x = doubleNone()[$];
-        return Some((val + x).toInt());
-      });
+            double x = doubleNone()[$];
+            return Some((val + x).toInt());
+          });
       expect(earlyReturn(2), const None());
     });
 
     test('With different types Some', () {
       Option<int> earlyReturn(int val) => Option(($) {
-        double x = double3Some()[$];
-        return Some((val + x).toInt());
-      });
+            double x = double3Some()[$];
+            return Some((val + x).toInt());
+          });
       expect(earlyReturn(2), Some(5));
     });
 
     test('Normal', () {
       Option<int> earlyReturn(int val) => Option(($) {
-        double x = double3Some().unwrap();
-        return Some((val + x).toInt());
-      });
+            double x = double3Some().unwrap();
+            return Some((val + x).toInt());
+          });
       expect(earlyReturn(2), Some(5));
     });
   });
