@@ -136,8 +136,8 @@ passed to a Result, Unlocks the inner value, or returns to the surrounding conte
 Result<int,String> innerFn() => Err("message");
 Result<int, String> earlyReturn() => Result.$(($) { // Early Return Key
    int y = 2;
-   // the function will stop here since an Err was returned
-   int x = innerFn()[$];
+   // the function will stop at "[$]", since an Err was returned
+   int x = innerFn()[$].map((i) => i + 3);
    return Ok(x.unwrap() + y);
  });
 
@@ -268,18 +268,19 @@ switch(doubleResult){
 }
 /// ... Use a,b,c
 ```
-That is a little verbose. Fortunately you can do this for 2 to 10 different `Result`s.
+That is a little verbose. Fortunately, extensions exist do:
 ```dart
 final a, b, c;
-switch((boolOk(), intOk(), doubleOk()).toResult()){
+final result = (boolOk(), intOk(), doubleOk()).toResultEager();
+switch(result){
    case Ok(:final ok):
       (a, b, c) = ok;
    case Err():
-      throw Exception();
+      return result;
 }
 /// ... Use a,b,c
 ```
-This also has a `toResultEager()` method.
+This also has a `toResult()` method.
 ### Pattern Matching vs Early Return Key
 ```dart
 void main(){
@@ -289,7 +290,7 @@ void main(){
 
 Result<int,String> usingTheEarlyReturnKey() => Result.$(($){
   double x = willAlwaysReturnErr()[$];
-  return Ok(1.toInt());
+  return Ok(x.toInt());
 });
 
 Result<int,String> usingRegularPatternMatching(){
