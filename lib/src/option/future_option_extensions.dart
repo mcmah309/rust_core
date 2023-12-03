@@ -15,6 +15,13 @@ extension FutureToOption2<T extends Object> on Future<T> {
   }
 }
 
+extension FutureToOption3<T extends Object> on Option<T> {
+  /// Converts a Option<T> to Future<Option<T>>.
+  Future<Option<T>> toFutureOption() async {
+    return this;
+  }
+}
+
 extension FutureOptionOptionExtension<T extends Object>
     on FutureOption<Option<T>> {
   /// Converts from FutureOption<Option<T>> to FutureOption<T>.
