@@ -40,4 +40,4 @@ We aim to be an indispensable tool for every Dart project and a foundational lib
 
 
 [anyhow]: https://pub.dev/packages/anyhow
-[tapper]: https://pub.dev/packages/anyhow
+[tapper]: https://pub.dev/packages/tapper
