@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Early Return Notation Signature change
+
 ## 0.2.1
 
 - More docs

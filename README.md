@@ -1,4 +1,4 @@
-# Rust_Core
+# rust_core
 
 [![Pub Version](https://img.shields.io/pub/v/rust_core.svg)](https://pub.dev/packages/rust_core)
 [![Dart Package Docs](https://img.shields.io/badge/documentation-pub.dev-blue.svg)](https://pub.dev/documentation/rust_core/latest/)
@@ -7,10 +7,10 @@
 
 Implementation of Rust's core library in a Dart friendly way.
 
-Rust_Core allows for idiomatic programming in dart with predictable control flow. We carefully adapt Rust's 
+rust_core allows for idiomatic programming in dart with predictable control flow. We carefully adapt Rust's 
 functionalities to Dart's paradigms, ensuring a smooth, 
 language-compatible integration. E.g. `Option` and Nullable types are equally supported throughout. If a method or 
-extension exists for `Option<T>` it exists for `T?`. Thus, Rust_Core seamlessly integrates the essence of Rust's 
+extension exists for `Option<T>` it exists for `T?`. Thus, rust_core seamlessly integrates the essence of Rust's 
 core library into Dart.
 
 ## Highlights
@@ -19,13 +19,13 @@ core library into Dart.
 | [Result] | [Option] | [Cell] | [Panic] | [Typedefs]
 
 🔥 **Over 100 Extensions and Counting:** Crafted to address specific scenarios in Dart.
+ 
+🧪 **Robust Testing:** Over 250 meaningful tests, we aim for reliability and performance in every feature.
 
-🧪 **Robust Testing:** Over 250 tests and counting, we aim for reliability and performance in every feature.
-
-🚀 **Beyond Rust Core:** While Rust_Core faithfully implements the Rust Core library in Dart, our vision extends further.
+🚀 **Beyond Rust Core:** While rust_core faithfully implements the Rust Core library in Dart, our vision extends further.
 We aim to be an indispensable tool for every Dart project and a foundational library for the broader ecosystem.
 
-### Official Packages Based Off Rust_Core
+### Official Packages Based Off rust_core
 | Library | Description |
 | ------- | ----------- |
 | [anyhow] | Idiomatic error handling capabilities to make your code safer, more maintainable, and errors easier to debug. |

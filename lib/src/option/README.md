@@ -2,8 +2,8 @@
 
 Option represents the union of two types `Some` and `None`. An alternative to null. The `Option` type is not meant 
 to replace nullable types, but rather complement them. The [Motivation](#motivation) section discusses more. But all 
-types in Rust_Core support nullable and `Option` implementations of classes and methods, to allow full usability of 
-Rust_Core with or without the `Option` type. Giving programmers greater control.
+types in rust_core support nullable and `Option` implementations of classes and methods, to allow full usability of 
+rust_core with or without the `Option` type. Giving programmers greater control.
 
 ### Motivation
 If Dart already supports nullable types, why use an 
