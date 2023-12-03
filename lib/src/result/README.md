@@ -16,6 +16,7 @@
     - [ToResult and ToResultEager](#toresult-and-toresulteager)
         - [Iterable Result](#iterable-result)
         - [Multiple Results of Different Success Types](#multiple-results-of-different-success-types)
+    - [Pattern Matching vs Early Return Key](#pattern-matching-vs-early-return-key)
 
 ## What Is a Result Monad Type And Why Use it?
 A monad is just a wrapper around an object that provides a standard way of interacting with the inner object. The
@@ -115,17 +116,36 @@ this message was thrown
 ```
 
 ## Dart Equivalent To The Rust "?" Operator
-In Dart, the Rust "?" operator functionality in `x?`, where `x` is a `Result`, can be accomplished with
+In Dart, the Rust "?" operator (Early Return Operator) functionality in `x?`, where `x` is a `Result`, can be 
+accomplished in two ways
+### into()
 ```dart
 if (x case Err()) {
-  return x.into();
+  return x.into(); // may not need "into()"
 }
 ```
 `into` may be needed to change the `S` type of `Result<S,F>` for `x` to that of the functions return type if 
 they are different.
 `into` only exits if after the type check, so you will never mishandle a type change since the compiler will stop you.
 Note: There also exists
-`intoUnchecked` that does not require implicit cast of a `Result` Type. 
+`intoUnchecked` that does not require implicit cast of a `Result` Type.
+### Early Return Key
+The "Early Return Key" is a take on "Do Notation". The Early Return Key is typically denoted with `$` and when 
+passed to a Result, Unlocks the inner value, or returns to the surrounding context. e.g.
+```dart
+Result<int,String> innerFn() => Err("message");
+Result<int, String> earlyReturn() => Result.$(($) { // Early Return Key
+   int y = 2;
+   // the function will stop here since an Err was returned
+   int x = innerFn()[$];
+   return Ok(x.unwrap() + y);
+ });
+
+expect(earlyReturn().unwrapErr(), "message");
+```
+Using the Early Return Key notation removes the need for pattern matching or checking, in a safe way. This is quit a 
+powerful tool.
+
 ## How to Never Unwrap Incorrectly
 In Rust, as here, it is possible to unwrap values that should not be unwrapped:
 ```dart
@@ -133,7 +153,9 @@ if (x.isErr()) {
   return x.unwrap(); // this will panic (should be "unwrapErr()")
 }
 ```
-To never unwrap incorrectly, simple do a typecheck with `is` or `case` instead of `isErr()`.
+There are two ways to never unwrap incorrectly:
+### Pattern Matching
+Simple do a typecheck with `is` or `case` instead of `isErr()`.
 ```dart
 if (x case Err(:final err)){
     return err;
@@ -169,7 +191,9 @@ x.match(
   err: (err) => err
 );
 ```
-Or even with `mapOrElse`
+Or even with `mapOrElse`.
+### Early Return Key
+We can also use the [Early Return Key](#early-return-key), which is a very powerful idiomatic approach!
 ## Misc
 ### Working with Futures
 When working with `Future`s it is easy to make a mistake like this
@@ -256,3 +280,28 @@ switch((boolOk(), intOk(), doubleOk()).toResult()){
 /// ... Use a,b,c
 ```
 This also has a `toResultEager()` method.
+### Pattern Matching vs Early Return Key
+```dart
+void main(){
+  usingTheEarlyReturnKey();
+  usingRegularPatternMatching();
+}
+
+Result<int,String> usingTheEarlyReturnKey() => Result.$(($){
+  double x = willAlwaysReturnErr()[$];
+  return Ok(1.toInt());
+});
+
+Result<int,String> usingRegularPatternMatching(){
+  double x;
+  switch(willAlwaysReturnErr()){
+    case Err(:final err):
+      return Err(err);
+    case Ok(:final ok):
+      x = ok;
+  }
+  return Ok(x.toInt());
+}
+
+Result<double,String> willAlwaysReturnErr() => Err("error");
+```

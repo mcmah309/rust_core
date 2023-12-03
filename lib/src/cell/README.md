@@ -11,4 +11,9 @@ non-nullable, and const.
 That is correct, you can use these Cells with `const`. That opens up a lot of possibilities. Most notable being 
 default types for classes constructed at build time, like with the [freezed] package.
 
+
+🚧 **Page and Classes Under Construction** 🚧
+
+✅ Finished: `OnceCell` and `LazyCell`
+
 [freezed]:https://pub.dev/packages/freezed
