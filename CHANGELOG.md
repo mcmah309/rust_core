@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Additional extensions
+
 ## 0.3.0
 
 - Early Return Notation Signature change
