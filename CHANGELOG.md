@@ -1,3 +1,7 @@
+## 0.2.1
+
+- More docs
+
 ## 0.2.0
 
 - Add Option Early Return (Do Notation)
