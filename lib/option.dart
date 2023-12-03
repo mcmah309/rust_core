@@ -1,5 +1,3 @@
-
-
 library option;
 
 export 'src/option/future_option.dart';

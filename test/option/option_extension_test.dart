@@ -1,11 +1,8 @@
-
-
 import 'package:rust_core/option.dart';
 import 'package:test/test.dart';
 
-void main(){
-
-  test("flatten",(){
+void main() {
+  test("flatten", () {
     Option<Option<int>> someSome6 = Some(Some(6));
     expect(someSome6.flatten(), Some(6));
 

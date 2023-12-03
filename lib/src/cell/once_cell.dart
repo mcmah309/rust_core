@@ -2,8 +2,6 @@ import 'package:rust_core/cell.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 
-
-
 /// OnceCell, A cell which can be written to only once. OnceCell implementation that allows [T] to be null, does not
 /// use [Option], and has a const constructor.
 ///
@@ -12,6 +10,7 @@ import 'package:rust_core/result.dart';
 /// Hash: Cells hash to their existing or non-existing value
 class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   static final _cache = Expando();
+
   /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
   /// will be the same instance. Therefore, if you need multiple const versions, an [id] is needed.
   final Object id;
@@ -19,18 +18,18 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   const ConstNullableOnceCell(this.id);
 
   @override
-  T? getOrNull(){
+  T? getOrNull() {
     final val = _cache[this] as (T,)?;
-    if(val == null){
+    if (val == null) {
       return null;
     }
     return val.$1;
   }
 
   @override
-  T getOrInit(T Function() func){
+  T getOrInit(T Function() func) {
     var val = _cache[this] as (T,)?;
-    if(val != null){
+    if (val != null) {
       return val.$1;
     }
     val = (func(),);
@@ -39,13 +38,13 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   }
 
   @override
-  Result<T,E> getOrTryInit<E extends Object>(Result<T,E> Function() f){
+  Result<T, E> getOrTryInit<E extends Object>(Result<T, E> Function() f) {
     var val = _cache[this] as (T,)?;
-    if(val != null){
+    if (val != null) {
       return Ok(val.$1);
     }
     final result = f();
-    if(result.isOk()){
+    if (result.isOk()) {
       final val = result.unwrap();
       _cache[this] = (val,);
       return Ok(val);
@@ -56,7 +55,7 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   @override
   T? setOrNull(T value) {
     var val = _cache[this] as (T,)?;
-    if(val != null){
+    if (val != null) {
       return null;
     }
     _cache[this] = (value,);
@@ -66,7 +65,7 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   @override
   T? takeOrNull() {
     var val = _cache[this] as (T,)?;
-    if(val != null){
+    if (val != null) {
       _cache[this] = null;
       return val.$1;
     }
@@ -81,17 +80,18 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNullableOnceCell && runtimeType == other.runtimeType && _cache[this] == _cache[other];
+    return other is ConstNullableOnceCell &&
+        runtimeType == other.runtimeType &&
+        _cache[this] == _cache[other];
   }
 
   @override
-  String toString(){
+  String toString() {
     (T,)? cacheResult = _cache[this] as (T,)?;
     String initializedState;
-    if(cacheResult == null){
+    if (cacheResult == null) {
       initializedState = "Uninitialized ";
-    }
-    else{
+    } else {
       initializedState = "Initialized ";
     }
     return initializedState + runtimeType.toString();
@@ -105,8 +105,8 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
 /// Equality: Cells are equal if they have the same value and are the same runtime Type.
 ///
 /// Hash: Cells hash to their existing or non-existing value
-abstract interface class OnceCell<T extends Object> implements NullableOnceCell<T> {
-
+abstract interface class OnceCell<T extends Object>
+    implements NullableOnceCell<T> {
   factory OnceCell() = NonNullableOnceCell;
 
   const factory OnceCell.constant(Object id) = ConstNonNullableOnceCell;
@@ -117,7 +117,7 @@ abstract interface class OnceCell<T extends Object> implements NullableOnceCell<
   Option<T> get();
 
   /// Sets the contents of the cell to value.
-  Result<(),T> set(T value);
+  Result<(), T> set(T value);
 
   /// Takes the value out of this OnceCell, moving it back to an uninitialized state.
   Option<T> take();
@@ -131,6 +131,7 @@ abstract interface class OnceCell<T extends Object> implements NullableOnceCell<
 /// Hash: Cells hash to their existing or non-existing value
 class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   static final _cache = Expando();
+
   /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
   /// will be the same instance. Therefore, if you need multiple const versions, an [id] is needed.
   final Object id;
@@ -138,23 +139,23 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   const ConstNonNullableOnceCell(this.id);
 
   @override
-  Option<T> get(){
+  Option<T> get() {
     final val = _cache[this] as T?;
-    if(val == null){
+    if (val == null) {
       return const None();
     }
     return Some(val);
   }
 
   @override
-  T? getOrNull(){
+  T? getOrNull() {
     return get().toNullable();
   }
 
   @override
-  T getOrInit(T Function() func){
+  T getOrInit(T Function() func) {
     var val = _cache[this] as T?;
-    if(val != null){
+    if (val != null) {
       return val;
     }
     val = func();
@@ -163,13 +164,13 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  Result<T,E> getOrTryInit<E extends Object>(Result<T,E> Function() f){
+  Result<T, E> getOrTryInit<E extends Object>(Result<T, E> Function() f) {
     var val = _cache[this] as T?;
-    if(val != null){
+    if (val != null) {
       return Ok(val);
     }
     final result = f();
-    if(result.isOk()){
+    if (result.isOk()) {
       final val = result.unwrap();
       _cache[this] = val;
       return Ok(val);
@@ -180,7 +181,7 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   @override
   T? setOrNull(T value) {
     var val = _cache[this] as T?;
-    if(val != null){
+    if (val != null) {
       return null;
     }
     _cache[this] = value;
@@ -188,9 +189,9 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  Result<(),T> set(T value){
+  Result<(), T> set(T value) {
     var val = _cache[this] as T?;
-    if(val != null){
+    if (val != null) {
       return Err(value);
     }
     _cache[this] = value;
@@ -203,9 +204,9 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  Option<T> take(){
+  Option<T> take() {
     var val = _cache[this] as T?;
-    if(val != null){
+    if (val != null) {
       _cache[this] = null;
       return Some(val);
     }
@@ -220,19 +221,18 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNonNullableOnceCell
-        && runtimeType == other.runtimeType
-        && _cache[this] == _cache[other];
+    return other is ConstNonNullableOnceCell &&
+        runtimeType == other.runtimeType &&
+        _cache[this] == _cache[other];
   }
 
   @override
-  String toString(){
+  String toString() {
     T? cacheResult = _cache[this] as T?;
     String initializedState;
-    if(cacheResult == null){
+    if (cacheResult == null) {
       initializedState = "Uninitialized ";
-    }
-    else{
+    } else {
       initializedState = "Initialized ";
     }
     return initializedState + runtimeType.toString();
@@ -251,23 +251,22 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   NonNullableOnceCell.withValue(this._val);
 
-
   @override
-  Option<T> get(){
-    if(_val == null){
+  Option<T> get() {
+    if (_val == null) {
       return const None();
     }
     return Some(_val!);
   }
 
   @override
-  T? getOrNull(){
+  T? getOrNull() {
     return get().toNullable();
   }
 
   @override
-  T getOrInit(T Function() func){
-    if(_val != null){
+  T getOrInit(T Function() func) {
+    if (_val != null) {
       return _val!;
     }
     _val = func();
@@ -275,12 +274,12 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  Result<T,E> getOrTryInit<E extends Object>(Result<T,E> Function() f){
-    if(_val != null){
+  Result<T, E> getOrTryInit<E extends Object>(Result<T, E> Function() f) {
+    if (_val != null) {
       return Ok(_val!);
     }
     final result = f();
-    if(result.isOk()){
+    if (result.isOk()) {
       _val = result.unwrap();
       return Ok(_val!);
     }
@@ -289,7 +288,7 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   T? setOrNull(T value) {
-    if(_val != null){
+    if (_val != null) {
       return null;
     }
     _val = value;
@@ -297,8 +296,8 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  Result<(),T> set(T value) {
-    if(_val != null){
+  Result<(), T> set(T value) {
+    if (_val != null) {
       return Err(value);
     }
     _val = value;
@@ -311,8 +310,8 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  Option<T> take(){
-    if(_val == null){
+  Option<T> take() {
+    if (_val == null) {
       return const None();
     }
     final val = _val;
@@ -328,13 +327,14 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NonNullableOnceCell
-        && runtimeType == other.runtimeType
-        && _val == other._val;
+    return other is NonNullableOnceCell &&
+        runtimeType == other.runtimeType &&
+        _val == other._val;
   }
 
   @override
-  String toString(){
-    return (_val == null ? "Uninitialized " : "Initialized ") + runtimeType.toString();
+  String toString() {
+    return (_val == null ? "Uninitialized " : "Initialized ") +
+        runtimeType.toString();
   }
 }

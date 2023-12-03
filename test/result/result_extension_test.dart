@@ -3,7 +3,6 @@ import 'package:rust_core/core.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   test('flatten', () {
     Result<Result<int, X>, Y> w = Ok(Ok(0));
     expect(w.flatten(), isA<Result<int, X>>());
@@ -80,7 +79,7 @@ void main() {
 
   test("toResultEager on Future Iterable", () async {
     var result =
-    await [_delay(Ok(3)), _delay(Ok(1)), _delay(Ok(2))].toResultEager();
+        await [_delay(Ok(3)), _delay(Ok(1)), _delay(Ok(2))].toResultEager();
     expect(result.unwrap(), [1, 2, 3]);
 
     result = await [

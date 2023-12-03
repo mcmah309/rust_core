@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:rust_core/option.dart';
 import 'package:test/test.dart';
@@ -16,7 +15,8 @@ void main() {
       expect(await none.flatten(), const None());
 
       // Flattening only removes one level of nesting at a time
-      FutureOption<Option<Option<int>>> someSomeSome6 = Future.value(Some(Some(Some(6))));
+      FutureOption<Option<Option<int>>> someSomeSome6 =
+          Future.value(Some(Some(Some(6))));
       expect(await someSomeSome6.flatten(), Some(Some(6)));
       expect(await someSomeSome6.flatten().flatten(), Some(6));
     });

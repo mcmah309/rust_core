@@ -1,9 +1,7 @@
-
-
 import 'package:rust_core/core.dart';
 import 'package:test/test.dart';
 
-void main(){
+void main() {
   test('Infallible', () {
     Result<int, Infallible> x = Ok(1);
     expect(x.intoOk(), 1);

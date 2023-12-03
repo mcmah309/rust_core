@@ -1,8 +1,9 @@
-
 import 'package:rust_core/result.dart';
 
-
-extension RecordToResult2<A,B,Z extends Object> on (Result<A,Z>,Result<B,Z>){
+extension RecordToResult2<A, B, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>
+) {
   /// {@template RecordToResult.toResult}
   /// Transforms a Record of [Result]s into a single [Result]. The [Ok] value is a Record of all Result's [Ok]
   /// values. The [Err] value is the List of all [Err] values.
@@ -43,23 +44,22 @@ extension RecordToResult2<A,B,Z extends Object> on (Result<A,Z>,Result<B,Z>){
   ///     }
   ///```
   /// {@endtemplate}
-  Result<(A, B), List<Z>> toResult(){
+  Result<(A, B), List<Z>> toResult() {
     List<Z> z = [];
     A? a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       z.add($1.unwrapErr());
     }
     B? b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
-    }else{
+    } else {
       z.add($2.unwrapErr());
     }
 
-    if(z.isEmpty){
+    if (z.isEmpty) {
       return Ok((a!, b!));
     } else {
       return Err(z);
@@ -106,18 +106,17 @@ extension RecordToResult2<A,B,Z extends Object> on (Result<A,Z>,Result<B,Z>){
   ///     }
   ///```
   /// {@endtemplate}
-  Result<(A, B), Z> toResultEager(){
+  Result<(A, B), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
-    }else{
+    } else {
       return $2.intoUnchecked();
     }
 
@@ -125,33 +124,34 @@ extension RecordToResult2<A,B,Z extends Object> on (Result<A,Z>,Result<B,Z>){
   }
 }
 
-
-extension RecordToResult3<A,B,C,Z extends Object> on (Result<A,Z>,Result<B,Z>, Result<C,Z>){
+extension RecordToResult3<A, B, C, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>
+) {
   /// {@macro RecordToResult.toResult}
-  Result<(A, B, C), List<Z>> toResult(){
+  Result<(A, B, C), List<Z>> toResult() {
     List<Z> z = [];
     A? a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       z.add($1.unwrapErr());
     }
     B? b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
-    }else{
+    } else {
       z.add($2.unwrapErr());
     }
     C? c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
-    }
-    else{
+    } else {
       z.add($3.unwrapErr());
     }
 
-    if(z.isEmpty){
+    if (z.isEmpty) {
       return Ok((a!, b!, c!));
     } else {
       return Err(z);
@@ -159,24 +159,23 @@ extension RecordToResult3<A,B,C,Z extends Object> on (Result<A,Z>,Result<B,Z>, R
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C), Z> toResultEager(){
+  Result<(A, B, C), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
-    }else{
+    } else {
       return $2.intoUnchecked();
     }
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
-    }else{
+    } else {
       return $3.intoUnchecked();
     }
 
@@ -184,7 +183,12 @@ extension RecordToResult3<A,B,C,Z extends Object> on (Result<A,Z>,Result<B,Z>, R
   }
 }
 
-extension RecordToResult4<A, B, C, D, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>, Result<D, Z>) {
+extension RecordToResult4<A, B, C, D, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>,
+  Result<D, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C, D), List<Z>> toResult() {
     List<Z> z = [];
@@ -221,33 +225,32 @@ extension RecordToResult4<A, B, C, D, Z extends Object> on (Result<A, Z>, Result
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C, D), Z> toResultEager(){
+  Result<(A, B, C, D), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
 
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
-    }else{
+    } else {
       return $2.intoUnchecked();
     }
 
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
-    }else{
+    } else {
       return $3.intoUnchecked();
     }
 
     D d;
-    if($4.isOk()) {
+    if ($4.isOk()) {
       d = $4.unwrap();
-    }else{
+    } else {
       return $4.intoUnchecked();
     }
 
@@ -255,7 +258,13 @@ extension RecordToResult4<A, B, C, D, Z extends Object> on (Result<A, Z>, Result
   }
 }
 
-extension RecordToResult5<A, B, C, D, E, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>, Result<D, Z>, Result<E, Z>) {
+extension RecordToResult5<A, B, C, D, E, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>,
+  Result<D, Z>,
+  Result<E, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C, D, E), List<Z>> toResult() {
     List<Z> z = [];
@@ -298,38 +307,37 @@ extension RecordToResult5<A, B, C, D, E, Z extends Object> on (Result<A, Z>, Res
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C, D, E), Z> toResultEager(){
+  Result<(A, B, C, D, E), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
 
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
     } else {
       return $2.intoUnchecked();
     }
 
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
     } else {
       return $3.intoUnchecked();
     }
 
     D d;
-    if($4.isOk()) {
+    if ($4.isOk()) {
       d = $4.unwrap();
     } else {
       return $4.intoUnchecked();
     }
 
     E e;
-    if($5.isOk()) {
+    if ($5.isOk()) {
       e = $5.unwrap();
     } else {
       return $5.intoUnchecked();
@@ -339,7 +347,14 @@ extension RecordToResult5<A, B, C, D, E, Z extends Object> on (Result<A, Z>, Res
   }
 }
 
-extension RecordToResult6<A, B, C, D, E, F, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>, Result<D, Z>, Result<E, Z>, Result<F, Z>) {
+extension RecordToResult6<A, B, C, D, E, F, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>,
+  Result<D, Z>,
+  Result<E, Z>,
+  Result<F, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C, D, E, F), List<Z>> toResult() {
     List<Z> z = [];
@@ -388,45 +403,44 @@ extension RecordToResult6<A, B, C, D, E, F, Z extends Object> on (Result<A, Z>, 
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C, D, E, F), Z> toResultEager(){
+  Result<(A, B, C, D, E, F), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
 
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
     } else {
       return $2.intoUnchecked();
     }
 
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
     } else {
       return $3.intoUnchecked();
     }
 
     D d;
-    if($4.isOk()) {
+    if ($4.isOk()) {
       d = $4.unwrap();
     } else {
       return $4.intoUnchecked();
     }
 
     E e;
-    if($5.isOk()) {
+    if ($5.isOk()) {
       e = $5.unwrap();
     } else {
       return $5.intoUnchecked();
     }
 
     F f;
-    if($6.isOk()) {
+    if ($6.isOk()) {
       f = $6.unwrap();
     } else {
       return $6.intoUnchecked();
@@ -436,7 +450,15 @@ extension RecordToResult6<A, B, C, D, E, F, Z extends Object> on (Result<A, Z>, 
   }
 }
 
-extension RecordToResult7<A, B, C, D, E, F, G, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>, Result<D, Z>, Result<E, Z>, Result<F, Z>, Result<G, Z>) {
+extension RecordToResult7<A, B, C, D, E, F, G, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>,
+  Result<D, Z>,
+  Result<E, Z>,
+  Result<F, Z>,
+  Result<G, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C, D, E, F, G), List<Z>> toResult() {
     List<Z> z = [];
@@ -491,52 +513,51 @@ extension RecordToResult7<A, B, C, D, E, F, G, Z extends Object> on (Result<A, Z
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C, D, E, F, G), Z> toResultEager(){
+  Result<(A, B, C, D, E, F, G), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
 
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
     } else {
       return $2.intoUnchecked();
     }
 
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
     } else {
       return $3.intoUnchecked();
     }
 
     D d;
-    if($4.isOk()) {
+    if ($4.isOk()) {
       d = $4.unwrap();
     } else {
       return $4.intoUnchecked();
     }
 
     E e;
-    if($5.isOk()) {
+    if ($5.isOk()) {
       e = $5.unwrap();
     } else {
       return $5.intoUnchecked();
     }
 
     F f;
-    if($6.isOk()) {
+    if ($6.isOk()) {
       f = $6.unwrap();
     } else {
       return $6.intoUnchecked();
     }
 
     G g;
-    if($7.isOk()) {
+    if ($7.isOk()) {
       g = $7.unwrap();
     } else {
       return $7.intoUnchecked();
@@ -546,7 +567,16 @@ extension RecordToResult7<A, B, C, D, E, F, G, Z extends Object> on (Result<A, Z
   }
 }
 
-extension RecordToResult8<A, B, C, D, E, F, G, H, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>, Result<D, Z>, Result<E, Z>, Result<F, Z>, Result<G, Z>, Result<H, Z>) {
+extension RecordToResult8<A, B, C, D, E, F, G, H, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>,
+  Result<D, Z>,
+  Result<E, Z>,
+  Result<F, Z>,
+  Result<G, Z>,
+  Result<H, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C, D, E, F, G, H), List<Z>> toResult() {
     List<Z> z = [];
@@ -607,59 +637,58 @@ extension RecordToResult8<A, B, C, D, E, F, G, H, Z extends Object> on (Result<A
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C, D, E, F, G, H), Z> toResultEager(){
+  Result<(A, B, C, D, E, F, G, H), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
 
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
     } else {
       return $2.intoUnchecked();
     }
 
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
     } else {
       return $3.intoUnchecked();
     }
 
     D d;
-    if($4.isOk()) {
+    if ($4.isOk()) {
       d = $4.unwrap();
     } else {
       return $4.intoUnchecked();
     }
 
     E e;
-    if($5.isOk()) {
+    if ($5.isOk()) {
       e = $5.unwrap();
     } else {
       return $5.intoUnchecked();
     }
 
     F f;
-    if($6.isOk()) {
+    if ($6.isOk()) {
       f = $6.unwrap();
     } else {
       return $6.intoUnchecked();
     }
 
     G g;
-    if($7.isOk()) {
+    if ($7.isOk()) {
       g = $7.unwrap();
     } else {
       return $7.intoUnchecked();
     }
 
     H h;
-    if($8.isOk()) {
+    if ($8.isOk()) {
       h = $8.unwrap();
     } else {
       return $8.intoUnchecked();
@@ -669,7 +698,17 @@ extension RecordToResult8<A, B, C, D, E, F, G, H, Z extends Object> on (Result<A
   }
 }
 
-extension RecordToResult9<A, B, C, D, E, F, G, H, I, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>, Result<D, Z>, Result<E, Z>, Result<F, Z>, Result<G, Z>, Result<H, Z>, Result<I, Z>) {
+extension RecordToResult9<A, B, C, D, E, F, G, H, I, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>,
+  Result<D, Z>,
+  Result<E, Z>,
+  Result<F, Z>,
+  Result<G, Z>,
+  Result<H, Z>,
+  Result<I, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C, D, E, F, G, H, I), List<Z>> toResult() {
     List<Z> z = [];
@@ -736,66 +775,65 @@ extension RecordToResult9<A, B, C, D, E, F, G, H, I, Z extends Object> on (Resul
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C, D, E, F, G, H, I), Z> toResultEager(){
+  Result<(A, B, C, D, E, F, G, H, I), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
 
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
     } else {
       return $2.intoUnchecked();
     }
 
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
     } else {
       return $3.intoUnchecked();
     }
 
     D d;
-    if($4.isOk()) {
+    if ($4.isOk()) {
       d = $4.unwrap();
     } else {
       return $4.intoUnchecked();
     }
 
     E e;
-    if($5.isOk()) {
+    if ($5.isOk()) {
       e = $5.unwrap();
     } else {
       return $5.intoUnchecked();
     }
 
     F f;
-    if($6.isOk()) {
+    if ($6.isOk()) {
       f = $6.unwrap();
     } else {
       return $6.intoUnchecked();
     }
 
     G g;
-    if($7.isOk()) {
+    if ($7.isOk()) {
       g = $7.unwrap();
     } else {
       return $7.intoUnchecked();
     }
 
     H h;
-    if($8.isOk()) {
+    if ($8.isOk()) {
       h = $8.unwrap();
     } else {
       return $8.intoUnchecked();
     }
 
     I i;
-    if($9.isOk()) {
+    if ($9.isOk()) {
       i = $9.unwrap();
     } else {
       return $9.intoUnchecked();
@@ -805,7 +843,18 @@ extension RecordToResult9<A, B, C, D, E, F, G, H, I, Z extends Object> on (Resul
   }
 }
 
-extension RecordToResult10<A, B, C, D, E, F, G, H, I, J, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>, Result<D, Z>, Result<E, Z>, Result<F, Z>, Result<G, Z>, Result<H, Z>, Result<I, Z>, Result<J, Z>) {
+extension RecordToResult10<A, B, C, D, E, F, G, H, I, J, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>,
+  Result<D, Z>,
+  Result<E, Z>,
+  Result<F, Z>,
+  Result<G, Z>,
+  Result<H, Z>,
+  Result<I, Z>,
+  Result<J, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C, D, E, F, G, H, I, J), List<Z>> toResult() {
     List<Z> z = [];
@@ -878,73 +927,72 @@ extension RecordToResult10<A, B, C, D, E, F, G, H, I, J, Z extends Object> on (R
   }
 
   /// {@macro RecordToResult.toResultEager}
-  Result<(A, B, C, D, E, F, G, H, I, J), Z> toResultEager(){
+  Result<(A, B, C, D, E, F, G, H, I, J), Z> toResultEager() {
     A a;
-    if($1.isOk()) {
+    if ($1.isOk()) {
       a = $1.unwrap();
-    }
-    else{
+    } else {
       return $1.intoUnchecked();
     }
 
     B b;
-    if($2.isOk()) {
+    if ($2.isOk()) {
       b = $2.unwrap();
     } else {
       return $2.intoUnchecked();
     }
 
     C c;
-    if($3.isOk()) {
+    if ($3.isOk()) {
       c = $3.unwrap();
     } else {
       return $3.intoUnchecked();
     }
 
     D d;
-    if($4.isOk()) {
+    if ($4.isOk()) {
       d = $4.unwrap();
     } else {
       return $4.intoUnchecked();
     }
 
     E e;
-    if($5.isOk()) {
+    if ($5.isOk()) {
       e = $5.unwrap();
     } else {
       return $5.intoUnchecked();
     }
 
     F f;
-    if($6.isOk()) {
+    if ($6.isOk()) {
       f = $6.unwrap();
     } else {
       return $6.intoUnchecked();
     }
 
     G g;
-    if($7.isOk()) {
+    if ($7.isOk()) {
       g = $7.unwrap();
     } else {
       return $7.intoUnchecked();
     }
 
     H h;
-    if($8.isOk()) {
+    if ($8.isOk()) {
       h = $8.unwrap();
     } else {
       return $8.intoUnchecked();
     }
 
     I i;
-    if($9.isOk()) {
+    if ($9.isOk()) {
       i = $9.unwrap();
     } else {
       return $9.intoUnchecked();
     }
 
     J j;
-    if($10.isOk()) {
+    if ($10.isOk()) {
       j = $10.unwrap();
     } else {
       return $10.intoUnchecked();
@@ -953,4 +1001,3 @@ extension RecordToResult10<A, B, C, D, E, F, G, H, I, J, Z extends Object> on (R
     return Ok((a, b, c, d, e, f, g, h, i, j));
   }
 }
-

@@ -51,8 +51,7 @@ extension NullResultExtension<S, F extends Object> on Result<S, F>? {
     if (this != null) {
       if (this!.isOk()) {
         return Ok(this!.unwrap());
-      }
-      else {
+      } else {
         return Err(this!.unwrapErr());
       }
     }
@@ -60,16 +59,16 @@ extension NullResultExtension<S, F extends Object> on Result<S, F>? {
   }
 }
 
-extension NullFutureResultExtension<S, F extends Object> on FutureResult<S, F>? {
+extension NullFutureResultExtension<S, F extends Object>
+    on FutureResult<S, F>? {
   Future<Result<S?, F>> transposeNullable() {
-    if(this == null){
+    if (this == null) {
       return Future.value(Ok(null));
     }
-    return this!.then((result){
+    return this!.then((result) {
       if (result.isOk()) {
         return Ok(result.unwrap());
-      }
-      else {
+      } else {
         return Err(result.unwrapErr());
       }
     });
@@ -234,7 +233,7 @@ extension InfallibleFutureOkExtension<S> on FutureResult<S, Infallible> {
 }
 
 extension InfallibleFutureErrExtension<F extends Object>
-on FutureResult<Infallible, F> {
+    on FutureResult<Infallible, F> {
   Future<F> intoErr() {
     return then((result) => result.intoErr());
   }
@@ -258,7 +257,7 @@ Stream<T> _streamFuturesInOrderOfCompletion<T>(Iterable<Future<T>> futures) {
         controller.close();
       }
     }).catchError((dynamic error) {
-      if(error is Object) {
+      if (error is Object) {
         controller.addError(error);
       }
       yetToComplete--;

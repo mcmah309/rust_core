@@ -1,10 +1,7 @@
-import 'package:meta/meta.dart';
-
 import 'package:rust_core/result.dart';
 import 'package:rust_core/panic.dart';
 
 sealed class Option<T extends Object> {
-
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
   /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
   /// immediately the context that "$" belongs to is returned with None(). e.g.
@@ -77,10 +74,10 @@ sealed class Option<T extends Object> {
   U mapOrElse<U extends Object>(U Function() defaultFn, U Function(T) f);
 
   /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err).
-  Result<T,E> okOr<E extends Object>(E err);
+  Result<T, E> okOr<E extends Object>(E err);
 
   /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err()).
-  Result<T,E> okOrElse<E extends Object>(E Function() errFn);
+  Result<T, E> okOrElse<E extends Object>(E Function() errFn);
 
   /// Returns the option if it contains a value, otherwise returns other.
   Option<T> or(Option<T> other);
@@ -111,10 +108,11 @@ sealed class Option<T extends Object> {
   Option<T> xor(Option<T> other);
 
   /// Zips self with another Option.
-  Option<(T,U)> zip<U extends Object>(Option<U> other);
+  Option<(T, U)> zip<U extends Object>(Option<U> other);
 
   /// Zips self and another Option with function f
-  Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T,U) f);
+  Option<R> zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(T, U) f);
 
   //************************************************************************//
 
@@ -124,9 +122,9 @@ sealed class Option<T extends Object> {
   //************************************************************************//
 
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
-  T operator[](_OptionEarlyReturnKey op); // ignore: library_private_types_in_public_api
+  T operator [](
+      _OptionEarlyReturnKey op); // ignore: library_private_types_in_public_api
 }
-
 
 final class Some<T extends Object> implements Option<T> {
   final T v;
@@ -155,7 +153,7 @@ final class Some<T extends Object> implements Option<T> {
 
   @override
   Option<T> filter(bool Function(T self) predicate) {
-    if(predicate(v)){
+    if (predicate(v)) {
       return Some(v);
     }
     return const None();
@@ -244,7 +242,7 @@ final class Some<T extends Object> implements Option<T> {
 
   @override
   Option<T> xor(Option<T> other) {
-    if(other.isSome()){
+    if (other.isSome()) {
       return const None();
     }
     return Some(v);
@@ -252,16 +250,17 @@ final class Some<T extends Object> implements Option<T> {
 
   @override
   Option<(T, U)> zip<U extends Object>(Option<U> other) {
-    if(other.isSome()){
-      return Some((v,other.unwrap()));
+    if (other.isSome()) {
+      return Some((v, other.unwrap()));
     }
     return const None();
   }
 
   @override
-  Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T p1, U p2) f) {
-    if(other.isSome()){
-      return Some(f(v,other.unwrap()));
+  Option<R> zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(T p1, U p2) f) {
+    if (other.isSome()) {
+      return Some(f(v, other.unwrap()));
     }
     return const None();
   }
@@ -269,7 +268,8 @@ final class Some<T extends Object> implements Option<T> {
   //************************************************************************//
 
   @override
-  T operator[](_OptionEarlyReturnKey op) { // ignore: library_private_types_in_public_api
+  // ignore: library_private_types_in_public_api
+  T operator [](_OptionEarlyReturnKey op) {
     return v;
   }
 
@@ -287,10 +287,8 @@ final class Some<T extends Object> implements Option<T> {
   String toString() => 'Some($v)';
 }
 
-
 final class None<T extends Object> implements Option<T> {
-
-  @literal
+  //@literal
   const None();
 
   @override
@@ -393,7 +391,7 @@ final class None<T extends Object> implements Option<T> {
 
   @override
   Option<T> xor(Option<T> other) {
-    if(other.isSome()){
+    if (other.isSome()) {
       return other;
     }
     return const None();
@@ -405,7 +403,8 @@ final class None<T extends Object> implements Option<T> {
   }
 
   @override
-  Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T p1, U p2) f) {
+  Option<R> zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(T p1, U p2) f) {
     return const None();
   }
 
@@ -419,7 +418,8 @@ final class None<T extends Object> implements Option<T> {
   //************************************************************************//
 
   @override
-  T operator[](_OptionEarlyReturnKey op) { // ignore: library_private_types_in_public_api
+  // ignore: library_private_types_in_public_api
+  T operator [](_OptionEarlyReturnKey op) {
     throw const _OptionEarlyReturnNotification();
   }
 
@@ -442,15 +442,13 @@ final class _OptionEarlyReturnKey {
   const _OptionEarlyReturnKey._();
 }
 
-
 /// Thrown from a do notation context
 final class _OptionEarlyReturnNotification {
-
   const _OptionEarlyReturnNotification();
 }
 
-
-typedef _OptionEarlyReturnFunction<T extends Object> = Option<T> Function(_OptionEarlyReturnKey);
+typedef _OptionEarlyReturnFunction<T extends Object> = Option<T> Function(
+    _OptionEarlyReturnKey);
 
 //************************************************************************//
 

@@ -1,4 +1,3 @@
-
 import 'package:rust_core/core.dart';
 import 'package:test/test.dart';
 
@@ -19,14 +18,14 @@ void main() {
 
   group('andThenError', () {
     test('async ', () async {
-      final result = await Future.value(Err(2)).andThenErr(
-          (error) async => Err(error * 2));
+      final result = await Future.value(Err(2))
+          .andThenErr((error) async => Err(error * 2));
       expect(result.unwrapErrOrNull(), 4);
     });
 
     test('sink', () async {
-      final result = await Future.value(Err(2))
-          .andThenErr((error) => Err(error * 2));
+      final result =
+          await Future.value(Err(2)).andThenErr((error) => Err(error * 2));
       expect(result.unwrapErrOrNull(), 4);
     });
   });
@@ -40,8 +39,7 @@ void main() {
 
     test('Error', () async {
       final result = Future.value(Err(0));
-      final futureValue =
-          result.match(err: (e) => e, ok: (x) => x);
+      final futureValue = result.match(err: (e) => e, ok: (x) => x);
       expect(futureValue, completion(0));
     });
   });
@@ -54,8 +52,7 @@ void main() {
   });
 
   test('mapErr', () async {
-    final result = await Future.value(Err(1))
-        .mapErr((error) => Err(error * 2));
+    final result = await Future.value(Err(1)).mapErr((error) => Err(error * 2));
     expect(result.unwrapErrOrNull()?.unwrapErrOrNull(), 2);
     expect(Future.value(const Ok(2)).mapErr((x) => x), completes);
   });
@@ -69,8 +66,7 @@ void main() {
 
     test('Error', () async {
       final result = Future.value(Err(0));
-      final futureValue =
-          result.mapOrElse((e) => e, (x) => x);
+      final futureValue = result.mapOrElse((e) => e, (x) => x);
       expect(futureValue, completion(0));
     });
   });
@@ -165,7 +161,7 @@ void main() {
   test('transpose Future Null Result', () async {
     Future<Result<String, int>?> x = Future.value(null);
     expect((await x).transposeNullable().unwrap(), null);
-    FutureResult<String?, int> y = Future.value(Ok<String?,int>(""));
+    FutureResult<String?, int> y = Future.value(Ok<String?, int>(""));
     expect((await y.transposeNullable()).unwrap(), "");
   });
 }

@@ -32,8 +32,8 @@ void main() {
       expect(await x.expect("Error"), 1);
 
       x = Future.value(const None());
-      expect(() async => await x.expect("Error occurred"),
-          throwsA(isA<Error>()));
+      expect(
+          () async => await x.expect("Error occurred"), throwsA(isA<Error>()));
     });
 
     test("filter", () async {

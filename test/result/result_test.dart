@@ -27,7 +27,7 @@ void main() {
   });
 
   test("isOk", () {
-    Result<int,String> result = Ok(0);
+    Result<int, String> result = Ok(0);
     late int ok;
     if (result.isOk()) {
       ok = result.unwrap();
@@ -38,7 +38,7 @@ void main() {
   });
 
   test("isOkAnd", () {
-    Result<int,String> result = Ok(0);
+    Result<int, String> result = Ok(0);
     late int ok;
     if (result.isOkAnd((r) => true)) {
       ok = result.unwrap();
@@ -425,14 +425,15 @@ void main() {
     }
 
     Result<int, String> add3(int val) {
-      return Result.$(($){
+      return Result.$(($) {
         int x = anotherResultFn()[$];
         int y = Ok(1)[$];
         int z = Ok(1).mapErr((err) => err.toString())[$];
         return Ok(val + x + y + z);
       });
     }
-      expect(add3(2).unwrap(), 5);
+
+    expect(add3(2).unwrap(), 5);
   });
 
   test('Do Notation With Exit', () {
@@ -450,10 +451,9 @@ void main() {
   });
 
   test('Do Notation With Return Err', () {
-
     Result<int, String> testDoNotation() => Result.$(($) {
-      return Err("return error");
-    });
+          return Err("return error");
+        });
     expect(testDoNotation().unwrapErr(), "return error");
   });
 }

@@ -1,18 +1,18 @@
 import 'package:rust_core/core.dart'; // Or import 'package:rust_core/<LIBRARY_NAME>.dart';
 
-void main(){
+void main() {
   usingTheEarlyReturnKey();
   usingRegularPatternMatching();
 }
 
-Result<int,String> usingTheEarlyReturnKey() => Result.$(($){
-  double x = willAlwaysReturnErr()[$];
-  return Ok(1.toInt());
-});
+Result<int, String> usingTheEarlyReturnKey() => Result.$(($) {
+      double x = willAlwaysReturnErr()[$];
+      return Ok(x.toInt());
+    });
 
-Result<int,String> usingRegularPatternMatching(){
+Result<int, String> usingRegularPatternMatching() {
   double x;
-  switch(willAlwaysReturnErr()){
+  switch (willAlwaysReturnErr()) {
     case Err(:final err):
       return Err(err);
     case Ok(:final ok):
@@ -21,5 +21,4 @@ Result<int,String> usingRegularPatternMatching(){
   return Ok(x.toInt());
 }
 
-Result<double,String> willAlwaysReturnErr() => Err("error");
-
+Result<double, String> willAlwaysReturnErr() => Err("error");

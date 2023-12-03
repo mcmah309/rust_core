@@ -2,10 +2,10 @@ import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 
-void main(){
-  test("and",(){
+void main() {
+  test("and", () {
     Result<int, String> x = Ok(2);
-    Result<String,String> y = Err("late error");
+    Result<String, String> y = Err("late error");
     expect(x.and(y), Err("late error"));
 
     x = Err("early error");
@@ -21,17 +21,18 @@ void main(){
     expect(x.and(y), Ok("different result type"));
   });
 
-  test("andThen",(){
-    Result<String,String> sqThenToString(int x) {
-      if(x > 10000){
+  test("andThen", () {
+    Result<String, String> sqThenToString(int x) {
+      if (x > 10000) {
         return Err("overflowed");
       }
-      return Ok<int,String>(x * x).map((s) =>s.toString());
+      return Ok<int, String>(x * x).map((s) => s.toString());
     }
 
     expect(Ok(2).andThen(sqThenToString), Ok(4.toString()));
     expect(Ok(1000000).andThen(sqThenToString), Err("overflowed"));
-    expect(Err<int,String>("not a number").andThen(sqThenToString), Err("not a number"));
+    expect(Err<int, String>("not a number").andThen(sqThenToString),
+        Err("not a number"));
   });
 
   test("expect", () {
@@ -58,19 +59,19 @@ void main(){
     }
   });
 
-  test("filter",(){
-      bool isEven(int n) => n % 2 == 0;
+  test("filter", () {
+    bool isEven(int n) => n % 2 == 0;
 
-      Option<int> none = const None();
-      Option<int> some3 = Some(3);
-      Option<int> some4 = Some(4);
+    Option<int> none = const None();
+    Option<int> some3 = Some(3);
+    Option<int> some4 = Some(4);
 
-      expect(none.filter(isEven), const None());
-      expect(some3.filter(isEven), const None());
-      expect(some4.filter(isEven), const Some(4));
+    expect(none.filter(isEven), const None());
+    expect(some3.filter(isEven), const None());
+    expect(some4.filter(isEven), const Some(4));
   });
 
-  test("inspect",(){
+  test("inspect", () {
     final x = Ok(1);
     int? y;
     x.inspect((e) {
@@ -81,7 +82,7 @@ void main(){
     w.inspect((e) {
       y = e + 4;
     });
-    expect(y,1);
+    expect(y, 1);
   });
 
   test("isNone", () {
@@ -198,10 +199,10 @@ void main(){
 
     x = const None();
     Object? w;
-    try{
+    try {
       x.unwrap();
-    } catch(e){
-      w=e;
+    } catch (e) {
+      w = e;
     }
     expect(w, isA<Error>());
   });
@@ -253,23 +254,23 @@ void main(){
     expect(x.zipWith(nonePoint, (a, b) => Point(a, b.x)), const None());
   });
 
-  group("Option Early Return",(){
+  group("Option Early Return", () {
     Option<int> int3Some() => Some(3);
     Option<int> intNone() => const None();
 
     test('Do Notation No Exit', () {
-      Option<int> earlyReturn(int val) => Option.$(($){
-          int x = int3Some()[$];
-          return Some(val + x);
-        });
+      Option<int> earlyReturn(int val) => Option.$(($) {
+            int x = int3Some()[$];
+            return Some(val + x);
+          });
       expect(earlyReturn(2).unwrap(), 5);
     });
 
     test('Do Notation With Exit', () {
-      Option<int> earlyReturn(int val) => Option.$(($){
-        int _ = intNone()[$];
-        return Some(val + 3);
-      });
+      Option<int> earlyReturn(int val) => Option.$(($) {
+            int _ = intNone()[$];
+            return Some(val + 3);
+          });
       expect(earlyReturn(2), const None());
     });
   });

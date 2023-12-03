@@ -12,16 +12,16 @@ class NullableOnceCell<T> {
 
   NullableOnceCell();
 
-  NullableOnceCell.withValue(this._val): _isSet = true;
+  NullableOnceCell.withValue(this._val) : _isSet = true;
 
   /// Gets the underlying value, returns null if the cell is empty
-  T? getOrNull(){
+  T? getOrNull() {
     return _val;
   }
 
   /// Gets the contents of the cell, initializing it with [func] if the cell was empty.
-  T getOrInit(T Function() func){
-    if(_isSet){
+  T getOrInit(T Function() func) {
+    if (_isSet) {
       return _val!;
     }
     _val = func();
@@ -30,12 +30,12 @@ class NullableOnceCell<T> {
   }
 
   /// Gets the contents of the cell, initializing it with f if the cell was empty. If the cell was empty and f failed, an error is returned.
-  Result<T,E> getOrTryInit<E extends Object>(Result<T,E> Function() f){
-    if(_isSet){
+  Result<T, E> getOrTryInit<E extends Object>(Result<T, E> Function() f) {
+    if (_isSet) {
       return Ok(_val as T);
     }
     final result = f();
-    if(result.isOk()){
+    if (result.isOk()) {
       _val = result.unwrap();
       _isSet = true;
       return Ok(_val as T);
@@ -44,8 +44,8 @@ class NullableOnceCell<T> {
   }
 
   /// Sets the contents of the cell to value. Returns null if the value is already set.
-  T? setOrNull(T value){
-    if(_isSet){
+  T? setOrNull(T value) {
+    if (_isSet) {
       return null;
     }
     _val = value;
@@ -54,8 +54,8 @@ class NullableOnceCell<T> {
   }
 
   /// Takes the value out of this OnceCell, moving it back to an uninitialized state. Returns null if the cell is empty.
-  T? takeOrNull(){
-    if(_isSet){
+  T? takeOrNull() {
+    if (_isSet) {
       _isSet = false;
       final val = _val;
       _val = null;
@@ -72,13 +72,14 @@ class NullableOnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableOnceCell
-        && runtimeType == other.runtimeType
-        && _val == other._val;
+    return other is NullableOnceCell &&
+        runtimeType == other.runtimeType &&
+        _val == other._val;
   }
 
   @override
-  String toString(){
-    return (_isSet ? "Initialized " : "Uninitialized ") + runtimeType.toString();
+  String toString() {
+    return (_isSet ? "Initialized " : "Uninitialized ") +
+        runtimeType.toString();
   }
 }

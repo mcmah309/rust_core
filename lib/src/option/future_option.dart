@@ -14,8 +14,10 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
     return then((option) => option.and(other));
   }
 
-  Future<Option<U>> andThen<U extends Object>(FutureOr<Option<U>> Function(T) f) {
-    return then((option) => option.isSome() ? f(option.unwrap()) : Future.value(const None()));
+  Future<Option<U>> andThen<U extends Object>(
+      FutureOr<Option<U>> Function(T) f) {
+    return then((option) =>
+        option.isSome() ? f(option.unwrap()) : Future.value(const None()));
   }
 
   Future<Option<T>> copy() {
@@ -27,7 +29,10 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   }
 
   Future<Option<T>> filter(FutureOr<bool> Function(T) predicate) {
-    return then((option) async => option.isSome() && (await predicate(option.unwrap())) ? option : const None());
+    return then((option) async =>
+        option.isSome() && (await predicate(option.unwrap()))
+            ? option
+            : const None());
   }
 
   Future<Option<T>> inspect(FutureOr<void> Function(T) f) {
@@ -55,10 +60,12 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   }
 
   Future<U> mapOr<U extends Object>(U defaultValue, U Function(T) f) {
-    return then((option) => option.isSome() ? f(option.unwrap()) : defaultValue);
+    return then(
+        (option) => option.isSome() ? f(option.unwrap()) : defaultValue);
   }
 
-  Future<U> mapOrElse<U extends Object>(U Function() defaultFn, U Function(T) f) {
+  Future<U> mapOrElse<U extends Object>(
+      U Function() defaultFn, U Function(T) f) {
     return then((option) => option.isSome() ? f(option.unwrap()) : defaultFn());
   }
 
@@ -98,7 +105,8 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
     return then((option) => option.zip(other));
   }
 
-  Future<Option<R>> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T, U) f) {
+  Future<Option<R>> zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(T, U) f) {
     return then((option) => option.zipWith(other, f));
   }
 

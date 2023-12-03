@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:rust_core/result.dart';
 
-
 /// {@macro futureResult}
 typedef FutureResult<S, F extends Object> = Future<Result<S, F>>;
 

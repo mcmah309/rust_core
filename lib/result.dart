@@ -1,4 +1,3 @@
-
 library result;
 
 export 'src/result/execute_protected.dart';

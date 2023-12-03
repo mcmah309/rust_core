@@ -10,7 +10,6 @@ import 'package:rust_core/panic.dart';
 /// .org/std/result/enum.Result.html
 /// {@endtemplate}
 sealed class Result<S, F extends Object> {
-
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
   /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
   /// immediately the context that "$" belongs to is returned with that [Err]. e.g.
@@ -182,7 +181,8 @@ sealed class Result<S, F extends Object> {
   //************************************************************************//
 
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Result.$] for more information.
-  S operator[](_ResultEarlyReturnKey<F> op); // ignore: library_private_types_in_public_api
+  // ignore: library_private_types_in_public_api
+  S operator [](_ResultEarlyReturnKey<F> op);
 }
 
 /// {@template ok}
@@ -219,7 +219,9 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   F unwrapErr() {
-    throw Panic(onValue: this, reason: "called `unwrapErr` on a value that was not an Err");
+    throw Panic(
+        onValue: this,
+        reason: "called `unwrapErr` on a value that was not an Err");
   }
 
   @override
@@ -343,7 +345,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   Ok<S2, F> intoUnchecked<S2>() {
-      return Ok(ok as S2);
+    return Ok(ok as S2);
   }
 
   /// Changes the [Err] type to [F2]. This is usually used when "this" is known to be an [Ok] and you want to return to
@@ -359,7 +361,8 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S operator[](_ResultEarlyReturnKey<F> op) {// ignore: library_private_types_in_public_api
+  // ignore: library_private_types_in_public_api
+  S operator [](_ResultEarlyReturnKey<F> op) {
     return ok;
   }
 
@@ -395,7 +398,8 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   S unwrap() {
-    throw Panic(onValue: this, reason: "called `unwrap` on a value that was not an Ok");
+    throw Panic(
+        onValue: this, reason: "called `unwrap` on a value that was not an Ok");
   }
 
   @override
@@ -559,7 +563,8 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  S operator[](_ResultEarlyReturnKey<F> op) { // ignore: library_private_types_in_public_api
+  // ignore: library_private_types_in_public_api
+  S operator [](_ResultEarlyReturnKey<F> op) {
     throw _ResultEarlyReturnNotification(this.into());
   }
 
@@ -584,16 +589,15 @@ final class _ResultEarlyReturnKey<F extends Object> {
   const _ResultEarlyReturnKey._();
 }
 
-
 /// Thrown from a do notation context
 final class _ResultEarlyReturnNotification<F extends Object> {
-  final Err<Infallible,F> value;
+  final Err<Infallible, F> value;
 
   const _ResultEarlyReturnNotification(this.value);
 }
 
-
-typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S,F> Function(_ResultEarlyReturnKey<F>);
+typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S, F> Function(
+    _ResultEarlyReturnKey<F>);
 
 //************************************************************************//
 

@@ -1,4 +1,3 @@
-
 library typedefs;
 
 export 'src/typedefs/infallible.dart';

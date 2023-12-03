@@ -6,7 +6,6 @@ void main() {
   group('NullableOnceCell Tests', () {
     NullableOnceCell<int> cell;
 
-
     test('Initial state', () {
       cell = NullableOnceCell<int>();
       expect(cell.getOrNull(), isNull);

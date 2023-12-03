@@ -209,7 +209,6 @@ void main() {
     });
   });
 
-
   group('ConstNonNullableOnceCell Tests', () {
     ConstNonNullableOnceCell<int> cell;
 

@@ -1,8 +1,7 @@
-
 import 'package:rust_core/core.dart';
 import 'package:test/test.dart';
 
-void main(){
+void main() {
   test("Unit", () {
     Result<Unit, void> x = Ok(());
     Result<(), void> y = Ok(unit);

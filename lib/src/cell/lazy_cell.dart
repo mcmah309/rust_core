@@ -5,14 +5,15 @@ import 'package:rust_core/cell.dart';
 /// Equality: Cells are equal if they have the same value and are the same runtime Type.
 ///
 /// Hash: Cells hash to their evaluated or unevaluated value
-class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
+class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T> {
   static final _cache = Expando();
   final T Function() _func;
+
   /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
   /// will be the same instance. Therefore, if you need multiple const versions, an [id] is needed.
   final Object id;
 
-  const ConstNonNullableLazyCell(this._func,this.id);
+  const ConstNonNullableLazyCell(this._func, this.id);
 
   @override
   T call() {
@@ -31,19 +32,18 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNonNullableLazyCell
-        && runtimeType == other.runtimeType
-        && _cache[this] == _cache[other];
+    return other is ConstNonNullableLazyCell &&
+        runtimeType == other.runtimeType &&
+        _cache[this] == _cache[other];
   }
 
   @override
-  String toString(){
+  String toString() {
     T? cacheResult = _cache[this] as T?;
     String initializedState;
-    if(cacheResult == null){
+    if (cacheResult == null) {
       initializedState = "Uninitialized ";
-    }
-    else{
+    } else {
       initializedState = "Initialized ";
     }
     return initializedState + runtimeType.toString();
@@ -55,9 +55,10 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T>{
 /// Equality: Cells are equal if they have the same value and are the same runtime Type.
 ///
 /// Hash: Cells hash to their evaluated or unevaluated value
-class ConstNullableLazyCell<T> implements NullableLazyCell<T>{
+class ConstNullableLazyCell<T> implements NullableLazyCell<T> {
   static final _cache = Expando();
   final T Function() _func;
+
   /// Const objects all share the same canonicalization, meaning instantiation of the same class with the same arguments
   /// will be the same instance. Therefore, if you need multiple const versions, an [id] is needed.
   final Object id;
@@ -81,17 +82,18 @@ class ConstNullableLazyCell<T> implements NullableLazyCell<T>{
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNullableLazyCell && runtimeType == other.runtimeType && _cache[this] == _cache[other];
+    return other is ConstNullableLazyCell &&
+        runtimeType == other.runtimeType &&
+        _cache[this] == _cache[other];
   }
 
   @override
-  String toString(){
+  String toString() {
     (T,)? cacheResult = _cache[this] as (T,)?;
     String initializedState;
-    if(cacheResult == null){
+    if (cacheResult == null) {
       initializedState = "Uninitialized ";
-    }
-    else{
+    } else {
       initializedState = "Initialized ";
     }
     return initializedState + runtimeType.toString();
@@ -111,7 +113,7 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   T call() {
-    if(_val == null){
+    if (_val == null) {
       _val = _func();
       return _val!;
     }
@@ -126,13 +128,14 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NonNullableLazyCell
-        && runtimeType == other.runtimeType
-        && _val == other._val;
+    return other is NonNullableLazyCell &&
+        runtimeType == other.runtimeType &&
+        _val == other._val;
   }
 
   @override
-  String toString(){
-    return (_val == null ? "Uninitialized " : "Initialized ") + runtimeType.toString();
+  String toString() {
+    return (_val == null ? "Uninitialized " : "Initialized ") +
+        runtimeType.toString();
   }
 }

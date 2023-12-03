@@ -1,6 +1,4 @@
-
 library core;
-
 
 export 'cell.dart';
 export 'option.dart';

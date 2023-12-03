@@ -2,7 +2,7 @@ import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 
-void main(){
+void main() {
   test("ResultOnOptionExtension unwrapOrOption", () {
     Result<int, String> okResult = Ok(5);
     expect(okResult.unwrapOrOption(), Some(5));
