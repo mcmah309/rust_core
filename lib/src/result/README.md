@@ -268,7 +268,7 @@ switch(doubleResult){
 }
 /// ... Use a,b,c
 ```
-That is a little verbose. Fortunately, extensions exist do:
+That is a little verbose. Fortunately, extensions to the recuse, instead do:
 ```dart
 final a, b, c;
 final result = (boolOk(), intOk(), doubleOk()).toResultEager();

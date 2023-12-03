@@ -5,7 +5,7 @@ Cell is library of useful wrappers of values (cells). Most notable `OnceCell` an
 `OnceCell` - A cell which can be written to only once. Various implementations are provided for nullable, 
 non-nullable, and const.
 
-`OnceCell` - A value which is initialized on the first access. Various implementations are provided for nullable,
+`LazyCell` - A value which is initialized on the first access. Various implementations are provided for nullable,
 non-nullable, and const.
 
 That is correct, you can use these Cells with `const`. That opens up a lot of possibilities. Most notable being 

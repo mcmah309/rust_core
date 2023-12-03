@@ -15,10 +15,11 @@ When deciding between the two, the recommended approach is to use the `Option` t
 types as parameter types.
 
 ### Usage
-The `Option` Type and features work very similar to `Result` see the [Result] page for more info.
+The `Option` Type and features work very similar to `Result` see the [Result] page for more info. Or the pub [docs]
 
 🚧 **Documentation is Under Construction** 🚧
 
 [article]: https://www.sandromaglione.com/articles/option_type_and_null_safety_dart
 [fpdart]: https://pub.dev/packages/fpdart
 [Result]: https://github.com/mcmah309/rust_core/tree/master/lib/src/result
+[docs]: https://pub.dev/documentation/rust_core/latest/option/option-library.html

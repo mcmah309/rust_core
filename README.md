@@ -1,9 +1,17 @@
 # Rust_Core
 
+[![Pub Version](https://img.shields.io/pub/v/rust_core.svg)](https://pub.dev/packages/rust_core)
+[![Dart Package Docs](https://img.shields.io/badge/documentation-pub.dev-blue.svg)](https://pub.dev/documentation/rust_core/latest/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/dart.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
+
 Implementation of Rust's core library in a Dart friendly way.
 
-Rust_Core allows for idiomatic programming in dart with predictable control flow. This is accomplished by rewriting 
-the Rust core library in Dart where it makes sense, being as harmonious with the language as possible.
+Rust_Core allows for idiomatic programming in dart with predictable control flow. We carefully adapt Rust's 
+functionalities to Dart's paradigms, ensuring a smooth, 
+language-compatible integration. E.g. `Option` and Nullable types are equally supported throughout. If a method or 
+extension exists for `Option<T>` it exists for `T?`. Thus, Rust_Core seamlessly integrates the essence of Rust's 
+core library into Dart.
 
 ## Highlights
 ### Libraries
