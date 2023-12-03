@@ -257,21 +257,47 @@ void main() {
   group("Option Early Return", () {
     Option<int> int3Some() => Some(3);
     Option<int> intNone() => const None();
+    Option<double> double3Some() => Some(3);
+    Option<double> doubleNone() => const None();
 
-    test('Do Notation No Exit', () {
-      Option<int> earlyReturn(int val) => Option.$(($) {
+    test('No Exit', () {
+      Option<int> earlyReturn(int val) => Option(($) {
             int x = int3Some()[$];
             return Some(val + x);
           });
       expect(earlyReturn(2).unwrap(), 5);
     });
 
-    test('Do Notation With Exit', () {
-      Option<int> earlyReturn(int val) => Option.$(($) {
-            int _ = intNone()[$];
-            return Some(val + 3);
+    test('With Exit', () {
+      Option<int> earlyReturn(int val) => Option(($) {
+            int x = intNone()[$];
+            return Some(val + x);
           });
       expect(earlyReturn(2), const None());
+    });
+
+    test('With different types None', () {
+      Option<int> earlyReturn(int val) => Option(($) {
+        double x = doubleNone()[$];
+        return Some((val + x).toInt());
+      });
+      expect(earlyReturn(2), const None());
+    });
+
+    test('With different types Some', () {
+      Option<int> earlyReturn(int val) => Option(($) {
+        double x = double3Some()[$];
+        return Some((val + x).toInt());
+      });
+      expect(earlyReturn(2), Some(5));
+    });
+
+    test('Normal', () {
+      Option<int> earlyReturn(int val) => Option(($) {
+        double x = double3Some().unwrap();
+        return Some((val + x).toInt());
+      });
+      expect(earlyReturn(2), Some(5));
     });
   });
 }

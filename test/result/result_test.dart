@@ -418,42 +418,100 @@ void main() {
   });
 
   //************************************************************************//
-
-  test('Do Notation No Exit', () {
-    Result<int, String> anotherResultFn() {
+  group("Early Return",() {
+    Result<int, String> earlyReturnErr() => Result(($) {
+      return Err("return error");
+    });
+    Result<int, String> earlyReturnOk() => Result(($) {
+      return Ok(2);
+    });
+    Result<int, String> regularOk() {
+      return Ok(1);
+    }
+    Result<int, String> regularErr() {
+      return Err("message");
+    }
+    Result<int,int> wrongType(){
       return Ok(1);
     }
 
-    Result<int, String> add3(int val) {
-      return Result.$(($) {
-        int x = anotherResultFn()[$];
-        int y = Ok(1)[$];
-        int z = Ok(1).mapErr((err) => err.toString())[$];
-        return Ok(val + x + y + z);
-      });
-    }
-
-    expect(add3(2).unwrap(), 5);
-  });
-
-  test('Do Notation With Exit', () {
-    Result<int, String> innerFn() {
-      return Err("message");
-    }
-
-    Result<int, String> testDoNotation() => Result.$(($) {
+    test('No Exit', () {
+      Result<int, String> add3(int val) {
+        return Result(($) {
+          int x = regularOk()[$];
           int y = Ok(1)[$];
           int z = Ok(1).mapErr((err) => err.toString())[$];
-          int x = innerFn()[$];
-          return Ok(x + y + z);
+          return Ok(val + x + y + z);
         });
-    expect(testDoNotation().unwrapErr(), "message");
-  });
+      }
 
-  test('Do Notation With Return Err', () {
-    Result<int, String> testDoNotation() => Result.$(($) {
-          return Err("return error");
+      expect(add3(2).unwrap(), 5);
+    });
+
+    test('No Exit 2', () {
+      Result<int, String> add3(int val) {
+        return Result(($) {
+          int x = earlyReturnOk()[$];
+          int y = Ok(1)[$];
+          int z = Ok(1).mapErr((err) => err.toString())[$];
+          return Ok(val + x + y + z);
         });
-    expect(testDoNotation().unwrapErr(), "return error");
+      }
+
+      expect(add3(2).unwrap(), 6);
+    });
+
+    test('With Exit', () {
+      Result<int, String> testDoNotation() => Result(($) {
+            int y = Ok(1)[$];
+            int z = Ok(1).mapErr((err) => err.toString())[$];
+            int x = regularErr()[$];
+            return Ok(x + y + z);
+          });
+      expect(testDoNotation().unwrapErr(), "message");
+    });
+
+    test('With Exit 2', () {
+      Result<int, String> testDoNotation() => Result(($) {
+        int y = Ok(1)[$];
+        int z = Ok(1).mapErr((err) => err.toString())[$];
+        int x = earlyReturnErr()[$];
+        return Ok(x + y + z);
+      });
+      expect(testDoNotation().unwrapErr(), "return error");
+    });
+
+    test('With Return Err', () {
+      expect(earlyReturnErr().unwrapErr(), "return error");
+    });
+
+    test('Normal Ok', () {
+      Result<int, String> testDoNotation() => Result(($) {
+        int y = 3;
+        int z = 2;
+        int x = 1;
+        return Ok(x + y + z);
+      });
+      expect(testDoNotation().unwrap(), 6);
+    });
+
+    test('Normal Err', () {
+      Result<int, String> testDoNotation() => Result(($) {
+        int y = 3;
+        int z = 2;
+        int x = 1;
+        return Err("${x + y + z}");
+      });
+      expect(testDoNotation().unwrapErr(), "6");
+    });
+
+    test('Wrong type', () {
+      Result<int, String> testDoNotation() => Result(($) {
+        // wrongType()[$]; // does not compile as expected
+        wrongType();
+        return Err("");
+      });
+      expect(testDoNotation().unwrapErr(), "");
+    });
   });
 }

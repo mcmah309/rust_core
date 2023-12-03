@@ -6,7 +6,7 @@ sealed class Option<T extends Object> {
   /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
   /// immediately the context that "$" belongs to is returned with None(). e.g.
   /// ```
-  ///   Option<int> earlyReturn(int val) => Option.$(($){
+  ///   Option<int> earlyReturn(int val) => Option(($){
   ///     int x = intNone()[$];
   ///     return Some(val + 3);
   ///   });
@@ -14,7 +14,7 @@ sealed class Option<T extends Object> {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
-  factory Option.$(_OptionEarlyReturnFunction<T> fn) {
+  factory Option(_OptionEarlyReturnFunction<T> fn) {
     try {
       return fn(const _OptionEarlyReturnKey._());
     } on _OptionEarlyReturnNotification catch (_) {

@@ -17,7 +17,7 @@ sealed class Result<S, F extends Object> {
   ///     Result<int,String> innerFn(){
   ///         return Err("message");
   ///     }
-  ///     Result<int, String> earlyReturn() => Result.$(($) {
+  ///     Result<int, String> earlyReturn() => Result(($) {
   ///         int y = 2;
   ///         // the function will stop here since an Err was returned
   ///         int x = innerFn()[$];
@@ -28,7 +28,7 @@ sealed class Result<S, F extends Object> {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
-  factory Result.$(_ResultEarlyReturnFunction<S, F> fn) {
+  factory Result(_ResultEarlyReturnFunction<S, F> fn) {
     try {
       return fn(_ResultEarlyReturnKey<F>._());
     } on _ResultEarlyReturnNotification<F> catch (e) {

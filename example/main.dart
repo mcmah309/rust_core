@@ -5,7 +5,7 @@ void main() {
   usingRegularPatternMatching();
 }
 
-Result<int, String> usingTheEarlyReturnKey() => Result.$(($) {
+Result<int, String> usingTheEarlyReturnKey() => Result(($) {
       double x = willAlwaysReturnErr()[$];
       return Ok(x.toInt());
     });

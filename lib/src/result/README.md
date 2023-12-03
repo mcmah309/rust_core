@@ -6,10 +6,10 @@
     - [What Is a Result Monad Type And Why Use It?](#what-is-a-result-monad-type-and-why-use-it)
     - [Intro to Usage](#intro-to-usage)
         - [Regular Dart Error Handling](#regular-dart-error-handling)
-            - [What's Wrong with the Solution?](#whats-wrong-with-the-solution)
+            - [What's Wrong with this Solution?](#whats-wrong-with-this-solution)
         - [Result Type](#result-type)
     - [Adding Predictable Control Flow To Legacy Dart Code](#adding-predictable-control-flow-to-legacy-dart-code)
-    - [Dart Equivalent To The Rust "?" Operator](#dart-equivalent-to-the-rust-operator)
+    - [Dart Equivalent To The Rust "?" Early Return Operator](#dart-equivalent-to-the-rust--early-return-operator)
     - [How to Never Unwrap Incorrectly](#how-to-never-unwrap-incorrectly)
 - [Misc](#misc)
     - [Working with Futures](#working-with-futures)
@@ -58,7 +58,7 @@ String makeHamburger() {
   throw "Hmm something went wrong making the hamburger.";
 }
 ```
-#### What's Wrong with Solution?
+#### What's Wrong with this Solution?
 * If we forget to catch in the correct spot, we just introduced a bug or worse - crashed our entire program.
 * We may later reuse `makeHamburger`, `makeFood`, or `order`, and forget that it can throw.
 * The more we reuse functions 
@@ -115,7 +115,7 @@ Output:
 this message was thrown
 ```
 
-## Dart Equivalent To The Rust "?" Operator
+## Dart Equivalent To The Rust "?" Early Return Operator
 In Dart, the Rust "?" operator (Early Return Operator) functionality in `x?`, where `x` is a `Result`, can be 
 accomplished in two ways
 ### into()
@@ -129,22 +129,23 @@ they are different.
 `into` only exits if after the type check, so you will never mishandle a type change since the compiler will stop you.
 Note: There also exists
 `intoUnchecked` that does not require implicit cast of a `Result` Type.
-### Early Return Key
-The "Early Return Key" is a take on "Do Notation". The Early Return Key is typically denoted with `$` and when 
-passed to a Result, Unlocks the inner value, or returns to the surrounding context. e.g.
+### Early Return Key Notation
+The "Early Return Key" is a take on "Do Notation" and functions the same way as the Early Return Operator. The Early 
+Return Key is typically denoted with `$` and when 
+passed to a Result it unlocks the inner value, or returns to the surrounding context. e.g.
 ```dart
-Result<int,String> innerFn() => Err("message");
-Result<int, String> earlyReturn() => Result.$(($) { // Early Return Key
+Result<int, String> innerErrFn() => Err("message");
+Result<int, String> earlyReturn() => Result(($) { // Early Return Key
    int y = 2;
-   // the function will stop at "[$]", since an Err was returned
-   int x = innerFn()[$].map((i) => i + 3);
+   // The function will return here will the Err value;
+   int x = innerErrFn()[$];
    return Ok(x.unwrap() + y);
  });
 
 expect(earlyReturn().unwrapErr(), "message");
 ```
-Using the Early Return Key notation removes the need for pattern matching or checking, in a safe way. This is quit a 
-powerful tool.
+Using the Early Return Key Notation reduces the need for pattern matching or checking, in a safe way. This is quite a 
+powerful tool. See [here](#pattern-matching-vs-early-return-key) for another example.
 
 ## How to Never Unwrap Incorrectly
 In Rust, as here, it is possible to unwrap values that should not be unwrapped:
@@ -288,7 +289,7 @@ void main(){
   usingRegularPatternMatching();
 }
 
-Result<int,String> usingTheEarlyReturnKey() => Result.$(($){
+Result<int,String> usingTheEarlyReturnKey() => Result(($){
   double x = willAlwaysReturnErr()[$];
   return Ok(x.toInt());
 });
