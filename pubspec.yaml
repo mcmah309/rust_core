@@ -1,6 +1,6 @@
 name: rust_core
-description: Implementation of Rust's core library in a Dart friendly way. Usable by itself, but also a base for 
-  libraries that want to build on Rust Semantics.
+description: Implementation of Rust's core library in a Dart friendly way. Includes Result, Option, Cells, etc. Usable
+  by itself, but also a base for libraries building on Rust Semantics.
 version: 0.3.1
 repository: https://github.com/mcmah309/rust_core
 
