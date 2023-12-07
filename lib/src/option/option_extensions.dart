@@ -1,6 +1,6 @@
 import 'package:rust_core/option.dart';
 
-extension ToOption1<T extends Object> on T? {
+extension NullableTExtension<T extends Object> on T? {
   /// Returns [None] if this is null and Some(this) if this not null.
   Option<T> toOption() {
     if (this == null) {
@@ -10,9 +10,13 @@ extension ToOption1<T extends Object> on T? {
   }
 }
 
-extension ToOption2<T extends Object> on T {
+extension TExtension<T extends Object> on T {
   /// Returns [None] if this is null and Some(this) if this not null.
   Option<T> toOption() {
+    return Some(this);
+  }
+
+  Some<T> toSome(){
     return Some(this);
   }
 }
