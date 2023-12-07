@@ -16,7 +16,7 @@ extension TExtension<T extends Object> on T {
     return Some(this);
   }
 
-  Some<T> toSome(){
+  Some<T> toSome() {
     return Some(this);
   }
 }
