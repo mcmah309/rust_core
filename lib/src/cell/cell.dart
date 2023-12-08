@@ -1,6 +1,3 @@
-
-import 'package:meta/meta.dart';
-
 part 'int_cell.dart';
 part 'double_cell.dart';
 

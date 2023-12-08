@@ -10,7 +10,7 @@ environment:
 # Add regular dependencies here.
 dependencies:
   # path: ^1.8.0
-  meta: ^1.11.0 # Comment out when pushing. Only used to help write "const" implementations internally
+  #meta: ^1.11.0 # Comment out when pushing. Only used to help write "const" implementations internally
 
 dev_dependencies:
   lints: ^2.1.0
