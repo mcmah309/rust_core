@@ -73,7 +73,6 @@ class NullableOnceCell<T> {
   @override
   bool operator ==(Object other) {
     return other is NullableOnceCell &&
-        runtimeType == other.runtimeType &&
         _val == other._val;
   }
 
