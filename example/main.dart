@@ -1,4 +1,4 @@
-import 'package:rust_core/result.dart'; // Or import 'package:rust_core/<LIBRARY_NAME>.dart';
+import 'package:rust_core/result.dart';
 
 void main() {
   usingTheEarlyReturnKey();

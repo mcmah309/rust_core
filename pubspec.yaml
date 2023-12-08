@@ -1,6 +1,6 @@
 name: rust_core
 description: Implementation of Rust's core library in a Dart friendly way. Includes Result, Option, Cells, etc.
-version: 0.3.3
+version: 0.3.4
 repository: https://github.com/mcmah309/rust_core
 
 environment:

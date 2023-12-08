@@ -1,3 +1,7 @@
+## 0.3.4
+
+- Int cell and Double cell
+
 ## 0.3.3
 
 - Library organization
