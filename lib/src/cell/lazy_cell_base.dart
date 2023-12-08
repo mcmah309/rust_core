@@ -2,9 +2,9 @@ import 'package:rust_core/cell.dart';
 
 /// A value which is initialized on the first access.
 ///
-/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+/// Equality: Cells are equal if they are the same base type and have the same evaluated value or are unevaluated.
 ///
-/// Hash: Cells hash to their evaluated or unevaluated value
+/// Hash: Cells hash to their evaluated value or hash the same if unevaluated.
 abstract interface class LazyCell<T extends Object>
     implements NullableLazyCell<T> {
   factory LazyCell(T Function() func) = NonNullableLazyCell;
@@ -15,9 +15,9 @@ abstract interface class LazyCell<T extends Object>
 
 /// A value which is initialized on the first access. Nullable implementation of [LazyCell]
 ///
-/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+/// Equality: Cells are equal if they are [NullableLazyCell] and have the same evaluated value or are unevaluated.
 ///
-/// Hash: Cells hash to their evaluated or unevaluated value
+/// Hash: Cells hash to their evaluated value or hash the same if unevaluated.
 class NullableLazyCell<T> {
   late final T _val;
   final T Function() _func;
@@ -44,7 +44,6 @@ class NullableLazyCell<T> {
   @override
   bool operator ==(Object other) {
     return other is NullableLazyCell &&
-        runtimeType == other.runtimeType &&
         _val == other._val;
   }
 
