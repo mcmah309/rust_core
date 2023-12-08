@@ -11,4 +11,3 @@ export 'src/cell/once_cell/const_nullable_once_cell.dart';
 export 'src/cell/once_cell/once_cell.dart';
 export 'src/cell/once_cell/non_nullable_once_cell.dart';
 export 'src/cell/once_cell/nullable_once_cell.dart';
-export 'option.dart';

@@ -1,4 +1,5 @@
 import 'package:rust_core/option.dart';
+import 'package:rust_core/result.dart';
 
 extension OptionOnResultExtension<S extends Object, F extends Object>
     on Result<S, F> {

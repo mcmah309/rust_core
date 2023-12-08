@@ -1,4 +1,4 @@
-import 'package:rust_core/core.dart';
+import 'package:rust_core/result.dart';
 
 import 'package:test/test.dart';
 

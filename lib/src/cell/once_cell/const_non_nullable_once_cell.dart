@@ -1,4 +1,6 @@
 import 'package:rust_core/cell.dart';
+import 'package:rust_core/option.dart';
+import 'package:rust_core/result.dart';
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation based off [Option] with a const
 /// constructor
