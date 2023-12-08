@@ -130,8 +130,9 @@ they are different.
 Note: There also exists
 `intoUnchecked` that does not require implicit cast of a `Result` Type.
 ### Early Return Key Notation
-The "Early Return Key" is a take on "Do Notation" and functions the same way as the Early Return Operator. The Early 
-Return Key is typically denoted with `$` and when 
+"Early Return Key Notation" is a take on "Do Notation" and the "Early Return Key"
+functions the same way as the "Early Return Operator". The 
+Early Return Key is typically denoted with `$` and when 
 passed to a Result it unlocks the inner value, or returns to the surrounding context. e.g.
 ```dart
 Result<int, String> innerErrFn() => Err("message");
@@ -289,20 +290,21 @@ void main(){
   usingRegularPatternMatching();
 }
 
-Result<int,String> usingTheEarlyReturnKey() => Result(($){
-  double x = willAlwaysReturnErr()[$];
-  return Ok(x.toInt());
+Result<int,String> usingTheEarlyReturnKey() => Result(($){ // Early Return Key
+  // Will return here with 'Err("error")'
+  int x = willAlwaysReturnErr()[$].toInt();
+  return Ok(x);
 });
 
 Result<int,String> usingRegularPatternMatching(){
-  double x;
+  int x;
   switch(willAlwaysReturnErr()){
     case Err(:final err):
       return Err(err);
     case Ok(:final ok):
-      x = ok;
+      x = ok.toInt();
   }
-  return Ok(x.toInt());
+  return Ok(x);
 }
 
 Result<double,String> willAlwaysReturnErr() => Err("error");
