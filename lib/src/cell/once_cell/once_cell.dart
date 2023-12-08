@@ -1,6 +1,5 @@
 import 'package:rust_core/cell.dart';
 
-
 /// OnceCell, A cell which can be written to only once.
 ///
 /// Equality: Cells are equal if they have the same value and have the same base cell type.

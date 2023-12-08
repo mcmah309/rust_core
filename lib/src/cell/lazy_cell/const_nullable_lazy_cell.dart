@@ -32,8 +32,7 @@ class ConstNullableLazyCell<T> implements NullableLazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNullableLazyCell &&
-        _cache[this] == _cache[other];
+    return other is ConstNullableLazyCell && _cache[this] == _cache[other];
   }
 
   @override

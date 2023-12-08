@@ -30,8 +30,7 @@ class NullableLazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableLazyCell &&
-        _val == other._val;
+    return other is NullableLazyCell && _val == other._val;
   }
 
   @override

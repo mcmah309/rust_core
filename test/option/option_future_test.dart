@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:rust_core/option.dart';
-import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 
 void main() {

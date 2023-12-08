@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:rust_core/option.dart';
-import 'package:rust_core/result.dart';
 
 /// {@macro futureOption}
 typedef FutureOption<T extends Object> = Future<Option<T>>;

@@ -72,8 +72,7 @@ class NullableOnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableOnceCell &&
-        _val == other._val;
+    return other is NullableOnceCell && _val == other._val;
   }
 
   @override

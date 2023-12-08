@@ -1,6 +1,5 @@
 import 'package:rust_core/cell.dart';
 
-
 /// A value which is initialized on the first access. Non-nullable implementation of [LazyCell]
 ///
 /// Equality: Cells are equal if they are [NonNullableLazyCell] and have the same evaluated value or are unevaluated.
@@ -29,8 +28,7 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NonNullableLazyCell &&
-        _val == other._val;
+    return other is NonNullableLazyCell && _val == other._val;
   }
 
   @override

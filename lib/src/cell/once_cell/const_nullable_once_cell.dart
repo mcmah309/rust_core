@@ -78,8 +78,7 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNullableOnceCell &&
-        _cache[this] == _cache[other];
+    return other is ConstNullableOnceCell && _cache[this] == _cache[other];
   }
 
   @override

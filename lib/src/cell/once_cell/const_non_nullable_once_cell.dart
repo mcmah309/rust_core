@@ -98,8 +98,7 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNonNullableOnceCell &&
-        _cache[this] == _cache[other];
+    return other is ConstNonNullableOnceCell && _cache[this] == _cache[other];
   }
 
   @override

@@ -33,8 +33,7 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNonNullableLazyCell &&
-        _cache[this] == _cache[other];
+    return other is ConstNonNullableLazyCell && _cache[this] == _cache[other];
   }
 
   @override

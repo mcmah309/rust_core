@@ -88,8 +88,7 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NonNullableOnceCell &&
-        _val == other._val;
+    return other is NonNullableOnceCell && _val == other._val;
   }
 
   @override
