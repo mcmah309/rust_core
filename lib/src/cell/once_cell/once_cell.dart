@@ -3,7 +3,7 @@ import 'package:rust_core/cell.dart';
 
 /// OnceCell, A cell which can be written to only once.
 ///
-/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+/// Equality: Cells are equal if they have the same value and have the same base cell type.
 ///
 /// Hash: Cells hash to their existing or non-existing value
 abstract interface class OnceCell<T extends Object>

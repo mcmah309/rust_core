@@ -3,7 +3,7 @@ import 'package:rust_core/cell.dart';
 /// OnceCell, A cell which can be written to only once. OnceCell implementation that allows [T] to be null, does not
 /// use [Option], and has a const constructor.
 ///
-/// Equality: Cells are equal if they have the same value and are the same runtime Type.
+/// Equality: Cells are equal if they have the same inner value and are [ConstNullableOnceCell].
 ///
 /// Hash: Cells hash to their existing or non-existing value
 class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
@@ -79,7 +79,6 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   @override
   bool operator ==(Object other) {
     return other is ConstNullableOnceCell &&
-        runtimeType == other.runtimeType &&
         _cache[this] == _cache[other];
   }
 
