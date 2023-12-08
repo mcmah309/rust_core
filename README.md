@@ -18,9 +18,9 @@ core library into Dart.
 
 | [Result] | [Option] | [Cell] | [Panic] | [Typedefs]
 
-🔥 **Over 100 Extensions and Counting:** Crafted to address specific scenarios in Dart.
+🔥 **Dozens of Extensions, 100's of methods:** Crafted to address specific scenarios in Dart.
 
-🧪 **Robust Testing:** Over 250 meaningful tests, we aim for reliability and performance in every feature.
+🧪 **Robust Testing:** Over 300 meaningful tests, we aim for reliability and performance in every feature.
 
 🚀 **Beyond Rust Core:** While rust_core faithfully implements the Rust Core library in Dart, our vision extends further.
 We aim to be an indispensable tool for every Dart project and a foundational library for the broader ecosystem.
