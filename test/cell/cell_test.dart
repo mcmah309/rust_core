@@ -112,43 +112,43 @@ void main() {
 
     test('Subtract method updates value correctly', () {
       var cell = Cell<double>(20.0);
-      cell.subtract(5.0);
+      cell.sub(5.0);
       expect(cell.get(), 15.0);
     });
 
     test('Multiply method updates value correctly', () {
       var cell = Cell<double>(10.0);
-      cell.multiply(3.0);
+      cell.mul(3.0);
       expect(cell.get(), 30.0);
     });
 
     test('Divide method updates value correctly', () {
       var cell = Cell<double>(20.0);
-      cell.divide(4.0);
+      cell.div(4.0);
       expect(cell.get(), 5.0);
     });
 
     test('Modulo method updates value correctly', () {
       var cell = Cell<double>(10.0);
-      cell.modulo(3.0);
+      cell.mod(3.0);
       expect(cell.get(), 1.0);
     });
 
     test('Negate method negates value correctly', () {
       var cell = Cell<double>(10.0);
-      cell.negate();
+      cell.neg();
       expect(cell.get(), -10.0);
     });
 
     test('Increment method increments value correctly', () {
       var cell = Cell<double>(10.0);
-      cell.increment();
+      cell.inc();
       expect(cell.get(), 11.0);
     });
 
     test('Decrement method decrements value correctly', () {
       var cell = Cell<double>(10.0);
-      cell.decrement();
+      cell.dec();
       expect(cell.get(), 9.0);
     });
 
@@ -267,43 +267,43 @@ void main() {
 
     test('Subtract method updates value correctly', () {
       var cell = Cell<int>(20);
-      cell.subtract(5);
+      cell.sub(5);
       expect(cell.get(), 15);
     });
 
     test('Multiply method updates value correctly', () {
       var cell = Cell<int>(10);
-      cell.multiply(3);
+      cell.mul(3);
       expect(cell.get(), 30);
     });
 
     test('Truncating divide method updates value correctly', () {
       var cell = Cell<int>(20);
-      cell.truncDivide(4);
+      cell.truncDiv(4);
       expect(cell.get(), 5);
     });
 
     test('Modulo method updates value correctly', () {
       var cell = Cell<int>(10);
-      cell.modulo(3);
+      cell.mod(3);
       expect(cell.get(), 1);
     });
 
     test('Negate method negates value correctly', () {
       var cell = Cell<int>(10);
-      cell.negate();
+      cell.neg();
       expect(cell.get(), -10);
     });
 
     test('Increment method increments value correctly', () {
       var cell = Cell<int>(10);
-      cell.increment();
+      cell.inc();
       expect(cell.get(), 11);
     });
 
     test('Decrement method decrements value correctly', () {
       var cell = Cell<int>(10);
-      cell.decrement();
+      cell.dec();
       expect(cell.get(), 9);
     });
 

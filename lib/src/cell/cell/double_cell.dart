@@ -5,6 +5,7 @@ extension DoubleCellExtensions on Cell<double> {
     return Cell<double>(_val + other._val);
   }
 
+  /// Add
   void add(double val) {
     _val = _val + val;
   }
@@ -13,7 +14,8 @@ extension DoubleCellExtensions on Cell<double> {
     return Cell<double>(_val - other._val);
   }
 
-  void subtract(double val) {
+  /// Subtract
+  void sub(double val) {
     _val = _val - val;
   }
 
@@ -21,7 +23,8 @@ extension DoubleCellExtensions on Cell<double> {
     return Cell<double>(_val * other._val);
   }
 
-  void multiply(double val) {
+  /// multiply
+  void mul(double val) {
     _val = _val * val;
   }
 
@@ -29,7 +32,8 @@ extension DoubleCellExtensions on Cell<double> {
     return Cell<double>(_val / other._val);
   }
 
-  void divide(double val) {
+  /// divide
+  void div(double val) {
     _val = _val / val;
   }
 
@@ -37,7 +41,8 @@ extension DoubleCellExtensions on Cell<double> {
     return Cell<double>(_val % other._val);
   }
 
-  void modulo(double val) {
+  /// modula
+  void mod(double val) {
     _val = _val % val;
   }
 
@@ -45,15 +50,18 @@ extension DoubleCellExtensions on Cell<double> {
     return Cell<double>(-_val);
   }
 
-  void negate() {
+  /// Negate
+  void neg() {
     _val = -_val;
   }
 
-  void increment() {
+  /// Increment
+  void inc() {
     _val = _val + 1;
   }
 
-  void decrement() {
+  /// Decrement
+  void dec() {
     _val = _val - 1;
   }
 
@@ -61,6 +69,7 @@ extension DoubleCellExtensions on Cell<double> {
     return _val < other._val;
   }
 
+  /// Less than
   bool lt(double val) {
     return _val < val;
   }
@@ -69,6 +78,7 @@ extension DoubleCellExtensions on Cell<double> {
     return _val > other._val;
   }
 
+  /// Greater than
   bool gt(double val) {
     return _val > val;
   }
@@ -77,6 +87,7 @@ extension DoubleCellExtensions on Cell<double> {
     return _val <= other._val;
   }
 
+  /// Less than or equal to
   bool lte(double val) {
     return _val <= val;
   }
@@ -85,10 +96,12 @@ extension DoubleCellExtensions on Cell<double> {
     return _val >= other._val;
   }
 
+  /// Greater than or equal to
   bool gte(double val) {
     return _val >= val;
   }
 
+  /// Equal to
   bool eq(double val) {
     return _val == val;
   }

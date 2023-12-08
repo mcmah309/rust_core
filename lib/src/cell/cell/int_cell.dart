@@ -5,6 +5,7 @@ extension IntCellExtensions on Cell<int> {
     return Cell<int>(_val + other._val);
   }
 
+  /// Add
   void add(int val) {
     _val = _val + val;
   }
@@ -13,7 +14,8 @@ extension IntCellExtensions on Cell<int> {
     return Cell<int>(_val - other._val);
   }
 
-  void subtract(int val) {
+  /// Subtract
+  void sub(int val) {
     _val = _val - val;
   }
 
@@ -21,7 +23,8 @@ extension IntCellExtensions on Cell<int> {
     return Cell<int>(_val * other._val);
   }
 
-  void multiply(int val) {
+  /// Multiply
+  void mul(int val) {
     _val = _val * val;
   }
 
@@ -30,8 +33,8 @@ extension IntCellExtensions on Cell<int> {
     return Cell<int>(_val ~/ other._val);
   }
 
-  /// Performs integer division of this object.
-  void truncDivide(int val) {
+  /// Performs integer division of this object. Truncate Divide
+  void truncDiv(int val) {
     _val = _val ~/ val;
   }
 
@@ -39,7 +42,8 @@ extension IntCellExtensions on Cell<int> {
     return Cell<int>(_val % other._val);
   }
 
-  void modulo(int val) {
+  /// Modulo
+  void mod(int val) {
     _val = _val % val;
   }
 
@@ -47,15 +51,18 @@ extension IntCellExtensions on Cell<int> {
     return Cell<int>(-_val);
   }
 
-  void negate() {
+  /// Negate
+  void neg() {
     _val = -_val;
   }
 
-  void increment() {
+  /// Increment
+  void inc() {
     _val = _val + 1;
   }
 
-  void decrement() {
+  /// Decrement
+  void dec() {
     _val = _val - 1;
   }
 
@@ -63,6 +70,7 @@ extension IntCellExtensions on Cell<int> {
     return _val < other._val;
   }
 
+  /// Less than
   bool lt(int val) {
     return _val < val;
   }
@@ -71,6 +79,7 @@ extension IntCellExtensions on Cell<int> {
     return _val > other._val;
   }
 
+  /// Greater than
   bool gt(int val) {
     return _val > val;
   }
@@ -79,6 +88,7 @@ extension IntCellExtensions on Cell<int> {
     return _val <= other._val;
   }
 
+  /// Less than or equal to
   bool lte(int val) {
     return _val <= val;
   }
@@ -87,10 +97,12 @@ extension IntCellExtensions on Cell<int> {
     return _val >= other._val;
   }
 
+  /// Greater than or equal to
   bool gte(int val) {
     return _val >= val;
   }
 
+  /// Equal to
   bool eq(int val) {
     return _val == val;
   }
