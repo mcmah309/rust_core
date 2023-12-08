@@ -1,3 +1,7 @@
+## 0.3.3
+
+- Library organization
+
 ## 0.3.2
 
 - Add Cell
