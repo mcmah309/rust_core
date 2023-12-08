@@ -1,6 +1,6 @@
 part of 'cell.dart';
 
-extension DoubleCellExtension on Cell<double> {
+extension DoubleCellExtensions on Cell<double> {
   Cell<double> operator +(Cell<double> other) {
     return Cell<double>(_val + other._val);
   }
