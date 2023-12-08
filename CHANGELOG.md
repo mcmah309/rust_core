@@ -1,3 +1,7 @@
+## 0.3.2
+
+- Add Cell
+
 ## 0.3.1
 
 - Additional extensions
