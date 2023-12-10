@@ -1,5 +1,6 @@
 part 'int_cell.dart';
 part 'double_cell.dart';
+part 'bool_cell.dart';
 
 /// A mutable container. Useful for primitives.
 class Cell<T> {
