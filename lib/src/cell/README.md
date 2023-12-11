@@ -8,10 +8,6 @@ Cell is library of useful wrappers of values (cells). [pub]
 
 [LazyCell](#lazycell) - A value which is initialized on the first access.
 
-Most Cells have a `const`, `nullable` and `non-nullable` implementation. That opens up a lot of possibilities. e.g. 
-with the `const` types, you can wrap non-const types. Allowing them to be used for something like `@Default(...)` 
-with the [freezed] package.
-
 
 ## Cell
 A wrapper around a mutable value. Useful for mimicking references and wrapping primitives. Extensions exist for 
@@ -39,7 +35,6 @@ result = cell.set(20);
 expect(result, const Err(20));
 ```
 
-
 ## LazyCell
 A value which is initialized on the first access.
 
@@ -57,9 +52,24 @@ expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```
 
+## Misc
 
+### Const and Nullability
+Most of the time you will not need to know or care about this, and working
+with the regular cell types is usually preferred, but
+all Cells have `const`, `nullable` and `non-nullable` implementations. These were added for efficiency and to give 
+more control to developers.
 
-🚧 **Page and Classes Under Construction** 🚧
+The base type for all `Cell`s is `ConstCell`.
+
+The base type for all `OnceCell`s is `NullableOnceCell`.
+
+The base type for all `LazyCell`s is `NullableLazyCell`.
+
+`OnceCell` and `LazyCell` have special `constNullable` and `constNonNullable` implementations. These
+allow for runtime mutability of the inner value. That opens up a lot of possibilities. e.g. 
+You can wrap non-const types. Allowing them to be used for something like `@Default(...)`
+with the [freezed] package.
 
 [freezed]:https://pub.dev/packages/freezed
 [pub]:https://pub.dev/documentation/rust_core/latest/cell/cell-library.html
