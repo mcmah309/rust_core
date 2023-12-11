@@ -1,3 +1,4 @@
+import 'package:rust_core/cell.dart';
 import 'package:rust_core/result.dart';
 
 /// OnceCell, A cell which can be written to only once. OnceCell implementation that allows [T] to be null and does
@@ -13,6 +14,8 @@ class NullableOnceCell<T> {
   NullableOnceCell();
 
   NullableOnceCell.withValue(this._val) : _isSet = true;
+
+  const factory NullableOnceCell.constant(Object id) = ConstNullableOnceCell;
 
   /// Gets the underlying value, returns null if the cell is empty
   T? getOrNull() {
