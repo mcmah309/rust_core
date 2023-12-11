@@ -2,15 +2,17 @@
 
 ### Table Of Contents
 
-- [Result](#result)
-    - [What Is a Result Monad Type And Why Use It?](#what-is-a-result-monad-type-and-why-use-it)
-    - [Intro to Usage](#intro-to-usage)
-        - [Regular Dart Error Handling](#regular-dart-error-handling)
-            - [What's Wrong with this Solution?](#whats-wrong-with-this-solution)
-        - [Result Type](#result-type)
-    - [Adding Predictable Control Flow To Legacy Dart Code](#adding-predictable-control-flow-to-legacy-dart-code)
-    - [Dart Equivalent To The Rust "?" Early Return Operator](#dart-equivalent-to-the-rust--early-return-operator)
-    - [How to Never Unwrap Incorrectly](#how-to-never-unwrap-incorrectly)
+- [What Is a Result Monad Type And Why Use It?](#what-is-a-result-monad-type-and-why-use-it)
+- [Intro to Usage](#intro-to-usage)
+    - [Regular Dart Error Handling](#regular-dart-error-handling)
+        - [What's Wrong with this Solution?](#whats-wrong-with-this-solution)
+    - [Result Type](#result-type)
+    - [Chaining](#chaining)
+- [Adding Predictable Control Flow To Legacy Dart Code](#adding-predictable-control-flow-to-legacy-dart-code)
+- [Dart Equivalent To The Rust "?" Early Return Operator](#dart-equivalent-to-the-rust--early-return-operator)
+  - [Into](#into) 
+  - [Early Return Key Notation](#early-return-key-notation)
+- [How to Never Unwrap Incorrectly](#how-to-never-unwrap-incorrectly)
 - [Misc](#misc)
     - [Working with Futures](#working-with-futures)
     - [ToResult and ToResultEager](#toresult-and-toresulteager)
@@ -96,6 +98,16 @@ Result<String,String> makeHamburger() {
   return Err("Hmm something went wrong making the hamburger.");
 }
 ```
+### Chaining
+Effects on a `Result` can be chained in a safe way without
+needing a bunch of `if` statements, similar to `Option`.
+```dart
+Result<int,String> result = Ok(4);
+Result<String,String> result2 = result
+    .map((ok) => '=' * ok);
+expect(result2.unwrap(), '====');
+```
+See the [docs] for all methods and extensions.
 
 ## Adding Predictable Control Flow To Legacy Dart Code
 At times, you may need to integrate with legacy code that may throw or code outside your project. To handle, you 
@@ -194,8 +206,8 @@ x.match(
 );
 ```
 Or even with `mapOrElse`.
-### Early Return Key
-We can also use the [Early Return Key](#early-return-key), which is a very powerful idiomatic approach!
+### Early Return Key Notation
+We can also use the [Early Return Key Notation](#early-return-key-notation), which is a very powerful idiomatic approach!
 ## Misc
 ### Working with Futures
 When working with `Future`s it is easy to make a mistake like this
@@ -309,3 +321,5 @@ Result<int,String> usingRegularPatternMatching(){
 
 Result<double,String> willAlwaysReturnErr() => Err("error");
 ```
+
+[docs]:https://pub.dev/documentation/rust_core/latest/result/result-library.html
