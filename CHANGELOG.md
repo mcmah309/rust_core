@@ -1,3 +1,9 @@
+## 0.3.5
+
+- LazyCell and OnceCell broader equality
+- ConstCell
+- BoolCell and StringCell
+
 ## 0.3.4
 
 - Int cell and Double cell
