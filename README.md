@@ -5,25 +5,24 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/dart.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
 
-Implementation of Rust's core library in a Dart friendly way.
+Implementing Rust's Core Library in Dart.
 
-rust_core allows for idiomatic programming in dart with predictable control flow. We carefully adapt Rust's 
-functionalities to Dart's paradigms, ensuring a smooth, 
-language-compatible integration. E.g. `Option` and Nullable types are equally supported throughout. If a method or 
-extension exists for `Option<T>` it exists for `T?`. Thus, rust_core seamlessly integrates the essence of Rust's 
-core library into Dart.
+`rust_core` provides a Dart-friendly implementation of Rust's core library, enabling idiomatic programming with 
+predictable control flow. Rust's functionalities are carefully adapted to Dart's paradigms, focusing on smooth 
+and language-compatible integration.
 
 ## Highlights
 ### Libraries
 
 | [Result] | [Option] | [Cell] | [Panic] | [Typedefs]
 
-🔥 **Dozens of Extensions, 100's of methods:** Crafted to address specific scenarios in Dart.
+🔥 **Extensive Extensions:** Dozens of additional extensions with hundreds of methods tailored for Dart. These 
+extensions are designed for maximum composability, addressing specific scenarios.
 
-🧪 **Robust Testing:** Over 300 meaningful tests, we aim for reliability and performance in every feature.
+🚀 **Dart Friendly:** Dual Support for `Option` and Nullable Types. If a method or extension exists for `Option<T>`,
+it's also available for `T?`, offering flexibility and consistency in your coding.
 
-🚀 **Beyond Rust Core:** While rust_core faithfully implements the Rust Core library in Dart, our vision extends further.
-We aim to be an indispensable tool for every Dart project and a foundational library for the broader ecosystem.
+🧪 **Robust Testing:** Every feature tested. Over 300 meaningful tests. Reliability and performance in every feature.
 
 ### Official Packages Based Off rust_core
 | Library | Description |

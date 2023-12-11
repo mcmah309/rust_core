@@ -1,5 +1,6 @@
 name: rust_core
-description: Implementation of Rust's core library in a Dart friendly way. Includes Result, Option, Cells, etc.
+description: Idiomatic Dart programming with predictable control flow, inspired by Rust's core library. 
+  Includes types like Result, Option, Cells, and extensive methods/extensions.
 version: 0.3.4
 repository: https://github.com/mcmah309/rust_core
 
