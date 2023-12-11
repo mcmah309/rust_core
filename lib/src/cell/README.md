@@ -58,7 +58,8 @@ expect(secondCall, equals(20));
 Most of the time you will not need to know or care about this, and working
 with the regular cell types is usually preferred, but
 all Cells have `const`, `nullable` and `non-nullable` implementations. These were added for efficiency and to give 
-more control to developers.
+more control to developers. e.g. Non-Nullable `OnceCell` and `LazyCell` (which is the default) don't need an 
+additional `bool` to keep track if the value is set.
 
 The base type for all `Cell`s is `ConstCell`.
 

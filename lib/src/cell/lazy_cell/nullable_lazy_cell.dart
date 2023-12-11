@@ -2,7 +2,7 @@ import 'package:rust_core/cell.dart';
 
 /// A value which is initialized on the first access. Nullable implementation of [LazyCell]
 ///
-/// Equality: Cells are equal if they are [NullableLazyCell] and have the same evaluated value or are unevaluated.
+/// Equality: Cells are equal if they have the same evaluated value or are unevaluated.
 ///
 /// Hash: Cells hash to their evaluated value or hash the same if unevaluated.
 class NullableLazyCell<T> {
@@ -24,6 +24,11 @@ class NullableLazyCell<T> {
     return _val;
   }
 
+  /// Returns true if this has already been called, otherwise false.
+  bool isEvaluated(){
+    return _isSet;
+  }
+
   @override
   int get hashCode {
     final valueHash = _isSet ? _val.hashCode : 0;
@@ -32,7 +37,8 @@ class NullableLazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableLazyCell && _val == other._val;
+    return other is NullableLazyCell && ((isEvaluated() && other
+        .isEvaluated() && this() == other()) || (!isEvaluated() && !other.isEvaluated()));
   }
 
   @override

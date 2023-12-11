@@ -194,4 +194,18 @@ void main() {
     expect(callCount, equals(1));
     expect(secondCall, equals(20));
   });
+
+  test("LazyCell Equality",(){
+    final nullableLazyCell = NullableLazyCell<int>(() {
+      return 20;
+    });
+    final constNonNullableLazyCell = ConstNonNullableLazyCell<int>(() {
+      return 20;
+    }, "dfasdfas");
+    expect(nullableLazyCell, equals(constNonNullableLazyCell));
+    nullableLazyCell();
+    expect(nullableLazyCell, isNot(equals(constNonNullableLazyCell)));
+    constNonNullableLazyCell();
+    expect(nullableLazyCell, equals(constNonNullableLazyCell));
+  });
 }
