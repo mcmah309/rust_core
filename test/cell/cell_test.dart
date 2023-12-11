@@ -371,4 +371,14 @@ void main() {
       expect(cell.eq(20), isFalse);
     });
   });
+
+  test('const cell', (){
+    const constCell = ConstCell(1);
+    var cell = Cell(1);
+    expect(constCell, equals(cell));
+    expect(constCell.hashCode, equals(cell.hashCode));
+    cell = Cell(2);
+    expect(constCell, isNot(equals(cell)));
+    expect(constCell.hashCode, isNot(equals(cell.hashCode)));
+  });
 }

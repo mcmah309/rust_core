@@ -1,15 +1,18 @@
+part 'const_cell.dart';
 part 'int_cell.dart';
 part 'double_cell.dart';
 part 'bool_cell.dart';
 part 'string_cell.dart';
 
 /// A mutable container. Useful for primitives.
-class Cell<T> {
+class Cell<T> implements ConstCell<T> {
+  @override
   T _val;
 
   Cell(T val) : _val = val;
 
   /// Returns the inner value.
+  @override
   T get() {
     return _val;
   }
@@ -40,6 +43,7 @@ class Cell<T> {
   }
 
   /// Shallow copy of this [Cell].
+  @override
   Cell<T> copy() {
     return Cell(_val);
   }
@@ -49,7 +53,7 @@ class Cell<T> {
 
   @override
   bool operator ==(covariant Object other) {
-    return other is Cell && other._val == _val;
+    return other is ConstCell && other._val == _val;
   }
 
   @override
