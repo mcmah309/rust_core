@@ -68,7 +68,7 @@ class NullableOnceCell<T> {
   }
 
   /// Returns true if the value has been set. Returns false otherwise.
-  bool isSet(){
+  bool isSet() {
     return _isSet;
   }
 
@@ -80,12 +80,15 @@ class NullableOnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableOnceCell && ((isSet() && other
-        .isSet() && getOrNull() == other.getOrNull()) || (!isSet() && !other.isSet()));
+    return other is NullableOnceCell &&
+        ((isSet() && other.isSet() && getOrNull() == other.getOrNull()) ||
+            (!isSet() && !other.isSet()));
   }
 
   @override
   String toString() {
-    return (_isSet ? "Initialized $runtimeType($_val)" : "Uninitialized $runtimeType");
+    return (_isSet
+        ? "Initialized $runtimeType($_val)"
+        : "Uninitialized $runtimeType");
   }
 }

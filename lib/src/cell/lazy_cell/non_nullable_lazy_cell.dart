@@ -21,7 +21,7 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
   }
 
   @override
-  bool isEvaluated(){
+  bool isEvaluated() {
     return _val == null ? false : true;
   }
 
@@ -33,12 +33,15 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableLazyCell && ((isEvaluated() && other
-        .isEvaluated() && this() == other()) || (!isEvaluated() && !other.isEvaluated()));
+    return other is NullableLazyCell &&
+        ((isEvaluated() && other.isEvaluated() && this() == other()) ||
+            (!isEvaluated() && !other.isEvaluated()));
   }
 
   @override
   String toString() {
-    return (_val == null ?  "Uninitialized $runtimeType" : "Initialized $runtimeType($_val)");
+    return (_val == null
+        ? "Uninitialized $runtimeType"
+        : "Initialized $runtimeType($_val)");
   }
 }

@@ -181,7 +181,7 @@ void main() {
     });
   });
 
-  test("LazyCell",(){
+  test("LazyCell", () {
     int callCount = 0;
     final lazyCell = LazyCell<int>(() {
       callCount++;
@@ -195,11 +195,12 @@ void main() {
     expect(secondCall, equals(20));
   });
 
-  test("LazyCell Equality",(){
+  test("LazyCell Equality", () {
     final nullableLazyCell = NullableLazyCell<int>(() {
       return 20;
     });
-    const constNonNullableLazyCell = ConstNonNullableLazyCell<int>(_constReturn20, "dfasdfas");
+    const constNonNullableLazyCell =
+        ConstNonNullableLazyCell<int>(_constReturn20, "dfasdfas");
     expect(nullableLazyCell, equals(constNonNullableLazyCell));
     nullableLazyCell();
     expect(nullableLazyCell, isNot(equals(constNonNullableLazyCell)));
@@ -208,7 +209,6 @@ void main() {
   });
 }
 
-
-int _constReturn20(){
+int _constReturn20() {
   return 20;
 }

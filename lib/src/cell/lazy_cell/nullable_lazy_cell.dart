@@ -12,7 +12,8 @@ class NullableLazyCell<T> {
 
   NullableLazyCell(this._func);
 
-  const factory NullableLazyCell.constant(T Function() func, Object id) = ConstNullableLazyCell;
+  const factory NullableLazyCell.constant(T Function() func, Object id) =
+      ConstNullableLazyCell;
 
   /// Lazily evaluates the function passed into the constructor.
   T call() {
@@ -25,7 +26,7 @@ class NullableLazyCell<T> {
   }
 
   /// Returns true if this has already been called, otherwise false.
-  bool isEvaluated(){
+  bool isEvaluated() {
     return _isSet;
   }
 
@@ -37,12 +38,15 @@ class NullableLazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableLazyCell && ((isEvaluated() && other
-        .isEvaluated() && this() == other()) || (!isEvaluated() && !other.isEvaluated()));
+    return other is NullableLazyCell &&
+        ((isEvaluated() && other.isEvaluated() && this() == other()) ||
+            (!isEvaluated() && !other.isEvaluated()));
   }
 
   @override
   String toString() {
-    return (_isSet ? "Initialized $runtimeType($_val)" : "Uninitialized $runtimeType");
+    return (_isSet
+        ? "Initialized $runtimeType($_val)"
+        : "Uninitialized $runtimeType");
   }
 }

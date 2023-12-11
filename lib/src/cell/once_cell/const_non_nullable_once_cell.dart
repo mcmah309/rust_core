@@ -93,7 +93,7 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  bool isSet(){
+  bool isSet() {
     return (_cache[this] as T?) == null ? false : true;
   }
 
@@ -105,8 +105,9 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableOnceCell && ((isSet() && other
-        .isSet() && getOrNull() == other.getOrNull()) || (!isSet() && !other.isSet()));
+    return other is NullableOnceCell &&
+        ((isSet() && other.isSet() && getOrNull() == other.getOrNull()) ||
+            (!isSet() && !other.isSet()));
   }
 
   @override

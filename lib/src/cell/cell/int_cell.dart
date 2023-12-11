@@ -69,7 +69,6 @@ extension IntConstCellExtensions on ConstCell<int> {
 }
 
 extension IntCellExtensions on Cell<int> {
-
   /// Add
   void add(int val) {
     _val = _val + val;
@@ -85,7 +84,6 @@ extension IntCellExtensions on Cell<int> {
     _val = _val * val;
   }
 
-
   /// Performs integer division of this object. Truncate Divide
   void truncDiv(int val) {
     _val = _val ~/ val;
@@ -95,7 +93,6 @@ extension IntCellExtensions on Cell<int> {
   void mod(int val) {
     _val = _val % val;
   }
-
 
   /// Negate
   void neg() {

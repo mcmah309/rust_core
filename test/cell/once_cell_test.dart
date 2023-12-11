@@ -402,7 +402,7 @@ void main() {
       expect(cell.hashCode, equals(cell2.hashCode));
     });
 
-    test("OnceCell",(){
+    test("OnceCell", () {
       final cell = OnceCell<int>();
       var result = cell.set(10);
       expect(result, const Ok(()));
@@ -410,7 +410,7 @@ void main() {
       expect(result, const Err(20));
     });
 
-    test("OnceCell Equality",(){
+    test("OnceCell Equality", () {
       final cell = OnceCell<int>();
       const constNullableOnceCell = ConstNullableOnceCell<int>("agsagddg");
       expect(cell, equals(constNullableOnceCell));

@@ -83,7 +83,7 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
-  bool isSet(){
+  bool isSet() {
     return _val == null ? false : true;
   }
 
@@ -95,12 +95,15 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableOnceCell && ((isSet() && other
-        .isSet() && getOrNull() == other.getOrNull()) || (!isSet() && !other.isSet()));
+    return other is NullableOnceCell &&
+        ((isSet() && other.isSet() && getOrNull() == other.getOrNull()) ||
+            (!isSet() && !other.isSet()));
   }
 
   @override
   String toString() {
-    return (_val == null ? "Uninitialized $runtimeType" : "Initialized $runtimeType($_val)");
+    return (_val == null
+        ? "Uninitialized $runtimeType"
+        : "Initialized $runtimeType($_val)");
   }
 }

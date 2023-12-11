@@ -68,7 +68,6 @@ extension DoubleConstCellExtensions on ConstCell<double> {
 }
 
 extension DoubleCellExtensions on Cell<double> {
-
   /// Add
   void add(double val) {
     _val = _val + val;
@@ -79,12 +78,10 @@ extension DoubleCellExtensions on Cell<double> {
     _val = _val - val;
   }
 
-
   /// multiply
   void mul(double val) {
     _val = _val * val;
   }
-
 
   /// divide
   void div(double val) {
@@ -95,7 +92,6 @@ extension DoubleCellExtensions on Cell<double> {
   void mod(double val) {
     _val = _val % val;
   }
-
 
   /// Negate
   void neg() {

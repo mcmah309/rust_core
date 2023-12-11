@@ -72,7 +72,7 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
   }
 
   @override
-  bool isSet(){
+  bool isSet() {
     return (_cache[this] as (T,)?) == null ? false : true;
   }
 
@@ -84,8 +84,9 @@ class ConstNullableOnceCell<T> implements NullableOnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableOnceCell && ((isSet() && other
-        .isSet() && getOrNull() == other.getOrNull()) || (!isSet() && !other.isSet()));
+    return other is NullableOnceCell &&
+        ((isSet() && other.isSet() && getOrNull() == other.getOrNull()) ||
+            (!isSet() && !other.isSet()));
   }
 
   @override

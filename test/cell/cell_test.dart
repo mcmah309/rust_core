@@ -372,7 +372,7 @@ void main() {
     });
   });
 
-  test('const cell', (){
+  test('const cell', () {
     const constCell = ConstCell(1);
     var cell = Cell(1);
     expect(constCell, equals(cell));

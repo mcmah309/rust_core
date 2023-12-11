@@ -26,8 +26,8 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T> {
   }
 
   @override
-  bool isEvaluated(){
-    return  (_cache[this] as T?) == null ? false : true;
+  bool isEvaluated() {
+    return (_cache[this] as T?) == null ? false : true;
   }
 
   @override
@@ -38,8 +38,9 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is NullableLazyCell && ((isEvaluated() && other
-        .isEvaluated() && this() == other()) || (!isEvaluated() && !other.isEvaluated()));
+    return other is NullableLazyCell &&
+        ((isEvaluated() && other.isEvaluated() && this() == other()) ||
+            (!isEvaluated() && !other.isEvaluated()));
   }
 
   @override
