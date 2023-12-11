@@ -1,20 +1,65 @@
 # Cell
 
-Cell is library of useful wrappers of values (cells).
+Cell is library of useful wrappers of values (cells). [pub]
 
-`Cell` - A wrapper around a value. useful to "mimic" references. Extensions exist for primitives. e.g. `Cell<int>` 
-can be used similar to a normal `int`.
+[Cell](#cell) - A wrapper around a mutable value.
 
-`OnceCell` - A cell which can be written to only once.
+[OnceCell](#oncecell) - A cell which can be written to only once.
 
-`LazyCell` - A value which is initialized on the first access.
+[LazyCell](#lazycell) - A value which is initialized on the first access.
 
 Most Cells have a `const`, `nullable` and `non-nullable` implementation. That opens up a lot of possibilities. e.g. 
-with the `const` types, you can wrap non-const types. Allowing them to be used for something like `@Default(...)`  
-with the 
-[freezed] package.
+with the `const` types, you can wrap non-const types. Allowing them to be used for something like `@Default(...)` 
+with the [freezed] package.
+
+
+## Cell
+A wrapper around a mutable value. Useful for mimicking references and wrapping primitives. Extensions exist for 
+primitives. e.g. `Cell<int>` can be used similar to a normal `int`.
+```dart
+final cell = Cell<int>(10);
+expect(cell.get(), 10);
+cell.add(2);
+expect(cell.get(), 12);
+final anotherCell = Cell<int>(10);
+final newCell = cell + anotherCell;
+expect(newCell, 22);
+expect(cell, 12);
+expect(antherCell, 10);
+```
+
+## OnceCell
+A cell which can be written to only once. Similar to `late final <variable>`, but will never throw an error.
+
+```dart
+final cell = OnceCell<int>();
+var result = cell.set(10);
+expect(result, const Ok(()));
+result = cell.set(20);
+expect(result, const Err(20));
+```
+
+
+## LazyCell
+A value which is initialized on the first access.
+
+```dart
+int callCount = 0;
+final lazyCell = LazyCell<int>(() {
+  callCount++;
+  return 20;
+});
+final firstCall = lazyCell();
+expect(callCount, equals(1));
+expect(firstCall, equals(20));
+final secondCall = lazyCell();
+expect(callCount, equals(1));
+expect(secondCall, equals(20));
+```
+
 
 
 🚧 **Page and Classes Under Construction** 🚧
 
 [freezed]:https://pub.dev/packages/freezed
+[pub]:https://pub.dev/documentation/rust_core/latest/cell/cell-library.html

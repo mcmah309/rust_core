@@ -401,5 +401,13 @@ void main() {
       expect(cell, equals(cell2));
       expect(cell.hashCode, equals(cell2.hashCode));
     });
+
+    test("OnceCell",(){
+      final cell = OnceCell<int>();
+      var result = cell.set(10);
+      expect(result, const Ok(()));
+      result = cell.set(20);
+      expect(result, const Err(20));
+    });
   });
 }

@@ -180,4 +180,18 @@ void main() {
       expect(lazyCell2.hashCode, equals(lazyCell2.hashCode));
     });
   });
+
+  test("LazyCell",(){
+    int callCount = 0;
+    final lazyCell = LazyCell<int>(() {
+      callCount++;
+      return 20;
+    });
+    final firstCall = lazyCell();
+    expect(callCount, equals(1));
+    expect(firstCall, equals(20));
+    final secondCall = lazyCell();
+    expect(callCount, equals(1));
+    expect(secondCall, equals(20));
+  });
 }
