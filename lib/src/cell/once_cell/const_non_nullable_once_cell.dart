@@ -5,9 +5,9 @@ import 'package:rust_core/result.dart';
 /// OnceCell, A cell which can be written to only once. OnceCell implementation based off [Option] with a const
 /// constructor
 ///
-/// Equality: Cells are equal if they have the same inner value and are [ConstNonNullableOnceCell].
+/// Equality: Cells are equal if they have the same value or are not set.
 ///
-/// Hash: Cells hash to their existing or non-existing value
+/// Hash: Cells hash to their existing or the same if not set.
 class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   static final _cache = Expando();
 
@@ -93,6 +93,11 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   }
 
   @override
+  bool isSet(){
+    return (_cache[this] as T?) == null ? false : true;
+  }
+
+  @override
   int get hashCode {
     var valueHash = _cache[this]?.hashCode ?? 0;
     return valueHash;
@@ -100,7 +105,8 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ConstNonNullableOnceCell && _cache[this] == _cache[other];
+    return other is NullableOnceCell && ((isSet() && other
+        .isSet() && getOrNull() == other.getOrNull()) || (!isSet() && !other.isSet()));
   }
 
   @override

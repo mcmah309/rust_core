@@ -409,5 +409,15 @@ void main() {
       result = cell.set(20);
       expect(result, const Err(20));
     });
+
+    test("OnceCell Equality",(){
+      final cell = OnceCell<int>();
+      const constNullableOnceCell = ConstNullableOnceCell<int>("agsagddg");
+      expect(cell, equals(constNullableOnceCell));
+      cell.set(10);
+      expect(cell, isNot(equals(constNullableOnceCell)));
+      constNullableOnceCell.setOrNull(10);
+      expect(cell, equals(constNullableOnceCell));
+    });
   });
 }

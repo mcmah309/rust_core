@@ -199,13 +199,16 @@ void main() {
     final nullableLazyCell = NullableLazyCell<int>(() {
       return 20;
     });
-    final constNonNullableLazyCell = ConstNonNullableLazyCell<int>(() {
-      return 20;
-    }, "dfasdfas");
+    const constNonNullableLazyCell = ConstNonNullableLazyCell<int>(_constReturn20, "dfasdfas");
     expect(nullableLazyCell, equals(constNonNullableLazyCell));
     nullableLazyCell();
     expect(nullableLazyCell, isNot(equals(constNonNullableLazyCell)));
     constNonNullableLazyCell();
     expect(nullableLazyCell, equals(constNonNullableLazyCell));
   });
+}
+
+
+int _constReturn20(){
+  return 20;
 }
