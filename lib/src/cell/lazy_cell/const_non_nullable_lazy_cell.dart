@@ -45,12 +45,10 @@ class ConstNonNullableLazyCell<T extends Object> implements LazyCell<T> {
   @override
   String toString() {
     T? cacheResult = _cache[this] as T?;
-    String initializedState;
     if (cacheResult == null) {
-      initializedState = "Uninitialized ";
+      return "Uninitialized $runtimeType";
     } else {
-      initializedState = "Initialized ";
+      return "Initialized $runtimeType($cacheResult)";
     }
-    return initializedState + runtimeType.toString();
   }
 }

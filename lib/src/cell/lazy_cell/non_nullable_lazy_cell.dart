@@ -39,7 +39,6 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   String toString() {
-    return (_val == null ? "Uninitialized " : "Initialized ") +
-        runtimeType.toString();
+    return (_val == null ?  "Uninitialized $runtimeType" : "Initialized $runtimeType($_val)");
   }
 }

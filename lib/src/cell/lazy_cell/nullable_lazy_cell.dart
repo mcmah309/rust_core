@@ -43,7 +43,6 @@ class NullableLazyCell<T> {
 
   @override
   String toString() {
-    return (_isSet ? "Initialized " : "Uninitialized ") +
-        runtimeType.toString();
+    return (_isSet ? "Initialized $runtimeType($_val)" : "Uninitialized $runtimeType");
   }
 }
