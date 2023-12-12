@@ -7,7 +7,7 @@ Result<void, void> y = Err(1); // valid
 int z = x.unwrap(); // not valid 
 ```
 
-Since stricter types are preferred and `Err` cannot be null, use `()` or `Unit`:
+Since stricter types are preferred and `Err` cannot be null, use `()` aka `Unit`:
 
 ```dart
 Unit == ().runtimeType; // true

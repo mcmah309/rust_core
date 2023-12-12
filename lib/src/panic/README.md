@@ -7,8 +7,6 @@ Rust vs Dart Error handling terminology:
 | Exception           | Error              |
 | Error               | Panic              |
 
-Thus, here `Error` implements Dart core `Exception` (Not to be confused with the
-Dart core `Error` type) and `Panic` implements Dart core `Error`.
 ```dart
 Result x = Err(1);
 if (x.isErr()) {
@@ -16,8 +14,11 @@ if (x.isErr()) {
 }
 ```
 
-Rust core was designed with safety in mind. The only time anyhow will ever throw is if you `unwrap` incorrectly (as 
+rust_core was designed with safety in mind. The only time rust_core will ever throw is if you `unwrap` incorrectly (as 
 above), in
-this case a `Panic`'s can be thrown. See 
-[How to Never Unwrap Incorrectly](https://github.com/mcmah309/rust_core#how-to-never-unwrap-incorrectly) section to
+this case a `Panic`'s can be thrown. But the good news is you should never need to use these
+methods. See [How to Never Unwrap Incorrectly]
+section to
 avoid ever using `unwrap`.
+
+[How to Never Unwrap Incorrectly]:https://github.com/mcmah309/rust_core/tree/master/lib/src/result#how-to-never-unwrap-incorrectly

@@ -56,7 +56,6 @@ String makeFood(int orderNumber) {
 String makeHamburger() {
   // Who catches this??
   // How do we know we won't forget to catch this??
-  // What is the context around this error??
   throw "Hmm something went wrong making the hamburger.";
 }
 ```
@@ -94,10 +93,11 @@ Result<String, String> makeFood(int orderNumber) {
 }
 
 Result<String,String> makeHamburger() {
-  // What is the context around this error??
   return Err("Hmm something went wrong making the hamburger.");
 }
 ```
+Now with the `Result` type there are no more undefined
+behaviours due to control flow!
 ### Chaining
 Effects on a `Result` can be chained in a safe way without
 needing a bunch of `if` statements, similar to `Option`.
