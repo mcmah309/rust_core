@@ -165,4 +165,109 @@ void main() {
     FutureResult<String?, int> y = Future.value(Ok<String?, int>(""));
     expect((await y.transposeNullable()).unwrap(), "");
   });
+
+  //************************************************************************//
+
+  group("Early Return", () {
+    FutureResult<int, String> earlyReturnErr() => Result.earlyAsync(($) {
+          return Future.value(Err("return error"));
+        });
+    FutureResult<int, String> earlyReturnOk() => Result.earlyAsync(($) {
+          return Future.value(Ok(2));
+        });
+    FutureResult<int, String> regularOk() async {
+      return Ok(1);
+    }
+
+    FutureResult<int, String> regularErr() async {
+      return Err("message");
+    }
+
+    FutureResult<int, int> wrongType() async {
+      return Ok(1);
+    }
+
+    test('No Exit', () async {
+      FutureResult<int, String> add3(int val) {
+        return Result.earlyAsync(($) async {
+          int x = await regularOk()[$];
+          int y = Ok(1)[$];
+          int z = Ok(1).mapErr((err) => err.toString())[$];
+          return Ok(val + x + y + z);
+        });
+      }
+
+      expect(await add3(2).unwrap(), 5);
+    });
+
+    test('No Exit 2', () async {
+      FutureResult<int, String> add3(int val) {
+        return Result.earlyAsync(($) async {
+          int x = await earlyReturnOk()[$];
+          int y = Ok(1)[$];
+          int z = Ok(1).mapErr((err) => err.toString())[$];
+          return Ok(val + x + y + z);
+        });
+      }
+
+      expect(await add3(2).unwrap(), 6);
+    });
+
+    test('With Exit', () async {
+      FutureResult<int, String> testDoNotation() =>
+          Result.earlyAsync(($) async {
+            int y = Ok(1)[$];
+            int z = Ok(1).mapErr((err) => err.toString())[$];
+            int x = await regularErr()[$];
+            return Ok(x + y + z);
+          });
+      expect(await testDoNotation().unwrapErr(), "message");
+    });
+
+    test('With Exit 2', () async {
+      FutureResult<int, String> testDoNotation() =>
+          Result.earlyAsync(($) async {
+            int y = Ok(1)[$];
+            int z = Ok(1).mapErr((err) => err.toString())[$];
+            int x = await earlyReturnErr()[$];
+            return Ok(x + y + z);
+          });
+      expect(await testDoNotation().unwrapErr(), "return error");
+    });
+
+    test('With Return Err', () async {
+      expect(await earlyReturnErr().unwrapErr(), "return error");
+    });
+
+    test('Normal Ok', () async {
+      FutureResult<int, String> testDoNotation() =>
+          Result.earlyAsync(($) async {
+            int y = 3;
+            int z = 2;
+            int x = 1;
+            return Ok(x + y + z);
+          });
+      expect(await testDoNotation().unwrap(), 6);
+    });
+
+    test('Normal Err', () async {
+      FutureResult<int, String> testDoNotation() =>
+          Result.earlyAsync(($) async {
+            int y = 3;
+            int z = 2;
+            int x = 1;
+            return Err("${x + y + z}");
+          });
+      expect(await testDoNotation().unwrapErr(), "6");
+    });
+
+    test('Wrong type', () async {
+      FutureResult<int, String> testDoNotation() => Result.earlyAsync(($) {
+            // wrongType()[$]; // does not compile as expected
+            wrongType();
+            return Future.value(Err(""));
+          });
+      expect(await testDoNotation().unwrapErr(), "");
+    });
+  });
 }
