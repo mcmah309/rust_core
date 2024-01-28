@@ -238,7 +238,7 @@ void main() {
               double x = await doubleNone()[$];
               return Some((val + x).toInt());
             });
-            final x = await earlyReturn(2);
+            final _ = await earlyReturn(2);
         expect(await earlyReturn(2), const None());
       });
 
