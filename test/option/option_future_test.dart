@@ -32,8 +32,7 @@ void main() {
       expect(await x.expect("Error"), 1);
 
       x = Future.value(const None());
-      expect(
-          () async => await x.expect("Error occurred"), throwsA(isA<Error>()));
+      expect(() async => await x.expect("Error occurred"), throwsA(isA<Error>()));
     });
 
     test("filter", () async {
@@ -210,6 +209,54 @@ void main() {
 
       x = Future.value(const None());
       expect(await x.toNullable(), null);
+    });
+
+    group("Async Early Return Key", () {
+      FutureOption<int> int3Some() => Future.value(Some(3));
+      FutureOption<int> intNone() => Future.value(const None());
+      FutureOption<double> double3Some() => Future.value(Some(3));
+      FutureOption<double> doubleNone() => Future.value(const None());
+
+      test('No Exit', () async {
+        FutureOption<int> earlyReturn(int val) => Option.async(($) async {
+              int x = await int3Some()[$];
+              return Some(val + x);
+            });
+        expect(await earlyReturn(2).unwrap(), 5);
+      });
+
+      test('With Exit', () async {
+        FutureOption<int> earlyReturn(int val) => Option.async(($) async {
+              int x = await intNone()[$];
+              return Some(val + x);
+            });
+        expect(await earlyReturn(2), const None());
+      });
+
+      test('With different types None', () async {
+        FutureOption<int> earlyReturn(int val) => Option.async(($) async {
+              double x = await doubleNone()[$];
+              return Some((val + x).toInt());
+            });
+            final x = await earlyReturn(2);
+        expect(await earlyReturn(2), const None());
+      });
+
+      test('With different types Some', () async {
+        FutureOption<int> earlyReturn(int val) => Option.async(($) async {
+              double x = await double3Some()[$];
+              return Some((val + x).toInt());
+            });
+        expect(await earlyReturn(2), Some(5));
+      });
+
+      test('Normal', () async {
+        FutureOption<int> earlyReturn(int val) => Option.async(($) async {
+              double x = await double3Some().unwrap();
+              return Some((val + x).toInt());
+            });
+        expect(await earlyReturn(2), Some(5));
+      });
     });
   });
 }

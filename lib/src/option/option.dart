@@ -6,8 +6,10 @@ sealed class Option<T extends Object> {
   /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
   /// immediately the context that "$" belongs to is returned with None(). e.g.
   /// ```
+  ///   Option<int> intNone() => const None();
+  /// 
   ///   Option<int> earlyReturn(int val) => Option(($){
-  ///     int x = intNone()[$];
+  ///     int x = intNone()[$]; // returns [None] immediately
   ///     return Some(val + 3);
   ///   });
   ///   expect(earlyReturn(2), const None());
@@ -19,6 +21,29 @@ sealed class Option<T extends Object> {
       return fn(const _OptionEarlyReturnKey._());
     } on _OptionEarlyReturnNotification catch (_) {
       return const None();
+    }
+  }
+
+  /// Creates a context for async early return, similar to "Do notation". Works like the Rust "?" operator, which is a
+  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
+  /// immediately the context that "$" belongs to is returned with None(). e.g.
+  /// ```
+  ///   Option<int> intNone() => const None();
+  /// 
+  ///   Option<int> earlyReturn(int val) => Option(($){
+  ///     int x = intNone()[$]; // returns [None] immediately
+  ///     return Some(val + 3);
+  ///   });
+  ///   expect(earlyReturn(2), const None());
+  ///```
+  /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
+  /// attempting to bring "$" out of the original scope should be avoided.
+  // ignore: library_private_types_in_public_api
+  static Future<Option<T>> async<T extends Object>(_OptionAsyncEarlyReturnFunction<T> fn) async {
+    try {
+      return await fn(const _OptionEarlyReturnKey._());
+    } on _OptionEarlyReturnNotification catch (_) {
+      return Future.value(const None());
     }
   }
 
@@ -449,6 +474,17 @@ final class _OptionEarlyReturnNotification {
 
 typedef _OptionEarlyReturnFunction<T extends Object> = Option<T> Function(
     _OptionEarlyReturnKey);
+
+typedef _OptionAsyncEarlyReturnFunction<T extends Object> = Future<Option<T>> Function(
+    _OptionEarlyReturnKey);
+
+extension AsyncOptionEarlyReturnExtension<T extends Object>
+    on Future<Option<T>> {
+  // ignore: library_private_types_in_public_api
+  Future<T> operator [](_OptionEarlyReturnKey op) {
+    return then((value) => value[op]);
+  }
+}
 
 //************************************************************************//
 
