@@ -32,7 +32,8 @@ void main() {
       expect(await x.expect("Error"), 1);
 
       x = Future.value(const None());
-      expect(() async => await x.expect("Error occurred"), throwsA(isA<Error>()));
+      expect(
+          () async => await x.expect("Error occurred"), throwsA(isA<Error>()));
     });
 
     test("filter", () async {
@@ -238,7 +239,7 @@ void main() {
               double x = await doubleNone()[$];
               return Some((val + x).toInt());
             });
-            final _ = await earlyReturn(2);
+        final _ = await earlyReturn(2);
         expect(await earlyReturn(2), const None());
       });
 

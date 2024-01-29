@@ -11,7 +11,7 @@ sealed class Option<T extends Object> {
   /// immediately the context that "$" belongs to is returned with None(). e.g.
   /// ```
   ///   Option<int> intNone() => const None();
-  /// 
+  ///
   ///   Option<int> earlyReturn(int val) => Option(($){
   ///     int x = intNone()[$]; // returns [None] immediately
   ///     return Some(val + 3);
@@ -42,8 +42,9 @@ sealed class Option<T extends Object> {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
-  // ignore: library_private_types_in_public_api
-  static Future<Option<T>> async<T extends Object>(_OptionAsyncEarlyReturnFunction<T> fn) async {
+  static Future<Option<T>> async<T extends Object>(
+      // ignore: library_private_types_in_public_api
+      _OptionAsyncEarlyReturnFunction<T> fn) async {
     try {
       return await fn(const _OptionEarlyReturnKey._());
     } on _OptionEarlyReturnNotification catch (_) {
@@ -479,8 +480,8 @@ final class _OptionEarlyReturnNotification {
 typedef _OptionEarlyReturnFunction<T extends Object> = Option<T> Function(
     _OptionEarlyReturnKey);
 
-typedef _OptionAsyncEarlyReturnFunction<T extends Object> = Future<Option<T>> Function(
-    _OptionEarlyReturnKey);
+typedef _OptionAsyncEarlyReturnFunction<T extends Object> = Future<Option<T>>
+    Function(_OptionEarlyReturnKey);
 
 //************************************************************************//
 

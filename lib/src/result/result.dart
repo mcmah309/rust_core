@@ -14,17 +14,16 @@ part 'future_result.dart';
 /// .org/std/result/enum.Result.html
 /// {@endtemplate}
 sealed class Result<S, F extends Object> {
-
   /// Creates a context for early return, similar to "Do notation".
   /// Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
-  /// immediately the context that "$" belongs to is returned with that [Err]. 
+  /// immediately the context that "$" belongs to is returned with that [Err].
   /// Works like the Rust "?" operator, which is a "Early Return Operator".
   /// e.g.
   /// ```dart
   ///     Result<int,String> innerFn() => Err("message");
-  /// 
+  ///
   ///     Result<int, String> innerFn2() => Ok(1);
-  /// 
+  ///
   ///     Result<int, String> earlyReturn() => Result(($) {
   ///         int y = 2;
   ///         int x = innerFn()[$]; // returns [Err] here immediately
@@ -46,7 +45,7 @@ sealed class Result<S, F extends Object> {
 
   /// Creates a async context for early return, similar to "Do notation".
   /// Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
-  /// immediately the context that "$" belongs to is returned with that [Err]. 
+  /// immediately the context that "$" belongs to is returned with that [Err].
   /// Works like the Rust "?" operator, which is a "Early Return Operator".
   /// e.g.
   ///

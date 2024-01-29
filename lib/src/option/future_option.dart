@@ -115,7 +115,7 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
 
   //************************************************************************//
 
-    // ignore: library_private_types_in_public_api
+  // ignore: library_private_types_in_public_api
   Future<T> operator [](_OptionEarlyReturnKey op) {
     return then((value) => value[op]);
   }

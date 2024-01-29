@@ -214,8 +214,7 @@ void main() {
     });
 
     test('With Exit', () async {
-      FutureResult<int, String> testDoNotation() =>
-          Result.async(($) async {
+      FutureResult<int, String> testDoNotation() => Result.async(($) async {
             int y = Ok(1)[$];
             int z = Ok(1).mapErr((err) => err.toString())[$];
             int x = await regularErr()[$];
@@ -225,8 +224,7 @@ void main() {
     });
 
     test('With Exit 2', () async {
-      FutureResult<int, String> testDoNotation() =>
-          Result.async(($) async {
+      FutureResult<int, String> testDoNotation() => Result.async(($) async {
             int y = Ok(1)[$];
             int z = Ok(1).mapErr((err) => err.toString())[$];
             int x = await earlyReturnErr()[$];
@@ -240,8 +238,7 @@ void main() {
     });
 
     test('Normal Ok', () async {
-      FutureResult<int, String> testDoNotation() =>
-          Result.async(($) async {
+      FutureResult<int, String> testDoNotation() => Result.async(($) async {
             int y = 3;
             int z = 2;
             int x = 1;
@@ -251,8 +248,7 @@ void main() {
     });
 
     test('Normal Err', () async {
-      FutureResult<int, String> testDoNotation() =>
-          Result.async(($) async {
+      FutureResult<int, String> testDoNotation() => Result.async(($) async {
             int y = 3;
             int z = 2;
             int x = 1;
