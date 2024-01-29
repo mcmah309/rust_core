@@ -152,13 +152,20 @@ Result<int, String> earlyReturn() => Result(($) { // Early Return Key
    int y = 2;
    // The function will return here will the Err value;
    int x = innerErrFn()[$];
-   return Ok(x.unwrap() + y);
+   return Ok(x + y);
  });
 
 expect(earlyReturn().unwrapErr(), "message");
 ```
 Using the Early Return Key Notation reduces the need for pattern matching or checking, in a safe way. This is quite a 
 powerful tool. See [here](#pattern-matching-vs-early-return-key) for another example.
+
+For async, use the `Result.async` e.g.
+```dart
+FutureResult<int, String> earlyReturn() => Result.async(($) async {
+  ...
+});
+```
 
 ## How to Never Unwrap Incorrectly
 In Rust, as here, it is possible to unwrap values that should not be unwrapped:

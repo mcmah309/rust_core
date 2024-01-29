@@ -43,6 +43,12 @@ expect(earlyReturn(2), const None());
 ```
 This is a powerful concept and make you code much more concise without losing any safety.
 
+For async, use `Option.async` e.g.
+```dart
+FutureOption<double> earlyReturn() => Option.async(($) async {
+  ...
+});
+```
 
 ### To Option or Not To Option
 If Dart already supports nullable types, why use an

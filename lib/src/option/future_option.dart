@@ -1,7 +1,4 @@
-import 'dart:async';
-
-import 'package:rust_core/option.dart';
-import 'package:rust_core/result.dart';
+part of 'option.dart';
 
 /// {@macro futureOption}
 typedef FutureOption<T extends Object> = Future<Option<T>>;
@@ -110,7 +107,16 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
     return then((option) => option.zipWith(other, f));
   }
 
+  //************************************************************************//
+
   Future<T?> toNullable() {
     return then((option) => option.toNullable());
+  }
+
+  //************************************************************************//
+
+    // ignore: library_private_types_in_public_api
+  Future<T> operator [](_OptionEarlyReturnKey op) {
+    return then((value) => value[op]);
   }
 }

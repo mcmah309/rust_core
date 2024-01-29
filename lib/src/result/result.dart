@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:rust_core/typedefs.dart';
 import 'package:rust_core/panic.dart';
+
+part 'future_result.dart';
 
 /// {@template result}
 /// [Result] class representing the type union between [Ok] and [Err].
@@ -10,18 +14,22 @@ import 'package:rust_core/panic.dart';
 /// .org/std/result/enum.Result.html
 /// {@endtemplate}
 sealed class Result<S, F extends Object> {
-  /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
-  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
-  /// immediately the context that "$" belongs to is returned with that [Err]. e.g.
-  /// ```
-  ///     Result<int,String> innerFn(){
-  ///         return Err("message");
-  ///     }
+
+  /// Creates a context for early return, similar to "Do notation".
+  /// Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
+  /// immediately the context that "$" belongs to is returned with that [Err]. 
+  /// Works like the Rust "?" operator, which is a "Early Return Operator".
+  /// e.g.
+  /// ```dart
+  ///     Result<int,String> innerFn() => Err("message");
+  /// 
+  ///     Result<int, String> innerFn2() => Ok(1);
+  /// 
   ///     Result<int, String> earlyReturn() => Result(($) {
   ///         int y = 2;
-  ///         // the function will stop here since an Err was returned
-  ///         int x = innerFn()[$];
-  ///         return Ok(x + y);
+  ///         int x = innerFn()[$]; // returns [Err] here immediately
+  ///         int z = innerFn2()[$]; // innerFn2 will not be executed
+  ///         return Ok(x + y + z);
   ///       });
   ///     }
   ///     expect(earlyReturn().unwrapErr(), "message");
@@ -36,27 +44,21 @@ sealed class Result<S, F extends Object> {
     }
   }
 
-  /// Similar to [Result()], but works in an asynchronous context.
-  ///
-  /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
-  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
-  /// immediately the context that "$" belongs to is returned with that [Err]. e.g.
+  /// Creates a async context for early return, similar to "Do notation".
+  /// Here "$" is used as the "Early Return Key". when "$" is used on a type [Err],
+  /// immediately the context that "$" belongs to is returned with that [Err]. 
+  /// Works like the Rust "?" operator, which is a "Early Return Operator".
+  /// e.g.
   ///
   /// ```dart
-  ///     FutureResult<int,String> innerFn() async {
-  ///         return Err("message");
-  ///     }
+  ///     FutureResult<int,String> innerFn() async => Err("message");
   ///
-  ///     FutureResult<int, String> innerFn2() async {
-  ///         return Ok(1);
-  ///     }
+  ///     FutureResult<int, String> innerFn2() async => Ok(1);
   ///
-  ///     FutureResult<int, String> earlyReturn() => Result.earlyAsync(($) async {
+  ///     FutureResult<int, String> earlyReturn() => Result.early(($) async {
   ///         int y = 2;
-  ///         // the function will stop here since an Err was returned
-  ///         int x = await innerFn()[$];
-  ///         // innerFn2 will not be executed
-  ///         int z = await innerFn2()[$];
+  ///         int x = await innerFn()[$]; // returns [Err] here immediately
+  ///         int z = await innerFn2()[$]; // innerFn2 will not be executed
   ///         return Ok(x + y + z);
   ///       });
   ///     }
@@ -64,8 +66,7 @@ sealed class Result<S, F extends Object> {
   ///```
   ///
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
-  /// attempting to bring "$" out of the original scope should be avoided. Also, using the method [catchError] on the futures after
-  /// the `[$]` operator might lead to unexpected behaviour.
+  /// attempting to bring "$" out of the original scope should be avoided.
   static Future<Result<S, F>> async<S, F extends Object>(
     // ignore: library_private_types_in_public_api
     _AsyncResultEarlyReturnFunction<S, F> fn,
@@ -642,13 +643,6 @@ typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S, F> Function(
 
 typedef _AsyncResultEarlyReturnFunction<S, F extends Object>
     = Future<Result<S, F>> Function(_ResultEarlyReturnKey<F>);
-
-extension AsyncResultEarlyReturnExtension<S, F extends Object>
-    on Future<Result<S, F>> {
-  Future<S> operator [](_ResultEarlyReturnKey<F> op) {
-    return then((value) => value[op]);
-  }
-}
 
 //************************************************************************//
 

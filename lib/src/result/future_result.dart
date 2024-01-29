@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:rust_core/result.dart';
+part of 'result.dart';
 
 /// {@macro futureResult}
 typedef FutureResult<S, F extends Object> = Future<Result<S, F>>;
@@ -166,5 +164,12 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
 
   FutureResult<S, F> copy() {
     return then((result) => result.copy());
+  }
+
+  //************************************************************************//
+
+  // ignore: library_private_types_in_public_api
+  Future<S> operator [](_ResultEarlyReturnKey<F> op) {
+    return then((value) => value[op]);
   }
 }

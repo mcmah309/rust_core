@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:rust_core/result.dart';
 import 'package:rust_core/panic.dart';
+
+part 'future_option.dart';
 
 sealed class Option<T extends Object> {
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
@@ -28,13 +32,13 @@ sealed class Option<T extends Object> {
   /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
   /// immediately the context that "$" belongs to is returned with None(). e.g.
   /// ```
-  ///   Option<int> intNone() => const None();
-  /// 
-  ///   Option<int> earlyReturn(int val) => Option(($){
-  ///     int x = intNone()[$]; // returns [None] immediately
-  ///     return Some(val + 3);
-  ///   });
-  ///   expect(earlyReturn(2), const None());
+  /// FutureOption<int> intNone() async => const None();
+  ///
+  /// FutureOption<int> earlyReturn(int val) => Option.async(($) async {
+  ///  int x = await intNone()[$]; // returns [None] immediately
+  ///  return Some(x + 3);
+  /// });
+  /// expect(await earlyReturn(2), const None());
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
@@ -477,14 +481,6 @@ typedef _OptionEarlyReturnFunction<T extends Object> = Option<T> Function(
 
 typedef _OptionAsyncEarlyReturnFunction<T extends Object> = Future<Option<T>> Function(
     _OptionEarlyReturnKey);
-
-extension AsyncOptionEarlyReturnExtension<T extends Object>
-    on Future<Option<T>> {
-  // ignore: library_private_types_in_public_api
-  Future<T> operator [](_OptionEarlyReturnKey op) {
-    return then((value) => value[op]);
-  }
-}
 
 //************************************************************************//
 
