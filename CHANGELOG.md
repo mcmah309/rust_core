@@ -1,3 +1,7 @@
+## 0.3.6
+
+- Async early return
+
 ## 0.3.5
 
 - LazyCell and OnceCell broader equality
