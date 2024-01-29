@@ -66,7 +66,7 @@ sealed class Result<S, F extends Object> {
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided. Also, using the method [catchError] on the futures after
   /// the `[$]` operator might lead to unexpected behaviour.
-  static Future<Result<S, F>> earlyAsync<S, F extends Object>(
+  static Future<Result<S, F>> async<S, F extends Object>(
     // ignore: library_private_types_in_public_api
     _AsyncResultEarlyReturnFunction<S, F> fn,
   ) async {

@@ -169,10 +169,10 @@ void main() {
   //************************************************************************//
 
   group("Early Return", () {
-    FutureResult<int, String> earlyReturnErr() => Result.earlyAsync(($) {
+    FutureResult<int, String> earlyReturnErr() => Result.async(($) {
           return Future.value(Err("return error"));
         });
-    FutureResult<int, String> earlyReturnOk() => Result.earlyAsync(($) {
+    FutureResult<int, String> earlyReturnOk() => Result.async(($) {
           return Future.value(Ok(2));
         });
     FutureResult<int, String> regularOk() async {
@@ -189,7 +189,7 @@ void main() {
 
     test('No Exit', () async {
       FutureResult<int, String> add3(int val) {
-        return Result.earlyAsync(($) async {
+        return Result.async(($) async {
           int x = await regularOk()[$];
           int y = Ok(1)[$];
           int z = Ok(1).mapErr((err) => err.toString())[$];
@@ -202,7 +202,7 @@ void main() {
 
     test('No Exit 2', () async {
       FutureResult<int, String> add3(int val) {
-        return Result.earlyAsync(($) async {
+        return Result.async(($) async {
           int x = await earlyReturnOk()[$];
           int y = Ok(1)[$];
           int z = Ok(1).mapErr((err) => err.toString())[$];
@@ -215,7 +215,7 @@ void main() {
 
     test('With Exit', () async {
       FutureResult<int, String> testDoNotation() =>
-          Result.earlyAsync(($) async {
+          Result.async(($) async {
             int y = Ok(1)[$];
             int z = Ok(1).mapErr((err) => err.toString())[$];
             int x = await regularErr()[$];
@@ -226,7 +226,7 @@ void main() {
 
     test('With Exit 2', () async {
       FutureResult<int, String> testDoNotation() =>
-          Result.earlyAsync(($) async {
+          Result.async(($) async {
             int y = Ok(1)[$];
             int z = Ok(1).mapErr((err) => err.toString())[$];
             int x = await earlyReturnErr()[$];
@@ -241,7 +241,7 @@ void main() {
 
     test('Normal Ok', () async {
       FutureResult<int, String> testDoNotation() =>
-          Result.earlyAsync(($) async {
+          Result.async(($) async {
             int y = 3;
             int z = 2;
             int x = 1;
@@ -252,7 +252,7 @@ void main() {
 
     test('Normal Err', () async {
       FutureResult<int, String> testDoNotation() =>
-          Result.earlyAsync(($) async {
+          Result.async(($) async {
             int y = 3;
             int z = 2;
             int x = 1;
@@ -262,7 +262,7 @@ void main() {
     });
 
     test('Wrong type', () async {
-      FutureResult<int, String> testDoNotation() => Result.earlyAsync(($) {
+      FutureResult<int, String> testDoNotation() => Result.async(($) {
             // wrongType()[$]; // does not compile as expected
             wrongType();
             return Future.value(Err(""));
