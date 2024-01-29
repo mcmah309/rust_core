@@ -5,28 +5,24 @@ import 'package:test/test.dart';
 void main() {
   group('andThen', () {
     test('async ', () async {
-      final result =
-          await Future.value(const Ok(1)).andThen((ok) async => Ok(ok * 2));
+      final result = await Future.value(const Ok(1)).andThen((ok) async => Ok(ok * 2));
       expect(result.unwrapOrNull(), 2);
     });
 
     test('sink', () async {
-      final result =
-          await Future.value(const Ok(1)).andThen((ok) => Ok(ok * 2));
+      final result = await Future.value(const Ok(1)).andThen((ok) => Ok(ok * 2));
       expect(result.unwrapOrNull(), 2);
     });
   });
 
   group('andThenError', () {
     test('async ', () async {
-      final result = await Future.value(Err(2))
-          .andThenErr((error) async => Err(error * 2));
+      final result = await Future.value(Err(2)).andThenErr((error) async => Err(error * 2));
       expect(result.unwrapErrOrNull(), 4);
     });
 
     test('sink', () async {
-      final result =
-          await Future.value(Err(2)).andThenErr((error) => Err(error * 2));
+      final result = await Future.value(Err(2)).andThenErr((error) => Err(error * 2));
       expect(result.unwrapErrOrNull(), 4);
     });
   });
@@ -264,6 +260,31 @@ void main() {
             return Future.value(Err(""));
           });
       expect(await testDoNotation().unwrapErr(), "");
+    });
+
+    test("Async-Sync does not cross boundaries", () async {
+      FutureResult<int, String> testAsyncSync() => Result.async(($) {
+            final Result<int, String> x = Result<int, String>(($2) {
+              return Ok(Err<int, String>("1")[$]);
+            });
+            expect(x.unwrapErr(), "1");
+            return Future.value(Ok(1));
+          });
+      expect(await testAsyncSync().unwrap(), 1);
+
+      late Result<int, String> inner;
+      Result<int, String> testSyncAsync() => Result(($) {
+            final FutureResult<int, String> _ = Result.async<int, String>(($2) {
+              return Future.value(Ok(Err<int, String>("1")[$]));
+            }).then((value) {
+              inner = value;
+              return value;
+            });
+            return Ok(1);
+          });
+      expect(testSyncAsync().unwrap(), 1);
+      await Future.delayed(Duration(milliseconds: 200));
+      expect(inner.unwrapErr(), "1");
     });
   });
 }
