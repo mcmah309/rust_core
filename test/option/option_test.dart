@@ -1,3 +1,5 @@
+// ignore_for_file: pattern_never_matches_value_type
+
 import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
@@ -258,20 +260,20 @@ void main() {
   test("option switch", () {
     Option<int> x = int2Some();
     var y = switch (x) {
-      Some(:final s) => s,
+      Some(v:final s) => s,
       None() => 4,
     };
     expect(y, 2);
 
     y = switch (x) {
-      Some(:final s) => 3,
+      Some(v:final _) => 3,
       None() => 4,
     };
     expect(y, 3);
 
     x = intNone();
     y = switch (x) {
-      Some(:final s) => 3,
+      Some(v:final s) => 3,
       None() => 4,
     };
     expect(y, 4);

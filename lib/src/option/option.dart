@@ -5,7 +5,7 @@ import 'package:rust_core/panic.dart';
 
 part 'future_option.dart';
 
-extension type Option<T extends Object>._(T? s) {
+extension type const Option<T extends Object>._(T? v) {
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
   /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
   /// immediately the context that "$" belongs to is returned with None(). e.g.
