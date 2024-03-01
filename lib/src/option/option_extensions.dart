@@ -21,15 +21,15 @@ extension TExtension<T extends Object> on T {
   }
 }
 
-extension OptionOptionExtension<T extends Object> on Option<Option<T>> {
-  /// Converts from Option<Option<T>> to Option<T>.
-  Option<T> flatten() {
-    if (isSome()) {
-      return unwrap();
-    }
-    return const None();
-  }
-}
+// extension OptionOptionExtension<T extends Object> on Option<Option<T>> {
+//   /// Converts from Option<Option<T>> to Option<T>.
+//   Option<T> flatten() {
+//     if (isSome()) {
+//       return unwrap();
+//     }
+//     return const None();
+//   }
+// }
 
 extension OptionRecord2Extension<T extends Object, U extends Object>
     on Option<(T, U)> {

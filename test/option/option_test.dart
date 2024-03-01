@@ -31,8 +31,7 @@ void main() {
 
     expect(Ok(2).andThen(sqThenToString), Ok(4.toString()));
     expect(Ok(1000000).andThen(sqThenToString), Err("overflowed"));
-    expect(Err<int, String>("not a number").andThen(sqThenToString),
-        Err("not a number"));
+    expect(Err<int, String>("not a number").andThen(sqThenToString), Err("not a number"));
   });
 
   test("expect", () {
@@ -252,6 +251,30 @@ void main() {
 
     expect(x.zipWith(y, (a, b) => Point(a, b)), Some(Point(17.5, 42.7)));
     expect(x.zipWith(nonePoint, (a, b) => Point(a, b.x)), const None());
+  });
+
+  Option<int> int2Some() => Some(2);
+  Option<int> intNone() => const None();
+  test("option switch", () {
+    Option<int> x = int2Some();
+    var y = switch (x) {
+      Some(:final s) => s,
+      None() => 4,
+    };
+    expect(y, 2);
+
+    y = switch (x) {
+      Some(:final s) => 3,
+      None() => 4,
+    };
+    expect(y, 3);
+
+    x = intNone();
+    y = switch (x) {
+      Some(:final s) => 3,
+      None() => 4,
+    };
+    expect(y, 4);
   });
 
   group("Option Early Return", () {
