@@ -228,4 +228,108 @@ void main() {
       expect(hasErr, true);
     });
   });
+
+  group("record functions to result",(){
+    test("2 record functions to result Ok", () {
+      final a, b;
+      switch ((boolOk, intOk).toResult()) {
+        case Ok(:final ok):
+          (a,b) = ok;
+        case Err():
+          throw Exception();
+      }
+      expect(a, true);
+      expect(b, 1);
+    });
+
+    test("2 record functions to result Err", () {
+      bool hasErr = false;
+      final a, b;
+      switch ((boolOk, intErr).toResult()) {
+        case Ok(:final ok):
+          (a,b) = ok;
+        case Err():
+          hasErr = true;
+      }
+      expect(hasErr, true);
+    });
+
+    test("3 record functions to result Ok", () {
+      final a, b, c;
+      switch ((boolOk, intOk, doubleOk).toResult()) {
+        case Ok(:final ok):
+          (a,b,c) = ok;
+        case Err():
+          throw Exception();
+      }
+      expect(a, true);
+      expect(b, 1);
+      expect(c, 2.0);
+    });
+
+    test("3 record functions to result Err", () {
+      bool hasErr = false;
+      final a, b, c;
+      switch ((boolOk, intErr, doubleOk).toResult()) {
+        case Ok(:final ok):
+          (a,b,c) = ok;
+        case Err():
+          hasErr = true;
+      }
+      expect(hasErr, true);
+    });
+
+    test("4 record functions to result Ok", () {
+      final a, b, c, d;
+      switch ((boolOk, intOk, doubleOk, stringOk).toResult()) {
+        case Ok(:final ok):
+          (a,b,c,d) = ok;
+        case Err():
+          throw Exception();
+      }
+      expect(a, true);
+      expect(b, 1);
+      expect(c, 2.0);
+      expect(d, "Success");
+    });
+
+    test("4 record functions to result Err", () {
+      bool hasErr = false;
+      final a, b, c, d;
+      switch ((boolOk, intOk, doubleErr, stringOk).toResult()) {
+        case Ok(:final ok):
+          (a,b,c,d) = ok;
+        case Err():
+          hasErr = true;
+      }
+      expect(hasErr, true);
+    });
+
+    test("5 record functions to result Ok", () {
+      final a, b, c, d, e;
+      switch ((boolOk, intOk, doubleOk, stringOk, intOk).toResult()) {
+        case Ok(:final ok):
+          (a,b,c,d,e) = ok;
+        case Err():
+          throw Exception();
+      }
+      expect(a, true);
+      expect(b, 1);
+      expect(c, 2.0);
+      expect(d, "Success");
+      expect(e, 1);
+    });
+
+    test("5 record functions to result Err", () {
+      bool hasErr = false;
+      final a, b, c, d, e;
+      switch ((boolOk, intOk, doubleOk, stringErr, intOk).toResult()) {
+        case Ok(:final ok):
+          (a,b,c,d,e) = ok;
+        case Err():
+          hasErr = true;
+      }
+      expect(hasErr, true);
+    });
+  });
 }
