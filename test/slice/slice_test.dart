@@ -103,9 +103,13 @@ main(){
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
+    expect(slice, [2, 3, 4]);
     taken = slice.takeLast();
     expect(taken, 4);
     expect(slice, [2, 3]);
+    
+    slice[1] = 10;
+    expect(list, [1, 2, 10, 4, 5]);
   });
 
   test("swap", (){
