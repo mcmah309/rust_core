@@ -85,13 +85,13 @@ main(){
     var slice = Slice(list, 0, 5);
     var taken = slice.takeFirst();
     expect(taken, 1);
-    expect(list, [2, 3, 4, 5]);
+    expect(slice, [2, 3, 4, 5]);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
     taken = slice.takeFirst();
     expect(taken, 2);
-    expect(list, [1, 3, 4, 5]);
+    expect(slice, [3, 4]);
   });
 
   test("takeLast", () {
@@ -99,13 +99,13 @@ main(){
     var slice = Slice(list, 0, 5);
     var taken = slice.takeLast();
     expect(taken, 5);
-    expect(list, [1, 2, 3, 4]);
+    expect(slice, [1, 2, 3, 4]);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
     taken = slice.takeLast();
     expect(taken, 4);
-    expect(list, [1, 2, 3, 5]);
+    expect(slice, [2, 3]);
   });
 
   test("swap", (){

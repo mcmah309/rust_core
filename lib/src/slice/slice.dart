@@ -318,7 +318,7 @@ final class Slice<T> extends Iterable<T> {
 // trim_ascii_end: Will not implmented, not possible in Dart
 // trim_ascii_start: Will not implmented, not possible in Dart
 
-  RIterator<Slice> windows(int size) {
+  RIterator<Slice<T>> windows(int size) {
     assert(size > 0, "Size must be positive");
     assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
     return RIterator(Iterable.generate(_end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)));

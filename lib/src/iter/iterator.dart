@@ -1,9 +1,8 @@
 import 'package:rust_core/slice.dart';
-
+import 'package:rust_core/option.dart';
 
 extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
-
-  RIterator.fromSlice(Slice<T> slice): iterable = slice;
+  RIterator.fromSlice(Slice<T> slice) : iterable = slice;
 
 // advance_by
 // all
@@ -23,16 +22,50 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
 // eq
 // eq_by
 
+
+  /// Creates an iterator which uses a closure to determine if an element should be yielded.
   RIterator<T> filter(bool Function(T) f) {
     return RIterator<T>(iterable.where((element) => f(element)));
   }
 
-// filter_map
-// find
-// find_map
+  /// Creates an iterator that both filters and maps.
+  /// The returned iterator yields only the values for which the supplied closure returns Some(value).
+  RIterator<U> filterMap<U>(Option<U> Function(T) f) {
+    return RIterator(_filterMapHelper(f));
+  }
+
+  Iterable<U> _filterMapHelper<U>(Option<U> Function(T) f) sync* {
+    for (final element in iterable) {
+      final result = f(element);
+      if (result is Some<U>) {
+        yield result.v;
+      }
+    }
+  }
+
+  /// Searches for an element of an iterator that satisfies a predicate.
+  Option<T> find(bool Function(T) f) {
+    for (final element in iterable) {
+      if (f(element)) {
+        return Some(element);
+      }
+    }
+    return None();
+  }
+
+  /// Applies the function to the elements of iterator and returns the first non-none result.
+  Option<U> findMap<U>(Option<U> Function(T) f) {
+    for (final element in iterable) {
+      final result = f(element);
+      if (result is Some<U>) {
+        return result;
+      }
+    }
+    return None();
+  }
 // flat_map
 // flatten
-// fold
+// fold: Implemented by Iterable.fold
 // for_each
 // fuse
 // ge
@@ -88,6 +121,4 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
 // try_reduce
 // unzip
 // zip
-
-
 }
