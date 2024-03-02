@@ -17,10 +17,6 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
         option.isSome() ? f(option.unwrap()) : Future.value(const None()));
   }
 
-  Future<Option<T>> copy() {
-    return then((option) => option.copy());
-  }
-
   Future<T> expect(String msg) {
     return then((option) => option.expect(msg));
   }

@@ -21,6 +21,7 @@ extension type const Option<T extends Object>._(T? v) {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
+  // ignore: library_private_types_in_public_api
   factory Option(_OptionEarlyReturnFunction<T> fn) {
     try {
       return fn(const _OptionEarlyReturnKey._());
@@ -55,30 +56,34 @@ extension type const Option<T extends Object>._(T? v) {
 
   /// Returns None if the option is None, otherwise returns [other].
   Option<U> and<U extends Object>(Option<U> other) {
-    return this != null ? (this as Some<U>).and(other) : (this as None<U>).and(other);
+    return v == null ? const None() : other;
   }
 
   ///Returns None if the option is None, otherwise calls f with the wrapped value and returns the result. Some
   ///languages call this operation flatmap.
   Option<U> andThen<U extends Object>(Option<U> Function(T) f) {
-    return this != null ? (this as Some<T>).andThen(f) : (this as None<T>).andThen(f);
+    return v == null ? const None() : f(v!);
   }
 
-  /// Shallow copies this Option
-  Option<T> copy() {
-    return this != null ? (this as Some<T>).copy() : (this as None<T>).copy();
-  }
+  // copy: Does not make sense to add here since this is an extension type
 
   /// Returns the contained Some value if [Some], otherwise throws a [Panic].
   T expect(String msg) {
-    return this != null ? (this as Some<T>).expect(msg) : (this as None<T>).expect(msg);
+    return v == null ? throw Panic(onValue: this, reason: msg) : v!;
   }
 
   /// Returns None if the option is None, otherwise calls predicate with the wrapped value and returns
   /// Some(t) if predicate returns true (where t is the wrapped value), and
   // None if predicate returns false
   Option<T> filter(bool Function(T) predicate) {
-    return this is Some<T> ? (this as Some<T>).filter(predicate) : (this as None<T>).filter(predicate);
+    if (v == null) {
+      return const None();
+    } else {
+      if (predicate(v!)) {
+        return Some(v!);
+      }
+      return const None();
+    }
   }
 
   // flatten: Added as extension
@@ -91,63 +96,104 @@ extension type const Option<T extends Object>._(T? v) {
 
   /// Calls the provided closure with a reference to the contained value
   Option<T> inspect(Function(T) f) {
-    return this is Some<T> ? (this as Some<T>).inspect(f) : (this as None<T>).inspect(f);
+    if (v == null) {
+      return this;
+    } else {
+      f(v!);
+      return this;
+    }
   }
 
   /// Returns true if the option is a None value.
   bool isNone() {
-    return this is Some<T> ? (this as Some<T>).isNone() : (this as None<T>).isNone();
+    return this == null;
   }
 
   /// Returns true if the option is a Some value.
   bool isSome() {
-    return this is Some<T> ? (this as Some<T>).isSome() : (this as None<T>).isSome();
+    return this != null;
   }
 
   /// Returns true if the option is a Some and the value inside of it matches a predicate.
   bool isSomeAnd(bool Function(T) f) {
-    return this is Some<T> ? (this as Some<T>).isSomeAnd(f) : (this as None<T>).isSomeAnd(f);
+    if (v == null) {
+      return false;
+    } else {
+      return f(v!);
+    }
   }
 
   /// Returns an iterable over the possibly contained value.
   Iterable<T> iter() {
-    return this is Some<T> ? (this as Some<T>).iter() : (this as None<T>).iter();
+    if (v == null) {
+      return const [];
+    } else {
+      return [v!];
+    }
   }
 
   /// Maps an this Option<T> to Option<U> by applying a function to a contained value (if Some) or returns None (if
   /// None).
-  Option<U> map<U extends Object>(U Function(T) f){
-    return this is Some<T> ? (this as Some<T>).map(f) : (this as None<T>).map(f);
+  Option<U> map<U extends Object>(U Function(T) f) {
+    if (v == null) {
+      return const None();
+    } else {
+      return Some(f(v!));
+    }
   }
 
   /// Returns the provided default result (if none), or applies a function to the contained value (if any).
   U mapOr<U extends Object>(U defaultValue, U Function(T) f) {
-    return this is Some<T> ? (this as Some<T>).mapOr(defaultValue, f) : (this as None<T>).mapOr(defaultValue, f);
+    if (v == null) {
+      return defaultValue;
+    } else {
+      return f(v!);
+    }
   }
 
   /// Computes a default function result (if none), or applies a different function to the contained value (if any).
   U mapOrElse<U extends Object>(U Function() defaultFn, U Function(T) f) {
-    return this is Some<T> ? (this as Some<T>).mapOrElse(defaultFn, f) : (this as None<T>).mapOrElse(defaultFn, f);
+    if (v == null) {
+      return defaultFn();
+    } else {
+      return f(v!);
+    }
   }
 
   /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err).
   Result<T, E> okOr<E extends Object>(E err) {
-    return this is Some<T> ? (this as Some<T>).okOr(err) : (this as None<T>).okOr(err);
+    if (v == null) {
+      return Err(err);
+    } else {
+      return Ok(v!);
+    }
   }
 
   /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err()).
   Result<T, E> okOrElse<E extends Object>(E Function() errFn) {
-    return this is Some<T> ? (this as Some<T>).okOrElse(errFn) : (this as None<T>).okOrElse(errFn);
+    if (v == null) {
+      return Err(errFn());
+    } else {
+      return Ok(v!);
+    }
   }
 
   /// Returns the option if it contains a value, otherwise returns other.
   Option<T> or(Option<T> other) {
-    return this is Some<T> ? (this as Some<T>).or(other) : (this as None<T>).or(other);
+    if (v == null) {
+      return other;
+    } else {
+      return Some(v!);
+    }
   }
 
   /// Returns the option if it contains a value, otherwise calls f and returns the result.
   Option<T> orElse(Option<T> Function() f) {
-    return this is Some<T> ? (this as Some<T>).orElse(f) : (this as None<T>).orElse(f);
+    if (v == null) {
+      return f();
+    } else {
+      return Some(v!);
+    }
   }
 
   // Option<T> replace(value); // not possible, otherwise not const
@@ -160,34 +206,70 @@ extension type const Option<T extends Object>._(T? v) {
 
   /// Returns the contained Some value, consuming the self value.
   T unwrap() {
-    return this is Some<T> ? (this as Some<T>).unwrap() : (this as None<T>).unwrap();
+    if (v == null) {
+      throw Panic(reason: "called `unwrap` a None type");
+    } else {
+      return v!;
+    }
   }
 
   /// Returns the contained Some value or a provided default.
   T unwrapOr(T defaultValue) {
-    return this is Some<T> ? (this as Some<T>).unwrapOr(defaultValue) : (this as None<T>).unwrapOr(defaultValue);
+    if (v == null) {
+      return defaultValue;
+    } else {
+      return v!;
+    }
   }
 
   /// Returns the contained Some value or computes it from a closure.
   T unwrapOrElse(T Function() f) {
-    return this is Some<T> ? (this as Some<T>).unwrapOrElse(f) : (this as None<T>).unwrapOrElse(f);
+    if (v == null) {
+      return f();
+    } else {
+      return v!;
+    }
   }
 
   // unzip: Added as extension
 
   /// Returns Some if exactly one of self, [other] is Some, otherwise returns None.
   Option<T> xor(Option<T> other) {
-    return this is Some<T> ? (this as Some<T>).xor(other) : (this as None<T>).xor(other);
+    if (v == null) {
+      if (other.isSome()) {
+        return other;
+      }
+      return const None();
+    } else {
+      if (other.isSome()) {
+        return const None();
+      }
+      return Some(v!);
+    }
   }
 
   /// Zips self with another Option.
   Option<(T, U)> zip<U extends Object>(Option<U> other) {
-    return this is Some<T> ? (this as Some<T>).zip(other) : (this as None<T>).zip(other);
+    if (v == null) {
+      return const None();
+    } else {
+      if (other.isSome()) {
+        return Some((v!, other.unwrap()));
+      }
+      return const None();
+    }
   }
 
   /// Zips self and another Option with function f
   Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T, U) f) {
-    return this is Some<T> ? (this as Some<T>).zipWith(other, f) : (this as None<T>).zipWith(other, f);
+    if (v == null) {
+      return const None();
+    } else {
+      if (other.isSome()) {
+        return Some(f(v!, other.unwrap()));
+      }
+      return const None();
+    }
   }
 
   //************************************************************************//
@@ -202,34 +284,33 @@ extension type const Option<T extends Object>._(T? v) {
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
   T operator [](_OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
   {
-    return this is Some<T> ? (this as Some<T>)[op] : (this as None<T>)[op];
+    if (v == null) {
+      throw const _OptionEarlyReturnNotification();
+    } else {
+      return v!;
+    }
   }
 }
 
 extension type const Some<T extends Object>._(T v) implements Option<T>, Object {
   const Some(T v) : this._(v);
 
-  
   Option<U> and<U extends Object>(Option<U> other) {
     return other;
   }
 
-  
   Option<U> andThen<U extends Object>(Option<U> Function(T self) f) {
     return f(v);
   }
 
-  
   Option<T> copy() {
     return Some(v);
   }
 
-  
   T expect(String msg) {
     return v;
   }
 
-  
   Option<T> filter(bool Function(T self) predicate) {
     if (predicate(v)) {
       return Some(v);
@@ -237,88 +318,71 @@ extension type const Some<T extends Object>._(T v) implements Option<T>, Object 
     return const None();
   }
 
-  
   Option<T> inspect(Function(T self) f) {
     f(v);
     return this;
   }
 
-  
   bool isNone() {
     return false;
   }
 
-  
   bool isSome() {
     return true;
   }
 
-  
   bool isSomeAnd(bool Function(T self) f) {
     return f(v);
   }
 
-  
   Iterable<T> iter() sync* {
     yield v;
   }
 
-  
   Option<U> map<U extends Object>(U Function(T self) f) {
     return Some(f(v));
   }
 
-  
   U mapOr<U extends Object>(U defaultValue, U Function(T) f) {
     return f(v);
   }
 
-  
   U mapOrElse<U extends Object>(U Function() defaultFn, U Function(T) f) {
     return f(v);
   }
 
-  
   Result<T, E> okOr<E extends Object>(E err) {
     return Ok(v);
   }
 
-  
   Result<T, E> okOrElse<E extends Object>(E Function() errFn) {
     return Ok(v);
   }
 
-  
   Option<T> or(Option<T> other) {
     return Some(v);
   }
 
-  
   Option<T> orElse(Option<T> Function() f) {
     return Some(v);
   }
 
-  
   T? toNullable() {
     return v;
   }
 
-  
   T unwrap() {
     return v;
   }
 
-  
   T unwrapOr(T defaultValue) {
     return v;
   }
 
-  
   T unwrapOrElse(T Function() f) {
     return v;
   }
 
-  
   Option<T> xor(Option<T> other) {
     if (other.isSome()) {
       return const None();
@@ -326,7 +390,6 @@ extension type const Some<T extends Object>._(T v) implements Option<T>, Object 
     return Some(v);
   }
 
-  
   Option<(T, U)> zip<U extends Object>(Option<U> other) {
     if (other.isSome()) {
       return Some((v, other.unwrap()));
@@ -334,7 +397,6 @@ extension type const Some<T extends Object>._(T v) implements Option<T>, Object 
     return const None();
   }
 
-  
   Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T p1, U p2) f) {
     if (other.isSome()) {
       return Some(f(v, other.unwrap()));
@@ -344,7 +406,6 @@ extension type const Some<T extends Object>._(T v) implements Option<T>, Object 
 
   //************************************************************************//
 
-  
   // ignore: library_private_types_in_public_api
   T operator [](_OptionEarlyReturnKey op) {
     return v;
@@ -352,108 +413,86 @@ extension type const Some<T extends Object>._(T v) implements Option<T>, Object 
 }
 
 extension type const None<T extends Object>._(Null _) implements Option<Never> {
-  
   const None() : this._(null);
 
-  
   Option<U> and<U extends Object>(Option<U> other) {
     return const None();
   }
 
-  
   Option<U> andThen<U extends Object>(Option<U> Function(T self) f) {
     return const None();
   }
 
-  
   Option<T> copy() {
     return const None();
   }
 
-  
   T expect(String msg) {
     throw Panic(onValue: this, reason: msg);
   }
 
-  
   Option<T> filter(bool Function(T self) predicate) {
     return const None();
   }
 
-  
   Option<T> inspect(Function(T self) f) {
     return this;
   }
 
-  
   bool isNone() {
     return true;
   }
 
-  
   bool isSome() {
     return false;
   }
 
-  
   bool isSomeAnd(bool Function(T self) f) {
     return false;
   }
 
-  
   Iterable<T> iter() sync* {}
 
-  
   Option<U> map<U extends Object>(U Function(T self) f) {
     return const None();
   }
 
-  
   U mapOr<U extends Object>(U defaultValue, U Function(T) f) {
     return defaultValue;
   }
 
-  
   U mapOrElse<U extends Object>(U Function() defaultFn, U Function(T) f) {
     return defaultFn();
   }
 
-  
   Result<T, E> okOr<E extends Object>(E err) {
     return Err(err);
   }
 
-  
   Result<T, E> okOrElse<E extends Object>(E Function() errFn) {
     return Err(errFn());
   }
 
-  
   Option<T> or(Option<T> other) {
     return other;
   }
 
-  
   Option<T> orElse(Option<T> Function() f) {
     return f();
   }
 
-  
   T unwrap() {
     throw Panic(reason: "called `unwrap` a None type");
   }
 
-  
   T unwrapOr(T defaultValue) {
     return defaultValue;
   }
 
-  
   T unwrapOrElse(T Function() f) {
     return f();
   }
 
-  
   Option<T> xor(Option<T> other) {
     if (other.isSome()) {
       return other;
@@ -461,26 +500,22 @@ extension type const None<T extends Object>._(Null _) implements Option<Never> {
     return const None();
   }
 
-  
   Option<(T, U)> zip<U extends Object>(Option<U> other) {
     return const None();
   }
 
-  
   Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T p1, U p2) f) {
     return const None();
   }
 
   //************************************************************************//
 
-  
   T? toNullable() {
     return null;
   }
 
   //************************************************************************//
 
-  
   // ignore: library_private_types_in_public_api
   T operator [](_OptionEarlyReturnKey op) {
     throw const _OptionEarlyReturnNotification();
