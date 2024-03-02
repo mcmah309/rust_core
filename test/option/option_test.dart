@@ -273,7 +273,7 @@ void main() {
 
     x = intNone();
     y = switch (x) {
-      Some(v:final s) => 3,
+      Some(v:final _) => 3,
       None() => 4,
     };
     expect(y, 4);

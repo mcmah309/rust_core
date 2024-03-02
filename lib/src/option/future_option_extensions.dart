@@ -3,19 +3,11 @@ import 'package:rust_core/option.dart';
 extension FutureToOption1<T extends Object> on Future<T?> {
   /// Converts a Future<T?> to Future<Option<T>>.
   Future<Option<T>> toFutureOption() async {
-    var value = await this;
-    return value.toOption();
+    return then((value) => value.toOption());
   }
 }
 
-extension FutureToOption2<T extends Object> on Future<T> {
-  /// Converts a Future<T> to Future<Option<T>>.
-  Future<Option<T>> toFutureOption() async {
-    return (await this).toOption();
-  }
-}
-
-extension FutureToOption3<T extends Object> on Option<T> {
+extension FutureToOption2<T extends Object> on Option<T> {
   /// Converts a Option<T> to Future<Option<T>>.
   Future<Option<T>> toFutureOption() async {
     return this;

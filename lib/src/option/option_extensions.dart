@@ -1,23 +1,9 @@
-import 'package:rust_core/option.dart';
+part of 'option.dart';
 
 extension NullableTExtension<T extends Object> on T? {
   /// Returns [None] if this is null and Some(this) if this not null.
   Option<T> toOption() {
-    if (this == null) {
-      return const None();
-    }
-    return Some(this!);
-  }
-}
-
-extension TExtension<T extends Object> on T {
-  /// Returns [None] if this is null and Some(this) if this not null.
-  Option<T> toOption() {
-    return Some(this);
-  }
-
-  Some<T> toSome() {
-    return Some(this);
+    return Option._(this);
   }
 }
 

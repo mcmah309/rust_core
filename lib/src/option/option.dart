@@ -4,6 +4,7 @@ import 'package:rust_core/result.dart';
 import 'package:rust_core/panic.dart';
 
 part 'future_option.dart';
+part 'option_extensions.dart';
 
 extension type const Option<T extends Object>._(T? v) {
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
@@ -193,7 +194,7 @@ extension type const Option<T extends Object>._(T? v) {
 
   /// Returns the inner type as the nullable version of [T]
   T? toNullable() {
-    return this is Some<T> ? (this as Some<T>).toNullable() : (this as None<T>).toNullable();
+    return v;
   }
 
   //************************************************************************//
