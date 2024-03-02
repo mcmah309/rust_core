@@ -1,17 +1,17 @@
 part of 'option.dart';
 
 /// {@macro futureOption}
-typedef FutureOption<T extends Object> = Future<Option<T>>;
+typedef FutureOption<T> = Future<Option<T>>;
 
 /// {@template futureOption}
 /// [FutureOption] represents an asynchronous [Option]. And as such, inherits all of [Option]'s methods.
 /// {@endtemplate}
-extension FutureOptionExtension<T extends Object> on FutureOption<T> {
-  Future<Option<U>> and<U extends Object>(Option<U> other) {
+extension FutureOptionExtension<T> on FutureOption<T> {
+  Future<Option<U>> and<U>(Option<U> other) {
     return then((option) => option.and(other));
   }
 
-  Future<Option<U>> andThen<U extends Object>(
+  Future<Option<U>> andThen<U>(
       FutureOr<Option<U>> Function(T) f) {
     return then((option) =>
         option.isSome() ? f(option.unwrap()) : Future.value(const None()));
@@ -48,16 +48,16 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
     return then((option) => option.iter());
   }
 
-  Future<Option<U>> map<U extends Object>(U Function(T) f) {
+  Future<Option<U>> map<U>(U Function(T) f) {
     return then((option) => option.map(f));
   }
 
-  Future<U> mapOr<U extends Object>(U defaultValue, U Function(T) f) {
+  Future<U> mapOr<U>(U defaultValue, U Function(T) f) {
     return then(
         (option) => option.isSome() ? f(option.unwrap()) : defaultValue);
   }
 
-  Future<U> mapOrElse<U extends Object>(
+  Future<U> mapOrElse<U>(
       U Function() defaultFn, U Function(T) f) {
     return then((option) => option.isSome() ? f(option.unwrap()) : defaultFn());
   }
@@ -94,11 +94,11 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
     return then((option) => option.xor(other));
   }
 
-  Future<Option<(T, U)>> zip<U extends Object>(Option<U> other) {
+  Future<Option<(T, U)>> zip<U>(Option<U> other) {
     return then((option) => option.zip(other));
   }
 
-  Future<Option<R>> zipWith<U extends Object, R extends Object>(
+  Future<Option<R>> zipWith<U, R>(
       Option<U> other, R Function(T, U) f) {
     return then((option) => option.zipWith(other, f));
   }

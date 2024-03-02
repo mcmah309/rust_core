@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:rust_core/result.dart';
 import 'package:rust_core/typedefs.dart';
+import 'package:rust_core/option.dart';
 
 extension FlattenExtension<S, F extends Object> on Result<Result<S, F>, F> {
   /// Converts a [Result] of a [Result] into a single [Result]
@@ -39,6 +40,29 @@ extension ResultNullExtension<S, F extends Object> on Result<S?, F> {
 extension FutureResultNullExtension<S, F extends Object>
     on FutureResult<S?, F> {
   Future<Result<S, F>?> transpose() {
+    return then((result) => result.transpose());
+  }
+}
+
+extension ResultOptionExtension<S, F extends Object>
+    on Result<Option<S>, F> {
+  /// Transposes a Result of an Option into an Option of a Result.
+  Option<Result<S, F>> transpose() {
+    if (isOk()) {
+      final val = unwrap();
+      if (val.isSome()) {
+        return Some(Ok(val.unwrap()));
+      }
+      return const None();
+    } else {
+      return Some(Err(unwrapErr()));
+    }
+  }
+}
+extension FutureResultOptionExtension<S, F extends Object>
+    on FutureResult<Option<S>, F> {
+  /// Transposes a FutureResult of an Option into an Option of a Result.
+  Future<Option<Result<S, F>>> transpose() async {
     return then((result) => result.transpose());
   }
 }

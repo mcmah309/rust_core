@@ -7,17 +7,17 @@ extension NullableTExtension<T extends Object> on T? {
   }
 }
 
-// extension OptionOptionExtension<T extends Object> on Option<Option<T>> {
-//   /// Converts from Option<Option<T>> to Option<T>.
-//   Option<T> flatten() {
-//     if (isSome()) {
-//       return unwrap();
-//     }
-//     return const None();
-//   }
-// }
+extension OptionOptionExtension<T> on Option<Option<T>> {
+  /// Converts from Option<Option<T>> to Option<T>.
+  Option<T> flatten() {
+    if (isSome()) {
+      return unwrap();
+    }
+    return const None();
+  }
+}
 
-extension OptionRecord2Extension<T extends Object, U extends Object>
+extension OptionRecord2Extension<T, U>
     on Option<(T, U)> {
   /// Unzips an option containing a tuple of two options.
   /// If self is Some((a, b)) this method returns (Some(a), Some(b)). Otherwise, (None, None) is returned.

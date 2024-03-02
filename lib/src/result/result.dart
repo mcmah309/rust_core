@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:rust_core/typedefs.dart';
 import 'package:rust_core/panic.dart';
+import 'package:rust_core/option.dart';
 
 part 'future_result.dart';
 
@@ -98,6 +99,12 @@ sealed class Result<S, F extends Object> {
   /// Note: This should not be used to determine is [Ok] or is [Err], since when the success type is nullable, a
   /// null is ambiguous in meaning.
   S? unwrapOrNull();
+
+
+  /// Converts a [Result] into an Option, returning [Some] if the [Result] is [Ok], and [None] if the [Result] is [Err].
+  /// Note: This should not be used to determine is [Ok] or is [Err], since when the success type is nullable, a
+  /// null is ambiguous in meaning.
+  Option<S> unwrapOrOption();
 
   /// Returns the err value if [Result] is [Err].
   /// Throws a [Panic] if the [Result] is [Ok].
@@ -242,6 +249,9 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   S unwrapOrNull() => ok;
+
+  @override
+  Some<S> unwrapOrOption() => Some(ok);
 
   @override
   F unwrapErr() {
@@ -425,6 +435,9 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   S? unwrapOrNull() => null;
+
+  @override
+  None<S> unwrapOrOption() => const None();
 
   @override
   F unwrapErr() {

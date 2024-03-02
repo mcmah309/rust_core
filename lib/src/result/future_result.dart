@@ -30,6 +30,10 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
     return then((result) => result.unwrapOrNull());
   }
 
+  Future<Option<S>> unwrapOrOption() async {
+    return then((result) => result.unwrapOrOption());
+  }
+
   Future<F> unwrapErr() {
     return then((result) => result.unwrapErr());
   }

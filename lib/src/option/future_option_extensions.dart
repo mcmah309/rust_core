@@ -1,29 +1,29 @@
-import 'package:rust_core/option.dart';
+part of 'option.dart';
 
-extension FutureToOption1<T extends Object> on Future<T?> {
+extension FutureToOption<T extends Object> on Future<T?> {
   /// Converts a Future<T?> to Future<Option<T>>.
   Future<Option<T>> toFutureOption() async {
-    return then((value) => value.toOption());
+    return then((value) => Option._(value));
   }
 }
 
-extension FutureToOption2<T extends Object> on Option<T> {
+extension OptionToFutureOption<T> on Option<T> {
   /// Converts a Option<T> to Future<Option<T>>.
   Future<Option<T>> toFutureOption() async {
     return this;
   }
 }
 
-// extension FutureOptionOptionExtension<T extends Object>
-//     on FutureOption<Option<T>> {
-//   /// Converts from FutureOption<Option<T>> to FutureOption<T>.
-//   Future<Option<T>> flatten() async {
-//     var optionOption = await this;
-//     return optionOption.isSome() ? optionOption.unwrap() : const None();
-//   }
-// }
+extension FutureOptionOptionExtension<T>
+    on FutureOption<Option<T>> {
+  /// Converts from FutureOption<Option<T>> to FutureOption<T>.
+  Future<Option<T>> flatten() async {
+    var optionOption = await this;
+    return optionOption.isSome() ? optionOption.unwrap() : const None();
+  }
+}
 
-extension FutureOptionRecord2Extension<T extends Object, U extends Object>
+extension FutureOptionRecord2Extension<T, U>
     on FutureOption<(T, U)> {
   /// Unzips a FutureOption containing a tuple into a tuple of FutureOptions.
   Future<(Option<T>, Option<U>)> unzip() async {
@@ -33,5 +33,30 @@ extension FutureOptionRecord2Extension<T extends Object, U extends Object>
       return (Some(one), Some(two));
     }
     return (None(), None());
+  }
+}
+
+
+extension OptionResultExtension<S, F extends Object>
+    on Option<Result<S, F>> {
+  /// Transposes an Option of a Result into a Result of an Option.
+  Result<Option<S>, F> transpose() {
+    if (isSome()) {
+      final val = unwrap();
+      if (val.isOk()) {
+        return Ok(Some(val.unwrap()));
+      } else {
+        return Err(val.unwrapErr());
+      }
+    }
+    return Ok(const None());
+  }
+}
+
+extension FutureOptionResultExtension<S, F extends Object>
+    on FutureOption<Result<S, F>> {
+  /// Transposes an FutureOption of a Result into a Result of an Option.
+  Future<Result<Option<S>, F>> transpose() async {
+    return then((result) => result.transpose());
   }
 }
