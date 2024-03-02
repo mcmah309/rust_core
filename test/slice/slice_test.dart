@@ -51,4 +51,32 @@ main(){
     slice.reverse();
     expect(list, [1, 4, 3, 2, 5]);
   });
+
+  test("takeStart", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    var taken = slice.takeStart(3);
+    expect(taken, [1, 2, 3]);
+    expect(list, [1, 2, 3, 4, 5]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    taken = slice.takeStart(3);
+    expect(taken, [2, 3, 4]);
+    expect(list, [1, 2, 3, 4, 5]);
+  });
+
+  test("takeEnd", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    var taken = slice.takeEnd(3);
+    expect(taken, [3, 4, 5]);
+    expect(list, [1, 2, 3, 4, 5]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    taken = slice.takeEnd(3);
+    expect(taken, [2, 3, 4]);
+    expect(list, [1, 2, 3, 4, 5]);
+  });  
 }
