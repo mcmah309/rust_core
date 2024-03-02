@@ -1,9 +1,10 @@
 # Option
 
-Option represents the union of two types `Some` and `None`. An alternative to null. The `Option` type is not meant 
-to replace nullable types, but rather complement them. [This](#to-option-or-not-to-option) section discusses more. But all 
-types in rust_core support nullable and `Option` implementations of classes and methods, to allow full usability of 
-rust_core with or without the `Option` type. Giving you greater control.
+Option represents the union of two types `Some` and `None`. An `Option` is an extension type of `null`. Therefore, `Option`
+has the exact same runtime cost of `null`, but with one big advantage, you can chain null specific operations!
+
+All types in rust_core support nullable and `Option` implementations of classes and methods for ergonomic convenience, but you
+can easily switch between the two with `toOption` and `toNullable` (or you can use `.v` and `Option(nullable)` directly).
 
 ### Usage
 The `Option` Type and features work very similar to [Result]. We are able to chain operations in a safe way without
@@ -30,8 +31,7 @@ switch(Some(2)){
 
 ### Early Return Key Notation
 Option also supports "Early Return Key Notation" (ERKN), which is a derivative of "Do Notation". It allows a 
-function to return early if the value 
-is `None`, otherwise the `Some` value of the option can be used without needing to unwrap or typecheck.
+function to return early if the value is `None`, and otherwise safely access the inner value directly without needing to unwrap or typecheck.
 ```dart
 Option<int> intNone() => const None();
 Option<double> earlyReturn(int val) => Option(($) { // Early Return Key
@@ -51,20 +51,23 @@ FutureOption<double> earlyReturn() => Option.async(($) async {
 ```
 
 ### To Option or Not To Option
-If Dart already supports nullable types, why use an
-option type? This [article] by one of the [fpdart] authors explains it nicely. But to concentrate on a single point,
-chaining null specific operations is not possible and the only alternate solution is a bunch of if statements and
-implicit and explicit type promotion. The `Option` type solves these issues.
-
-That said, it may be best to standardize around a single approach, either `Option` or nullable types. But it is
-perfectly acceptable to use both.
-
-If mixing nullable types and `Option`, the recommended approach is to use the `Option` type as the return type.
-Using return type `Option` allows for chaining operations.
-But the choice is up to the developer. Either way extension methods
-`toOption` and `toNullable` exist to easily convert back and forth.
+As mentioned `Option` is an extension type of `null` so they can be used interchangeably with no runtime cost.
+```dart
+Option<int> intNone() => const None();
+Option<int> option = intNone();
+int? nullable = option.v;
+nullable = option.toNullable()
+option = Option(nullable);
+option = nullable.toOption();
+```
+If Dart already supports nullable types, why use an option type? - with null, chaining null specific operations is not possible and the only alternate solution is a bunch of if statements and implicit and explicit type promotion. The `Option` type solves these issues.
+```dart
+Option<String> optionFunc();
+final (x, y) = optionFunc().map((e) => e + " added string").zip(Some(1)).unwrap();
+```
+As above, it is strongly recommended to use `Option` type as the return type, since it allows chaining operations.
+But the choice is up to the developer.
 
 [article]: https://www.sandromaglione.com/articles/option_type_and_null_safety_dart
-[fpdart]: https://pub.dev/packages/fpdart
 [Result]: https://github.com/mcmah309/rust_core/tree/master/lib/src/result
 [docs]: https://pub.dev/documentation/rust_core/latest/option/option-library.html
