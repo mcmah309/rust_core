@@ -10,18 +10,18 @@ void main() {
     expect(v.flatten(), isA<Result<int, Y>>());
   });
 
-  test('transpose Result Null', () {
+  test('transposeOut', () {
     Result<String?, int> x = Ok(null);
-    expect(x.transpose(), null);
+    expect(x.transposeOut(), null);
     x = Ok("");
-    expect(x.transpose()?.unwrap(), "");
+    expect(x.transposeOut()?.unwrap(), "");
   });
 
-  test('transpose Null Result', () {
+  test('transposeIn', () {
     Result<String, int>? x;
-    expect(x.transposeNullable(), Ok(null));
+    expect(x.transposeIn(), Ok(null));
     x = Ok("");
-    expect(x.transposeNullable().unwrap(), "");
+    expect(x.transposeIn().unwrap(), "");
   });
 
   test("toFutureResult", () async {

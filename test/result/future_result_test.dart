@@ -157,9 +157,9 @@ void main() {
 
   test('transpose Future Null Result', () async {
     Future<Result<String, int>?> x = Future.value(null);
-    expect((await x).transposeNullable().unwrap(), null);
+    expect((await x).transposeIn().unwrap(), null);
     FutureResult<String?, int> y = Future.value(Ok<String?, int>(""));
-    expect((await y.transposeNullable()).unwrap(), "");
+    expect((await y.transpose())?.unwrap(), "");
   });
 
   //************************************************************************//
