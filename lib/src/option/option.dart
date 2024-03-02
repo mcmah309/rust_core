@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/panic.dart';
 import 'package:rust_core/typedefs.dart';
+import 'package:rust_core/iter.dart';
 
 part 'future_option_extensions.dart';
 part 'future_option.dart';
@@ -126,11 +127,11 @@ extension type const Option<T>._(T? v) {
   }
 
   /// Returns an iterable over the possibly contained value.
-  Iterable<T> iter() {
+  RIterator<T> iter() {
     if (v == null) {
-      return const [];
+      return RIterator(const []);
     } else {
-      return [v!];
+      return RIterator([v!]);
     }
   }
 
@@ -337,8 +338,8 @@ extension type const Some<T>._(T v) implements Option<T> {
     return f(v);
   }
 
-  Iterable<T> iter() sync* {
-    yield v;
+  RIterator<T> iter() {
+    return RIterator([v]);
   }
 
   Option<U> map<U>(U Function(T self) f) {
@@ -453,7 +454,9 @@ extension type const None<T>._(Null _) implements Option<Infallible> {
     return false;
   }
 
-  Iterable<T> iter() sync* {}
+  RIterator<T> iter() {
+    return RIterator(const []);
+  }
 
   Option<U> map<U>(U Function(T self) f) {
     return const None();

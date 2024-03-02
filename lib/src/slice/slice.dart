@@ -1,8 +1,7 @@
 import 'dart:collection';
 
 import 'package:rust_core/option.dart';
-
-part '../iter/iterator.dart';
+import 'package:rust_core/iter.dart';
 
 /// An iterator over the elements of a [Slice].
 final class SliceIterator<T> implements Iterator<T> {
@@ -21,12 +20,15 @@ final class SliceIterator<T> implements Iterator<T> {
   T get current => _slice._list[_index];
 }
 
-/// A contiguous sequence of elements in a [List]. Slices are a view into a list without allocating a new list, and do not own their own data.
+/// A contiguous sequence of elements in a [List]. Slices are a view into a list without allocating and copying to a new list,
+/// as such, they do not own their own data.
 /// Note: Shrinking the original list can cause the slices range to become invalid, which may cause an exception.
 final class Slice<T> extends Iterable<T> {
   int _start;
+  /// The start index, inclusive.
   int get start => _start;
   int _end;
+  /// The end index, exclusive.
   int get end => _end;
   final List<T> _list;
   List<T> get list => _list;
@@ -58,7 +60,7 @@ final class Slice<T> extends Iterable<T> {
 
   //************************************************************************//
 
-  // align_to: Will not implmented, not possible in Dart
+// align_to: Will not implmented, not possible in Dart
 // align_to_mut: Will not implmented, not possible in Dart
 // array_chunks: //todo
 // array_chunks_mut: Will not implmented, covered by array_chunks
@@ -88,7 +90,7 @@ final class Slice<T> extends Iterable<T> {
 // chunks_mut: Will not implmented, covered by chunks
 // clone_from_slice: Will not implmented, not possible in Dart
 
-// contains
+// contains: Implemented by Iterable.contains
 
   /// Copies the elements from src into self.
   /// The length of src must be the same as self.
@@ -244,9 +246,27 @@ final class Slice<T> extends Iterable<T> {
 // starts_with
 // strip_prefix
 // strip_suffix
-// swap
-// swap_unchecked
-// swap_with_slice
+
+  /// Swaps two elements in the slice. Will throw if the indices are out of bounds.
+  void swap(int i, int j) {
+    var temp = _list[i + _start];
+    _list[i + _start] = _list[j + _start];
+    _list[j + _start] = temp;
+  }
+
+// swap_unchecked: Will not implmented, not possible in Dart
+
+  /// Swaps all elements in this with those in other.
+  /// The length of other must be the same as this.
+  /// Will throw if the length of other is not the same as this.
+  void swapWithSlice(Slice<T> other) {
+    assert(_end - _start == other._end - other._start, "Slices must be the same length");
+    for (var i = 0; i < _end - _start; i++) {
+      var temp = _list[i + _start];
+      _list[i + _start] = other._list[i + other._start];
+      other._list[i + other._start] = temp;
+    }
+  }
 
   /// Returns a new slice of this slice until to, and removes those elements from this slice.
   /// Returns None and does not modify the slice if the given range is out of bounds.
@@ -270,15 +290,39 @@ final class Slice<T> extends Iterable<T> {
     return Some(slice);
   }
 
-// take_first
-// take_first_mut
-// take_last
-// take_last_mut
-// take_mut
-// trim_ascii
-// trim_ascii_end
-// trim_ascii_start
-// windows
+  // Returns the first element of this slice, and removes it from this slice.
+  Option<T> takeFirst() {
+    if (isEmpty) {
+      return None();
+    }
+    var element = _list[_start];
+    _start++;
+    return Some(element);
+  }
+
+// take_first_mut: Will not implmented, mut the same as take_first
+
+  // Returns the last element of this slice, and removes it from this slice.
+  Option<T> takeLast() {
+    if (isEmpty) {
+      return None();
+    }
+    var element = _list[_end - 1];
+    _end--;
+    return Some(element);
+  }
+
+// take_last_mut: Will not implmented, mut the same as take_last
+// take_mut: Will not implment, same as takeEnd and takeStart
+// trim_ascii: Will not implmented, not possible in Dart
+// trim_ascii_end: Will not implmented, not possible in Dart
+// trim_ascii_start: Will not implmented, not possible in Dart
+
+  RIterator<Slice> windows(int size) {
+    assert(size > 0, "Size must be positive");
+    assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
+    return RIterator(Iterable.generate(_end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)));
+  }
 
   T operator [](int index) => _list[index + _start];
 

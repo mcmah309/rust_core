@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:rust_core/typedefs.dart';
 import 'package:rust_core/panic.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/iter.dart';
 
 part 'future_result.dart';
 
@@ -136,7 +137,7 @@ sealed class Result<S, F extends Object> {
 
   /// Returns an iterable over the possibly contained value. The iterator yields one value if the result is
   /// [Ok], otherwise none.
-  Iterable<S> iter();
+  RIterator<S> iter();
 
   //************************************************************************//
 
@@ -287,8 +288,8 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  Iterable<S> iter() sync* {
-    yield ok;
+  RIterator<S> iter() {
+    return RIterator([ok]);
   }
 
   //************************************************************************//
@@ -471,7 +472,9 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
-  Iterable<S> iter() sync* {}
+  RIterator<S> iter() {
+    return RIterator(const []);
+  }
 
   //************************************************************************//
 

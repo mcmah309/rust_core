@@ -1,5 +1,9 @@
+import 'package:rust_core/slice.dart';
 
-extension type RIterator<T>(Iterable<T> iterable){
+
+extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
+
+  RIterator.fromSlice(Slice<T> slice): iterable = slice;
 
 // advance_by
 // all
@@ -84,4 +88,6 @@ extension type RIterator<T>(Iterable<T> iterable){
 // try_reduce
 // unzip
 // zip
+
+
 }
