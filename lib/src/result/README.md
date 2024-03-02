@@ -292,7 +292,7 @@ switch(doubleResult){
 That is a little verbose. Fortunately, extensions to the recuse, instead do:
 ```dart
 final a, b, c;
-final result = (boolOk(), intOk(), doubleOk()).toResultEager();
+final result = (boolOk, intOk, doubleOk).toResult();
 switch(result){
    case Ok(:final ok):
       (a, b, c) = ok;
