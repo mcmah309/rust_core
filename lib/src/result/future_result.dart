@@ -34,22 +34,6 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
     return then((result) => result.unwrapErr());
   }
 
-  Future<F> unwrapErrOr(F defaultValue) {
-    return then((result) => result.unwrapErrOr(defaultValue));
-  }
-
-  Future<F> unwrapErrOrElse(FutureOr<F> Function(S ok) onOk) {
-    return mapOrElse((error) {
-      return error;
-    }, (ok) {
-      return onOk(ok);
-    });
-  }
-
-  Future<F?> unwrapErrOrNull() {
-    return then((result) => result.unwrapErrOrNull());
-  }
-
   //************************************************************************//
 
   Future<bool> isErr() {

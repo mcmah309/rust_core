@@ -38,8 +38,8 @@ sealed class Result<S, F extends Object> {
   factory Result(_ResultEarlyReturnFunction<S, F> fn) {
     try {
       return fn(_ResultEarlyReturnKey<F>._());
-    } on _ResultEarlyReturnNotification<F> catch (e) {
-      return e.value;
+    } on _ResultEarlyReturnNotification<F> catch (notification) {
+      return notification.value;
     }
   }
 
@@ -72,8 +72,8 @@ sealed class Result<S, F extends Object> {
   ) async {
     try {
       return await fn(_ResultEarlyReturnKey._());
-    } on _ResultEarlyReturnNotification<F> catch (e) {
-      return e.value;
+    } on _ResultEarlyReturnNotification<F> catch (notification) {
+      return notification.value;
     }
   }
 
@@ -102,21 +102,6 @@ sealed class Result<S, F extends Object> {
   /// Returns the err value if [Result] is [Err].
   /// Throws a [Panic] if the [Result] is [Ok].
   F unwrapErr();
-
-  /// Returns the encapsulated value if this instance represents
-  /// [Err] or the [defaultValue] if it is [Ok].
-  F unwrapErrOr(F defaultValue);
-
-  /// Returns the encapsulated value if this instance represents [Err]
-  /// or the result of [onError] function for
-  /// the encapsulated a [Err] value.
-  F unwrapErrOrElse(F Function(S ok) onOk);
-
-  /// Returns the err value if [Result] is [Err], otherwise returns null.
-  /// This can be used to determine is [Ok] or is [Err], since when the failure type is not nullable, so a returned
-  /// null value means this is not an [Err].
-  /// Same as "err()" in Rust, but "err" is a field name here
-  F? unwrapErrOrNull();
 
   /// Returns the ok value if [Result] is [Ok].
   /// Throws a [Panic] if the [Result] is [Err], with the provided [message].
@@ -264,19 +249,6 @@ final class Ok<S, F extends Object> implements Result<S, F> {
         onValue: this,
         reason: "called `unwrapErr` on a value that was not an Err");
   }
-
-  @override
-  F unwrapErrOr(F defaultValue) {
-    return defaultValue;
-  }
-
-  @override
-  F unwrapErrOrElse(F Function(S ok) onOk) {
-    return onOk(ok);
-  }
-
-  @override
-  F? unwrapErrOrNull() => null;
 
   @override
   S expect(String message) {
@@ -458,19 +430,6 @@ final class Err<S, F extends Object> implements Result<S, F> {
   F unwrapErr() {
     return err;
   }
-
-  @override
-  F unwrapErrOr(F defaultValue) {
-    return err;
-  }
-
-  @override
-  F unwrapErrOrElse(F Function(S ok) onOk) {
-    return err;
-  }
-
-  @override
-  F unwrapErrOrNull() => err;
 
   @override
   S expect(String message) {

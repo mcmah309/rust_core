@@ -24,7 +24,7 @@ void main() {
 
       expect(result, isA<Result<int, String>>());
       expect(result.unwrapErr(), isA<String>());
-      expect(result.unwrapErrOrNull()!, 'error');
+      expect(result.unwrapErr(), 'error');
     });
 
     test('throw AssertException if is a Result object', () {

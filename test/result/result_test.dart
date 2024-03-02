@@ -142,7 +142,7 @@ void main() {
       final result2 = result.map((ok) => 'change');
 
       expect(result2.unwrapOrNull(), isNull);
-      expect(result2.unwrapErrOrNull(), 4);
+      expect(result2.unwrapErr(), 4);
     });
   });
 
@@ -176,7 +176,7 @@ void main() {
       final result2 = result.mapErr((error) => '=' * error);
 
       expect(result2.unwrapOrNull(), 4);
-      expect(result2.unwrapErrOrNull(), isNull);
+      expect(result2.unwrapErr, throwsA(isA<Panic>()));
     });
 
     test('Err', () {
@@ -184,7 +184,7 @@ void main() {
       final result2 = result.mapErr((error) => 'change');
 
       expect(result2.unwrapOrNull(), isNull);
-      expect(result2.unwrapErrOrNull(), 'change');
+      expect(result2.unwrapErr(), 'change');
     });
   });
 
@@ -201,7 +201,7 @@ void main() {
       final result2 = result.andThen(Ok.new);
 
       expect(result2.unwrapOrNull(), isNull);
-      expect(result2.unwrapErrOrNull(), 4);
+      expect(result2.unwrapErr(), 4);
     });
   });
 
@@ -210,7 +210,7 @@ void main() {
       final result = 4.toErr();
       final result2 = result.andThenErr((error) => ('=' * error).toErr());
 
-      expect(result2.unwrapErrOrNull(), '====');
+      expect(result2.unwrapErr(), '====');
     });
 
     test('Ok', () {
@@ -218,7 +218,7 @@ void main() {
       final result2 = result.andThenErr(Err.new);
 
       expect(result2.unwrapOrNull(), 4);
-      expect(result2.unwrapErrOrNull(), isNull);
+      expect(result2.unwrapErr, throwsA(isA<Panic>()));
     });
   });
 
@@ -302,20 +302,6 @@ void main() {
     });
   });
 
-  group('unwrapErrOr', () {
-    test('Ok', () {
-      final result = Ok(0);
-      final value = result.unwrapErrOr("");
-      expect(value, "");
-    });
-
-    test('Err', () {
-      final result = Err<bool, Object>(0);
-      final value = result.unwrapErrOr("");
-      expect(value, 0);
-    });
-  });
-
   group('inspect', () {
     test('Ok', () {
       const Ok(0).inspectErr((error) {}).inspect(
@@ -335,34 +321,6 @@ void main() {
           },
         ),
       );
-    });
-  });
-
-  group('unwrapErrOrElse', () {
-    test('Ok', () {
-      const result = Ok(0);
-      final value = result.unwrapErrOrElse((f) => "");
-      expect(value, "");
-    });
-
-    test('Err', () {
-      final result = Err(0);
-      final value = result.unwrapErrOrElse((f) => 2);
-      expect(value, 0);
-    });
-  });
-
-  group('unwrapErrOrNull', () {
-    test('Ok', () {
-      const result = Ok(0);
-      final value = result.unwrapErrOrNull();
-      expect(value, null);
-    });
-
-    test('Err', () {
-      final result = Err<int, String>("");
-      final value = result.unwrapErrOrNull();
-      expect(value, "");
     });
   });
 

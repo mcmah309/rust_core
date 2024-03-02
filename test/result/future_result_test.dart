@@ -18,12 +18,12 @@ void main() {
   group('andThenError', () {
     test('async ', () async {
       final result = await Future.value(Err(2)).andThenErr((error) async => Err(error * 2));
-      expect(result.unwrapErrOrNull(), 4);
+      expect(result.unwrapErr(), 4);
     });
 
     test('sink', () async {
       final result = await Future.value(Err(2)).andThenErr((error) => Err(error * 2));
-      expect(result.unwrapErrOrNull(), 4);
+      expect(result.unwrapErr(), 4);
     });
   });
 
@@ -50,7 +50,7 @@ void main() {
 
   test('mapErr', () async {
     final result = await Future.value(Err(1)).mapErr((error) => Err(error * 2));
-    expect(result.unwrapErrOrNull()?.unwrapErrOrNull(), 2);
+    expect(result.unwrapErr().unwrapErr(), 2);
     expect(Future.value(const Ok(2)).mapErr((x) => x), completes);
   });
 
