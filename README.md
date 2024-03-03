@@ -14,7 +14,7 @@ and language-compatible integration.
 ## Highlights
 ### Libraries
 
-| [Result] | [Option] | [Cell] | [Slice] | [Iter] | [Panic] | [Typedefs] |
+| [Result] | [Option] | [Cell] | [Slice] | [Iter] | [Array] | [Panic] | [Typedefs] |
 
 🔥 **Extensive Extensions:** Dozens of additional extensions with hundreds of methods tailored for Dart. These 
 extensions are designed for maximum composability, addressing specific scenarios.
@@ -39,6 +39,7 @@ it's also available for `T?`.
 [Result]: https://github.com/mcmah309/rust_core/tree/master/lib/src/result
 [Typedefs]: https://github.com/mcmah309/rust_core/tree/master/lib/src/typedefs
 [Iter]: https://github.com/mcmah309/rust_core/tree/master/lib/src/iter
+[Array]: https://github.com/mcmah309/rust_core/tree/master/lib/src/array
 [Slice]: https://github.com/mcmah309/rust_core/tree/master/lib/src/slice
 
 
