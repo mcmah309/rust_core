@@ -1,3 +1,10 @@
+## 0.4.;
+
+- Migrate Option to a extension type
+- slice library
+- iter library
+- Various additional extensions
+
 ## 0.3.6
 
 - Async early return
