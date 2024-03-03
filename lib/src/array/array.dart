@@ -4,7 +4,7 @@ import 'package:rust_core/iter.dart';
 
 extension type Array<T>._(List<T> list) {
   
-  Array(int size, T defaultVal) : list = List.filled(size, defaultVal, growable: false);
+  Array(T defaultVal, int size) : list = List.filled(size, defaultVal, growable: false);
   
   T operator [](int index) => list[index];
   void operator []=(int index, T value) => list[index] = value;
