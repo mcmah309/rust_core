@@ -1,7 +1,7 @@
 # Iter
 
-A Dart `Iterable` is analogous to a Rust `Iterator`. Dart already has an `Iterator` therefore to avoid confusion,
-the Dart version of the Rust iterator is `RIterator`. `RIterator` is a zero cost extension type of `Iterable`. `RIterator`
+A Dart `Iterable` is analogous to a Rust `Iterator`. Since Dart already has an `Iterator` class, to avoid confusion,
+the Dart implementation of the Rust iterator is `RIterator`. `RIterator` is a zero cost extension type of `Iterable`. `RIterator`
 makes working with collections of `rust_core` types and regular Dart types a breeze. e.g.
 
 ```dart

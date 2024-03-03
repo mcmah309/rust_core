@@ -14,20 +14,22 @@ and language-compatible integration.
 ## Highlights
 ### Libraries
 
-| [Result] | [Option] | [Cell] | [Slice] | [Iter] | [Panic] | [Typedefs]
+| [Result] | [Option] | [Cell] | [Slice] | [Iter] | [Panic] | [Typedefs] |
 
 🔥 **Extensive Extensions:** Dozens of additional extensions with hundreds of methods tailored for Dart. These 
 extensions are designed for maximum composability, addressing specific scenarios.
 
-🚀 **Dart Friendly:** Dual Support for `Option` and Nullable Types. If a method or extension exists for `Option<T>`,
-it's also available for `T?`, offering flexibility and consistency in your coding.
+🚀 **Dart Friendly:** Developed with ergonomics in mind. e.g. Dual Support for `Option` and Nullable Types. If a method or extension exists for `Option<T>`,
+it's also available for `T?`.
 
-🧪 **Robust Testing:** Every feature tested. Over 300 meaningful tests. Reliability and performance in every feature.
+🧪 **Robust Testing:** Every feature tested. Around 400 meaningful tests. Reliability and performance in every feature.
 
 ### Official Packages Based Off rust_core
 | Library | Description |
 | ------- | ----------- |
 | [anyhow] | Idiomatic error handling capabilities to make your code safer, more maintainable, and errors easier to debug. |
+| [anyhow_logging] | Dynamic logging utility that allows you to log exactly what you want.  |
+| [rust_std] | Implementation of Rust's standard library in Dart. |
 | [tapper] | Extension methods on all types that allow transparent, temporary, inspection/mutation (tapping), transformation (piping), or type conversion. |
 
 
@@ -41,4 +43,6 @@ it's also available for `T?`, offering flexibility and consistency in your codin
 
 
 [anyhow]: https://pub.dev/packages/anyhow
+[anyhow_logging]: https://pub.dev/packages/anyhow_logging
+[rust_std]: https://pub.dev/packages/rust_std
 [tapper]: https://pub.dev/packages/tapper
