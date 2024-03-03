@@ -1,4 +1,4 @@
-## 0.4.;
+## 0.4.0
 
 - Migrate Option to a extension type
 - slice library
