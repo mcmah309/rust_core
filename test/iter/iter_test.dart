@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:rust_core/iter.dart';
-import 'package:rust_core/slice.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/option.dart';
 

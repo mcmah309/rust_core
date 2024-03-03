@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:rust_core/option.dart';
 import 'package:rust_core/iter.dart';
 
@@ -25,9 +23,11 @@ final class SliceIterator<T> implements Iterator<T> {
 /// Note: Shrinking the original list can cause the slices range to become invalid, which may cause an exception.
 final class Slice<T> extends Iterable<T> {
   int _start;
+
   /// The start index, inclusive.
   int get start => _start;
   int _end;
+
   /// The end index, exclusive.
   int get end => _end;
   final List<T> _list;
@@ -44,7 +44,10 @@ final class Slice<T> extends Iterable<T> {
             other._start == _start &&
             other._end == _end &&
             other._list == _list) ||
-        (other is List<T> && other.length == _end && _start == 0 && _list == other);
+        (other is List<T> &&
+            other.length == _end &&
+            _start == 0 &&
+            _list == other);
   }
 
   @override
@@ -260,7 +263,8 @@ final class Slice<T> extends Iterable<T> {
   /// The length of other must be the same as this.
   /// Will throw if the length of other is not the same as this.
   void swapWithSlice(Slice<T> other) {
-    assert(_end - _start == other._end - other._start, "Slices must be the same length");
+    assert(_end - _start == other._end - other._start,
+        "Slices must be the same length");
     for (var i = 0; i < _end - _start; i++) {
       var temp = _list[i + _start];
       _list[i + _start] = other._list[i + other._start];
@@ -320,8 +324,10 @@ final class Slice<T> extends Iterable<T> {
 
   RIterator<Slice<T>> windows(int size) {
     assert(size > 0, "Size must be positive");
-    assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
-    return RIterator(Iterable.generate(_end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)));
+    assert(size <= _end - _start,
+        "Size must be less than or equal to the length of the slice");
+    return RIterator(Iterable.generate(_end - _start - size + 1,
+        (i) => Slice(_list, _start + i, _start + i + size)));
   }
 
   T operator [](int index) => _list[index + _start];

@@ -1,8 +1,7 @@
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 
-main(){
-
+main() {
   test("copyFromSlice", () {
     var srcList = [1, 2, 3, 4, 5];
     var dstList = [6, 7, 8, 9, 10];
@@ -26,7 +25,7 @@ main(){
     expect(dstList, [2, 3, 4, 9, 10]);
   });
 
-  test("isSortedBy",(){
+  test("isSortedBy", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.isSortedBy((a, b) => a.compareTo(b)), true);
@@ -107,12 +106,12 @@ main(){
     taken = slice.takeLast();
     expect(taken, 4);
     expect(slice, [2, 3]);
-    
+
     slice[1] = 10;
     expect(list, [1, 2, 10, 4, 5]);
   });
 
-  test("swap", (){
+  test("swap", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     slice.swap(0, 4);
@@ -124,7 +123,7 @@ main(){
     expect(list, [1, 4, 3, 2, 5]);
   });
 
-  test("swapWithSlice", (){
+  test("swapWithSlice", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     var other = Slice([6, 7, 8, 9, 10], 0, 5);
@@ -147,16 +146,26 @@ main(){
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     var windows = slice.windows(2);
-    expect(windows, [[1, 2], [2, 3], [3, 4], [4, 5]]);
+    expect(windows, [
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5]
+    ]);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
     windows = slice.windows(2);
-    expect(windows, [[2, 3], [3, 4]]);
+    expect(windows, [
+      [2, 3],
+      [3, 4]
+    ]);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 0, 5);
     windows = slice.windows(5);
-    expect(windows, [[1, 2, 3, 4, 5]]);
+    expect(windows, [
+      [1, 2, 3, 4, 5]
+    ]);
   });
 }

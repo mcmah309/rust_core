@@ -14,8 +14,7 @@ extension OptionToFutureOption<T> on Option<T> {
   }
 }
 
-extension FutureOptionOptionExtension<T>
-    on FutureOption<Option<T>> {
+extension FutureOptionOptionExtension<T> on FutureOption<Option<T>> {
   /// Converts from FutureOption<Option<T>> to FutureOption<T>.
   Future<Option<T>> flatten() async {
     var optionOption = await this;
@@ -23,8 +22,7 @@ extension FutureOptionOptionExtension<T>
   }
 }
 
-extension FutureOptionRecord2Extension<T, U>
-    on FutureOption<(T, U)> {
+extension FutureOptionRecord2Extension<T, U> on FutureOption<(T, U)> {
   /// Unzips a FutureOption containing a tuple into a tuple of FutureOptions.
   Future<(Option<T>, Option<U>)> unzip() async {
     var optionTuple = await this;
@@ -36,9 +34,7 @@ extension FutureOptionRecord2Extension<T, U>
   }
 }
 
-
-extension OptionResultExtension<S, F extends Object>
-    on Option<Result<S, F>> {
+extension OptionResultExtension<S, F extends Object> on Option<Result<S, F>> {
   /// Transposes an Option of a Result into a Result of an Option.
   Result<Option<S>, F> transpose() {
     if (isSome()) {

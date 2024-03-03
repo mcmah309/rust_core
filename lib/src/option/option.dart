@@ -65,7 +65,7 @@ extension type const Option<T>._(T? v) {
   ///Returns None if the option is None, otherwise calls f with the wrapped value and returns the result. Some
   ///languages call this operation flatmap.
   Option<U> andThen<U>(Option<U> Function(T) f) {
-    return v == null ? const None() : f(v!);
+    return v == null ? const None() : f(v as T);
   }
 
   // copy: Does not make sense to add here since this is an extension type
@@ -82,8 +82,8 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return const None();
     } else {
-      if (predicate(v!)) {
-        return Some(v!);
+      if (predicate(v as T)) {
+        return Some(v as T);
       }
       return const None();
     }
@@ -102,7 +102,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return this;
     } else {
-      f(v!);
+      f(v as T);
       return this;
     }
   }
@@ -122,7 +122,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return false;
     } else {
-      return f(v!);
+      return f(v as T);
     }
   }
 
@@ -131,7 +131,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return RIterator(const []);
     } else {
-      return RIterator([v!]);
+      return RIterator([v as T]);
     }
   }
 
@@ -141,7 +141,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return const None();
     } else {
-      return Some(f(v!));
+      return Some(f(v as T));
     }
   }
 
@@ -150,7 +150,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return defaultValue;
     } else {
-      return f(v!);
+      return f(v as T);
     }
   }
 
@@ -159,7 +159,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return defaultFn();
     } else {
-      return f(v!);
+      return f(v as T);
     }
   }
 
@@ -168,7 +168,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return Err(err);
     } else {
-      return Ok(v!);
+      return Ok(v as T);
     }
   }
 
@@ -177,7 +177,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return Err(errFn());
     } else {
-      return Ok(v!);
+      return Ok(v as T);
     }
   }
 
@@ -186,7 +186,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return other;
     } else {
-      return Some(v!);
+      return Some(v as T);
     }
   }
 
@@ -195,7 +195,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return f();
     } else {
-      return Some(v!);
+      return Some(v as T);
     }
   }
 
@@ -247,7 +247,7 @@ extension type const Option<T>._(T? v) {
       if (other.isSome()) {
         return const None();
       }
-      return Some(v!);
+      return Some(v as T);
     }
   }
 
@@ -269,7 +269,7 @@ extension type const Option<T>._(T? v) {
       return const None();
     } else {
       if (other.isSome()) {
-        return Some(f(v!, other.unwrap()));
+        return Some(f(v as T, other.unwrap()));
       }
       return const None();
     }
@@ -285,7 +285,8 @@ extension type const Option<T>._(T? v) {
   //************************************************************************//
 
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
-  T operator [](_OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
+  T operator [](
+      _OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
   {
     if (v == null) {
       throw const _OptionEarlyReturnNotification();
@@ -539,7 +540,8 @@ final class _OptionEarlyReturnNotification {
   const _OptionEarlyReturnNotification();
 }
 
-typedef _OptionEarlyReturnFunction<T> = Option<T> Function(_OptionEarlyReturnKey);
+typedef _OptionEarlyReturnFunction<T> = Option<T> Function(
+    _OptionEarlyReturnKey);
 
 typedef _OptionAsyncEarlyReturnFunction<T> = Future<Option<T>> Function(
     _OptionEarlyReturnKey);

@@ -33,7 +33,8 @@ void main() {
 
     expect(Ok(2).andThen(sqThenToString), Ok(4.toString()));
     expect(Ok(1000000).andThen(sqThenToString), Err("overflowed"));
-    expect(Err<int, String>("not a number").andThen(sqThenToString), Err("not a number"));
+    expect(Err<int, String>("not a number").andThen(sqThenToString),
+        Err("not a number"));
   });
 
   test("expect", () {
@@ -260,20 +261,20 @@ void main() {
   test("option switch", () {
     Option<int> x = int2Some();
     var y = switch (x) {
-      Some(v:final s) => s,
+      Some(v: final s) => s,
       None() => 4,
     };
     expect(y, 2);
 
     y = switch (x) {
-      Some(v:final _) => 3,
+      Some(v: final _) => 3,
       None() => 4,
     };
     expect(y, 3);
 
     x = intNone();
     y = switch (x) {
-      Some(v:final _) => 3,
+      Some(v: final _) => 3,
       None() => 4,
     };
     expect(y, 4);

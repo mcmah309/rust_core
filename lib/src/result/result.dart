@@ -101,7 +101,6 @@ sealed class Result<S, F extends Object> {
   /// null is ambiguous in meaning.
   S? unwrapOrNull();
 
-
   /// Converts a [Result] into an Option, returning [Some] if the [Result] is [Ok], and [None] if the [Result] is [Err].
   /// Note: This should not be used to determine is [Ok] or is [Err], since when the success type is nullable, a
   /// null is ambiguous in meaning.

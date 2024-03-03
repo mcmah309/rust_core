@@ -1,6 +1,9 @@
 import 'package:rust_core/result.dart';
 
-extension RecordToResult2<A, B, Z extends Object> on (Result<A, Z>, Result<B, Z>) {
+extension RecordToResult2<A, B, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>
+) {
   /// {@template RecordToResult.toResult}
   /// Transforms a Record of [Result]s into a single [Result]. The [Ok] value is a Record of all Result's [Ok]
   /// values. The [Err] value is the List of all [Err] values.
@@ -121,7 +124,11 @@ extension RecordToResult2<A, B, Z extends Object> on (Result<A, Z>, Result<B, Z>
   }
 }
 
-extension RecordToResult3<A, B, C, Z extends Object> on (Result<A, Z>, Result<B, Z>, Result<C, Z>) {
+extension RecordToResult3<A, B, C, Z extends Object> on (
+  Result<A, Z>,
+  Result<B, Z>,
+  Result<C, Z>
+) {
   /// {@macro RecordToResult.toResult}
   Result<(A, B, C), List<Z>> toResult() {
     List<Z> z = [];
@@ -1379,7 +1386,8 @@ extension RecordFunctionToResult8<A, B, C, D, E, F, G, H, Z extends Object> on (
   }
 }
 
-extension RecordFunctionToResult9<A, B, C, D, E, F, G, H, I, Z extends Object> on (
+extension RecordFunctionToResult9<A, B, C, D, E, F, G, H, I, Z extends Object>
+    on (
   Result<A, Z> Function(),
   Result<B, Z> Function(),
   Result<C, Z> Function(),
@@ -1460,7 +1468,8 @@ extension RecordFunctionToResult9<A, B, C, D, E, F, G, H, I, Z extends Object> o
   }
 }
 
-extension RecordFunctionToResult10<A, B, C, D, E, F, G, H, I, J, Z extends Object> on (
+extension RecordFunctionToResult10<A, B, C, D, E, F, G, H, I, J,
+    Z extends Object> on (
   Result<A, Z> Function(),
   Result<B, Z> Function(),
   Result<C, Z> Function(),

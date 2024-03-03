@@ -229,12 +229,12 @@ void main() {
     });
   });
 
-  group("record functions to result",(){
+  group("record functions to result", () {
     test("2 record functions to result Ok", () {
       final a, b;
       switch ((boolOk, intOk).toResult()) {
         case Ok(:final ok):
-          (a,b) = ok;
+          (a, b) = ok;
         case Err():
           throw Exception();
       }
@@ -247,7 +247,7 @@ void main() {
       final a, b;
       switch ((boolOk, intErr).toResult()) {
         case Ok(:final ok):
-          (a,b) = ok;
+          (a, b) = ok;
         case Err():
           hasErr = true;
       }
@@ -258,7 +258,7 @@ void main() {
       final a, b, c;
       switch ((boolOk, intOk, doubleOk).toResult()) {
         case Ok(:final ok):
-          (a,b,c) = ok;
+          (a, b, c) = ok;
         case Err():
           throw Exception();
       }
@@ -272,7 +272,7 @@ void main() {
       final a, b, c;
       switch ((boolOk, intErr, doubleOk).toResult()) {
         case Ok(:final ok):
-          (a,b,c) = ok;
+          (a, b, c) = ok;
         case Err():
           hasErr = true;
       }
@@ -283,7 +283,7 @@ void main() {
       final a, b, c, d;
       switch ((boolOk, intOk, doubleOk, stringOk).toResult()) {
         case Ok(:final ok):
-          (a,b,c,d) = ok;
+          (a, b, c, d) = ok;
         case Err():
           throw Exception();
       }
@@ -298,7 +298,7 @@ void main() {
       final a, b, c, d;
       switch ((boolOk, intOk, doubleErr, stringOk).toResult()) {
         case Ok(:final ok):
-          (a,b,c,d) = ok;
+          (a, b, c, d) = ok;
         case Err():
           hasErr = true;
       }
@@ -309,7 +309,7 @@ void main() {
       final a, b, c, d, e;
       switch ((boolOk, intOk, doubleOk, stringOk, intOk).toResult()) {
         case Ok(:final ok):
-          (a,b,c,d,e) = ok;
+          (a, b, c, d, e) = ok;
         case Err():
           throw Exception();
       }
@@ -325,7 +325,7 @@ void main() {
       final a, b, c, d, e;
       switch ((boolOk, intOk, doubleOk, stringErr, intOk).toResult()) {
         case Ok(:final ok):
-          (a,b,c,d,e) = ok;
+          (a, b, c, d, e) = ok;
         case Err():
           hasErr = true;
       }
