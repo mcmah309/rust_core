@@ -53,7 +53,7 @@ extension ResultOptionExtension<S, F extends Object> on Result<Option<S>, F> {
       if (val.isSome()) {
         return Some(Ok(val.unwrap()));
       }
-      return const None();
+      return None;
     } else {
       return Some(Err(unwrapErr()));
     }

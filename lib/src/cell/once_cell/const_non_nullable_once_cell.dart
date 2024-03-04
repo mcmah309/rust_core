@@ -21,7 +21,7 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
   Option<T> get() {
     final val = _cache[this] as T?;
     if (val == null) {
-      return const None();
+      return None;
     }
     return Some(val);
   }
@@ -89,7 +89,7 @@ class ConstNonNullableOnceCell<T extends Object> implements OnceCell<T> {
       _cache[this] = null;
       return Some(val);
     }
-    return const None();
+    return None;
   }
 
   @override

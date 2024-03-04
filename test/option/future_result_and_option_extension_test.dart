@@ -10,7 +10,7 @@ void main() {
       expect(await okResult.unwrapOrOption(), Some(5));
 
       FutureResult<int, String> errResult = Future.value(Err("Error"));
-      expect(await errResult.unwrapOrOption(), const None());
+      expect(await errResult.unwrapOrOption(), None);
     });
 
     test("FutureResultOptionExtension transpose", () async {
@@ -19,8 +19,8 @@ void main() {
       expect(await okSomeResult.transpose(), Some(Ok(5)));
 
       FutureResult<Option<int>, String> okNoneResult =
-          Future.value(Ok(const None()));
-      expect(await okNoneResult.transpose(), const None());
+          Future.value(Ok(None));
+      expect(await okNoneResult.transpose(), None);
 
       FutureResult<Option<int>, String> errResult = Future.value(Err("Error"));
       expect(await errResult.transpose(), Some(Err("Error")));
@@ -35,8 +35,8 @@ void main() {
           Future.value(Some(Err("Error")));
       expect(await someErrOption.transpose(), Err("Error"));
 
-      FutureOption<Result<int, String>> noneOption = Future.value(const None());
-      expect(await noneOption.transpose(), Ok(const None()));
+      FutureOption<Result<int, String>> noneOption = Future.value(None);
+      expect(await noneOption.transpose(), Ok(None));
     });
   });
 }

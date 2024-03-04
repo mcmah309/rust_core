@@ -101,7 +101,7 @@ sealed class Result<S, F extends Object> {
   /// null is ambiguous in meaning.
   S? unwrapOrNull();
 
-  /// Converts a [Result] into an Option, returning [Some] if the [Result] is [Ok], and [None] if the [Result] is [Err].
+  /// Converts a [Result] into an Option, returning [Some] if the [Result] is [Ok], and [_None] if the [Result] is [Err].
   /// Note: This should not be used to determine is [Ok] or is [Err], since when the success type is nullable, a
   /// null is ambiguous in meaning.
   Option<S> unwrapOrOption();
@@ -437,7 +437,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
   S? unwrapOrNull() => null;
 
   @override
-  None<S> unwrapOrOption() => const None();
+  Option<S> unwrapOrOption() => None;
 
   @override
   F unwrapErr() {

@@ -70,7 +70,7 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
         return Some(element);
       }
     }
-    return None();
+    return None;
   }
 
   /// Applies the function to the elements of iterator and returns the first non-none result.
@@ -81,7 +81,7 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
         return result;
       }
     }
-    return None();
+    return None;
   }
 
   /// Creates an iterator that works like map, but flattens nested structure.
@@ -119,7 +119,7 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
   /// Returns the last element of an iterator, or None if it is empty.
   Option<T> lastOrOption() {
     if (iterable.isEmpty) {
-      return None();
+      return None;
     }
     return Some(iterable.last);
   }

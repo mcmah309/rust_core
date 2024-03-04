@@ -11,7 +11,7 @@ part 'option_extensions.dart';
 
 extension type const Option<T>._(T? v) {
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
-  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
+  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [_None],
   /// immediately the context that "$" belongs to is returned with None(). e.g.
   /// ```
   ///   Option<int> intNone() => const None();
@@ -29,12 +29,12 @@ extension type const Option<T>._(T? v) {
     try {
       return fn(const _OptionEarlyReturnKey._());
     } on _OptionEarlyReturnNotification catch (_) {
-      return const None();
+      return None;
     }
   }
 
   /// Creates a context for async early return, similar to "Do notation". Works like the Rust "?" operator, which is a
-  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [None],
+  /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [_None],
   /// immediately the context that "$" belongs to is returned with None(). e.g.
   /// ```
   /// FutureOption<int> intNone() async => const None();
@@ -53,19 +53,19 @@ extension type const Option<T>._(T? v) {
     try {
       return await fn(const _OptionEarlyReturnKey._());
     } on _OptionEarlyReturnNotification catch (_) {
-      return Future.value(const None());
+      return Future.value(None);
     }
   }
 
   /// Returns None if the option is None, otherwise returns [other].
   Option<U> and<U>(Option<U> other) {
-    return v == null ? const None() : other;
+    return v == null ? None : other;
   }
 
   ///Returns None if the option is None, otherwise calls f with the wrapped value and returns the result. Some
   ///languages call this operation flatmap.
   Option<U> andThen<U>(Option<U> Function(T) f) {
-    return v == null ? const None() : f(v as T);
+    return v == null ? None : f(v as T);
   }
 
   // copy: Does not make sense to add here since this is an extension type
@@ -80,12 +80,12 @@ extension type const Option<T>._(T? v) {
   // None if predicate returns false
   Option<T> filter(bool Function(T) predicate) {
     if (v == null) {
-      return const None();
+      return None;
     } else {
       if (predicate(v as T)) {
         return Some(v as T);
       }
-      return const None();
+      return None;
     }
   }
 
@@ -139,7 +139,7 @@ extension type const Option<T>._(T? v) {
   /// None).
   Option<U> map<U>(U Function(T) f) {
     if (v == null) {
-      return const None();
+      return None;
     } else {
       return Some(f(v as T));
     }
@@ -242,10 +242,10 @@ extension type const Option<T>._(T? v) {
       if (other.isSome()) {
         return other;
       }
-      return const None();
+      return None;
     } else {
       if (other.isSome()) {
-        return const None();
+        return None;
       }
       return Some(v as T);
     }
@@ -254,24 +254,24 @@ extension type const Option<T>._(T? v) {
   /// Zips self with another Option.
   Option<(T, U)> zip<U>(Option<U> other) {
     if (v == null) {
-      return const None();
+      return None;
     } else {
       if (other.isSome()) {
         return Some((v!, other.unwrap()));
       }
-      return const None();
+      return None;
     }
   }
 
   /// Zips self and another Option with function f
   Option<R> zipWith<U, R>(Option<U> other, R Function(T, U) f) {
     if (v == null) {
-      return const None();
+      return None;
     } else {
       if (other.isSome()) {
         return Some(f(v as T, other.unwrap()));
       }
-      return const None();
+      return None;
     }
   }
 
@@ -285,8 +285,7 @@ extension type const Option<T>._(T? v) {
   //************************************************************************//
 
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
-  T operator [](
-      _OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
+  T operator [](_OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
   {
     if (v == null) {
       throw const _OptionEarlyReturnNotification();
@@ -307,7 +306,7 @@ extension type const Some<T>._(T v) implements Option<T> {
     return f(v);
   }
 
-  Option<T> copy() {
+  Some<T> copy() {
     return Some(v);
   }
 
@@ -319,10 +318,10 @@ extension type const Some<T>._(T v) implements Option<T> {
     if (predicate(v)) {
       return Some(v);
     }
-    return const None();
+    return None;
   }
 
-  Option<T> inspect(Function(T self) f) {
+  Some<T> inspect(Function(T self) f) {
     f(v);
     return this;
   }
@@ -343,7 +342,7 @@ extension type const Some<T>._(T v) implements Option<T> {
     return RIterator([v]);
   }
 
-  Option<U> map<U>(U Function(T self) f) {
+  Some<U> map<U>(U Function(T self) f) {
     return Some(f(v));
   }
 
@@ -355,19 +354,19 @@ extension type const Some<T>._(T v) implements Option<T> {
     return f(v);
   }
 
-  Result<T, E> okOr<E extends Object>(E err) {
+  Ok<T, Infallible> okOr<E extends Object>(E err) {
     return Ok(v);
   }
 
-  Result<T, E> okOrElse<E extends Object>(E Function() errFn) {
+  Ok<T, Infallible> okOrElse<E extends Object>(E Function() errFn) {
     return Ok(v);
   }
 
-  Option<T> or(Option<T> other) {
+  Some<T> or(Option<T> other) {
     return Some(v);
   }
 
-  Option<T> orElse(Option<T> Function() f) {
+  Some<T> orElse(Option<T> Function() f) {
     return Some(v);
   }
 
@@ -389,7 +388,7 @@ extension type const Some<T>._(T v) implements Option<T> {
 
   Option<T> xor(Option<T> other) {
     if (other.isSome()) {
-      return const None();
+      return None;
     }
     return Some(v);
   }
@@ -398,14 +397,14 @@ extension type const Some<T>._(T v) implements Option<T> {
     if (other.isSome()) {
       return Some((v, other.unwrap()));
     }
-    return const None();
+    return None;
   }
 
   Option<R> zipWith<U, R>(Option<U> other, R Function(T p1, U p2) f) {
     if (other.isSome()) {
       return Some(f(v, other.unwrap()));
     }
-    return const None();
+    return None;
   }
 
   //************************************************************************//
@@ -416,30 +415,33 @@ extension type const Some<T>._(T v) implements Option<T> {
   }
 }
 
-extension type const None<T>._(Null _) implements Option<Infallible> {
-  const None() : this._(null);
+// ignore: constant_identifier_names
+const None = _None();
 
-  Option<U> and<U>(Option<U> other) {
-    return const None();
+extension type const _None._(Null _) implements Option<Infallible> {
+  const _None() : this._(null);
+
+  _None and<U>(Option<U> other) {
+    return None;
   }
 
-  Option<U> andThen<U>(Option<U> Function(T self) f) {
-    return const None();
+  _None andThen<U>(Option<U> Function(void self) f) {
+    return None;
   }
 
-  Option<T> copy() {
-    return const None();
+  _None copy() {
+    return None;
   }
 
-  T expect(String msg) {
+  Infallible expect(String msg) {
     throw Panic(onValue: this, reason: msg);
   }
 
-  Option<T> filter(bool Function(T self) predicate) {
-    return const None();
+  _None filter(bool Function(void self) predicate) {
+    return None;
   }
 
-  Option<T> inspect(Function(T self) f) {
+  _None inspect(Function(void self) f) {
     return this;
   }
 
@@ -451,79 +453,79 @@ extension type const None<T>._(Null _) implements Option<Infallible> {
     return false;
   }
 
-  bool isSomeAnd(bool Function(T self) f) {
+  bool isSomeAnd(bool Function(void self) f) {
     return false;
   }
 
-  RIterator<T> iter() {
+  RIterator<_None> iter() {
     return RIterator(const []);
   }
 
-  Option<U> map<U>(U Function(T self) f) {
-    return const None();
+  _None map<U>(U Function(void self) f) {
+    return None;
   }
 
-  U mapOr<U>(U defaultValue, U Function(T) f) {
+  U mapOr<U>(U defaultValue, U Function(void) f) {
     return defaultValue;
   }
 
-  U mapOrElse<U>(U Function() defaultFn, U Function(T) f) {
+  U mapOrElse<U>(U Function() defaultFn, U Function(void) f) {
     return defaultFn();
   }
 
-  Result<T, E> okOr<E extends Object>(E err) {
+  Err<Infallible, E> okOr<E extends Object>(E err) {
     return Err(err);
   }
 
-  Result<T, E> okOrElse<E extends Object>(E Function() errFn) {
+  Err<Infallible, E> okOrElse<E extends Object>(E Function() errFn) {
     return Err(errFn());
   }
 
-  Option<T> or(Option<T> other) {
+  Option<T> or<T>(Option<T> other) {
     return other;
   }
 
-  Option<T> orElse(Option<T> Function() f) {
+  Option<T> orElse<T>(Option<T> Function() f) {
     return f();
   }
 
-  T unwrap() {
+  Infallible unwrap() {
     throw Panic(reason: "called `unwrap` a None type");
   }
 
-  T unwrapOr(T defaultValue) {
+  T unwrapOr<T>(T defaultValue) {
     return defaultValue;
   }
 
-  T unwrapOrElse(T Function() f) {
+  T unwrapOrElse<T>(T Function() f) {
     return f();
   }
 
-  Option<T> xor(Option<T> other) {
+  Option<T> xor<T>(Option<T> other) {
     if (other.isSome()) {
       return other;
     }
-    return const None();
+    return None;
   }
 
-  Option<(T, U)> zip<U>(Option<U> other) {
-    return const None();
+  _None zip<U>(Option<U> other) {
+    return None;
   }
 
-  Option<R> zipWith<U, R>(Option<U> other, R Function(T p1, U p2) f) {
-    return const None();
+  _None zipWith<U, R>(Option<U> other, R Function(void p1, U p2) f) {
+    return None;
   }
 
   //************************************************************************//
 
-  T? toNullable() {
+  Null toNullable() {
     return null;
   }
 
   //************************************************************************//
 
   // ignore: library_private_types_in_public_api
-  T operator [](_OptionEarlyReturnKey op) {
+  Infallible operator [](_OptionEarlyReturnKey op) {
     throw const _OptionEarlyReturnNotification();
   }
 }
@@ -540,12 +542,6 @@ final class _OptionEarlyReturnNotification {
   const _OptionEarlyReturnNotification();
 }
 
-typedef _OptionEarlyReturnFunction<T> = Option<T> Function(
-    _OptionEarlyReturnKey);
+typedef _OptionEarlyReturnFunction<T> = Option<T> Function(_OptionEarlyReturnKey);
 
-typedef _OptionAsyncEarlyReturnFunction<T> = Future<Option<T>> Function(
-    _OptionEarlyReturnKey);
-
-//************************************************************************//
-
-const none = None();
+typedef _OptionAsyncEarlyReturnFunction<T> = Future<Option<T>> Function(_OptionEarlyReturnKey);

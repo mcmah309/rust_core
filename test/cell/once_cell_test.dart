@@ -302,7 +302,7 @@ void main() {
 
     test('Initial state', () {
       cell = NonNullableOnceCell<int>();
-      expect(cell.get(), const None());
+      expect(cell.get(), None);
     });
 
     test('Construction with initial value', () {

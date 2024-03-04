@@ -8,7 +8,7 @@ void main() {
     expect(okResult.unwrapOrOption(), Some(5));
 
     Result<int, String> errResult = Err("Error");
-    expect(errResult.unwrapOrOption(), const None());
+    expect(errResult.unwrapOrOption(), None);
   });
 
   test("OkOnOptionExtension unwrapOrOption", () {
@@ -18,15 +18,15 @@ void main() {
 
   test("ErrOnOptionExtension unwrapOrOption", () {
     Err<int, String> errResult = Err("Error");
-    expect(errResult.unwrapOrOption(), const None());
+    expect(errResult.unwrapOrOption(), None);
   });
 
   test("ResultOptionExtension transpose", () {
     Result<Option<int>, String> okSomeResult = Ok(Some(5));
     expect(okSomeResult.transpose(), Some(Ok(5)));
 
-    Result<Option<int>, String> okNoneResult = Ok(const None());
-    expect(okNoneResult.transpose(), const None());
+    Result<Option<int>, String> okNoneResult = Ok(None);
+    expect(okNoneResult.transpose(), None);
 
     Result<Option<int>, String> errResult = Err("Error");
     expect(errResult.transpose(), Some(Err("Error")));
@@ -39,7 +39,7 @@ void main() {
     Option<Result<int, String>> someErrOption = Some(Err("Error"));
     expect(someErrOption.transpose(), Err("Error"));
 
-    Option<Result<int, String>> noneOption = const None();
-    expect(noneOption.transpose(), Ok(const None()));
+    Option<Result<int, String>> noneOption = None;
+    expect(noneOption.transpose(), Ok(None));
   });
 }

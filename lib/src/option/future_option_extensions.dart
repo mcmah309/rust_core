@@ -18,7 +18,7 @@ extension FutureOptionOptionExtension<T> on FutureOption<Option<T>> {
   /// Converts from FutureOption<Option<T>> to FutureOption<T>.
   Future<Option<T>> flatten() async {
     var optionOption = await this;
-    return optionOption.isSome() ? optionOption.unwrap() : const None();
+    return optionOption.isSome() ? optionOption.unwrap() : const _None();
   }
 }
 
@@ -30,7 +30,7 @@ extension FutureOptionRecord2Extension<T, U> on FutureOption<(T, U)> {
       var (one, two) = optionTuple.unwrap();
       return (Some(one), Some(two));
     }
-    return (None(), None());
+    return (_None(), _None());
   }
 }
 
@@ -45,7 +45,7 @@ extension OptionResultExtension<S, F extends Object> on Option<Result<S, F>> {
         return Err(val.unwrapErr());
       }
     }
-    return Ok(const None());
+    return Ok(const _None());
   }
 }
 

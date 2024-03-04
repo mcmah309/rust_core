@@ -6,11 +6,11 @@ void main() {
     Option<Option<int>> someSome6 = Some(Some(6));
     expect(someSome6.flatten(), Some(6));
 
-    Option<Option<int>> someNone = const Some(None());
-    expect(someNone.flatten(), const None());
+    Option<Option<int>> someNone = const Some(None);
+    expect(someNone.flatten(), None);
 
-    Option<Option<int>> none = const None();
-    expect(none.flatten(), const None());
+    Option<Option<int>> none = None;
+    expect(none.flatten(), None);
 
     // Flattening only removes one level of nesting at a time
     Option<Option<Option<int>>> someSomeSome6 = Some(Some(Some(6)));
@@ -24,9 +24,9 @@ void main() {
     expect(unzippedX.$1, Some(1));
     expect(unzippedX.$2, Some("hi"));
 
-    Option<(int, int)> y = const None();
+    Option<(int, int)> y = None;
     var unzippedY = y.unzip();
-    expect(unzippedY.$1, const None());
-    expect(unzippedY.$2, const None());
+    expect(unzippedY.$1, None);
+    expect(unzippedY.$2, None);
   });
 }

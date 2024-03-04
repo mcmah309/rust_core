@@ -13,7 +13,7 @@ extension FutureOptionExtension<T> on FutureOption<T> {
 
   Future<Option<U>> andThen<U>(FutureOr<Option<U>> Function(T) f) {
     return then((option) =>
-        option.isSome() ? f(option.unwrap()) : Future.value(const None()));
+        option.isSome() ? f(option.unwrap()) : Future.value(const _None()));
   }
 
   Future<T> expect(String msg) {
@@ -24,7 +24,7 @@ extension FutureOptionExtension<T> on FutureOption<T> {
     return then((option) async =>
         option.isSome() && (await predicate(option.unwrap()))
             ? option
-            : const None());
+            : const _None());
   }
 
   Future<Option<T>> inspect(FutureOr<void> Function(T) f) {

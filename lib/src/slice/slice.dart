@@ -113,7 +113,7 @@ final class Slice<T> extends Iterable<T> {
 
   Option<T> get firstOrOption {
     if (isEmpty) {
-      return None();
+      return None;
     }
     return Some(list[_start]);
   }
@@ -126,7 +126,7 @@ final class Slice<T> extends Iterable<T> {
 
   Option<T> get(int index) {
     if (index < 0 || index >= _end - _start) {
-      return None();
+      return None;
     }
     return Some(this[index]);
   }
@@ -174,7 +174,7 @@ final class Slice<T> extends Iterable<T> {
   /// Returns the last element of the slice, or None if it is empty.
   Option<T> get lastOrOption {
     if (isEmpty) {
-      return None();
+      return None;
     }
     return Some(list[_end - 1]);
   }
@@ -329,7 +329,7 @@ RIterator<Slice<T>> split(bool Function(T) pred) {
   /// Returns None and does not modify the slice if the given range is out of bounds.
   Option<Slice<T>> takeStart(int to) {
     if (to < 0 || to > _end - _start) {
-      return None();
+      return None;
     }
     var slice = Slice<T>(_list, _start, _start + to);
     _start += to;
@@ -340,7 +340,7 @@ RIterator<Slice<T>> split(bool Function(T) pred) {
   /// Returns None and does not modify the slice if the given range is out of bounds.
   Option<Slice<T>> takeEnd(int from) {
     if (from < 0 || from > _end - _start) {
-      return None();
+      return None;
     }
     var slice = Slice<T>(_list, _end - from, _end);
     _end -= from;
@@ -350,7 +350,7 @@ RIterator<Slice<T>> split(bool Function(T) pred) {
   // Returns the first element of this slice, and removes it from this slice.
   Option<T> takeFirst() {
     if (isEmpty) {
-      return None();
+      return None;
     }
     var element = _list[_start];
     _start++;
@@ -362,7 +362,7 @@ RIterator<Slice<T>> split(bool Function(T) pred) {
   // Returns the last element of this slice, and removes it from this slice.
   Option<T> takeLast() {
     if (isEmpty) {
-      return None();
+      return None;
     }
     var element = _list[_end - 1];
     _end--;

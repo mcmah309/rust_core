@@ -15,7 +15,7 @@ main() {
       if (e % 2 == 0) {
         return Some(e * 2);
       }
-      return None();
+      return None;
     });
     expect(filtered, [4, 8]);
   });
@@ -32,7 +32,7 @@ main() {
       if (e % 2 == 0) {
         return Some(e * 2);
       }
-      return None();
+      return None;
     });
     expect(found, Some(4));
   });

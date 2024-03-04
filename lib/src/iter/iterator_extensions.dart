@@ -5,7 +5,7 @@ extension IteratorExtension<T extends Object> on Iterator<T> {
     if(moveNext()){
       return Some(current);
     }
-    return None();
+    return None;
   }
 }
 

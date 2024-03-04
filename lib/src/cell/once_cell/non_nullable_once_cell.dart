@@ -17,7 +17,7 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
   @override
   Option<T> get() {
     if (_val == null) {
-      return const None();
+      return None;
     }
     return Some(_val!);
   }
@@ -75,7 +75,7 @@ class NonNullableOnceCell<T extends Object> implements OnceCell<T> {
   @override
   Option<T> take() {
     if (_val == null) {
-      return const None();
+      return None;
     }
     final val = _val;
     _val = null;

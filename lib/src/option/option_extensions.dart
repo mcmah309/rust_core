@@ -1,7 +1,7 @@
 part of 'option.dart';
 
 extension NullableTExtension<T extends Object> on T? {
-  /// Returns [None] if this is null and Some(this) if this not null.
+  /// Returns [_None] if this is null and Some(this) if this not null.
   Option<T> toOption() {
     return Option._(this);
   }
@@ -13,7 +13,7 @@ extension OptionOptionExtension<T> on Option<Option<T>> {
     if (isSome()) {
       return unwrap();
     }
-    return const None();
+    return const _None();
   }
 }
 
@@ -25,7 +25,7 @@ extension OptionRecord2Extension<T, U> on Option<(T, U)> {
       final (one, two) = unwrap();
       return (Some(one), Some(two));
     }
-    return (const None(), const None());
+    return (const _None(), const _None());
   }
 }
 

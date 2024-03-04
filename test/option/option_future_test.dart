@@ -7,12 +7,12 @@ void main() {
   group('FutureOptionExtension Tests', () {
     test("and", () async {
       FutureOption<int> x = Future.value(Some(2));
-      Option<int> y = const None();
-      expect(await x.and(y), const None());
+      Option<int> y = None;
+      expect(await x.and(y), None);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       y = Some(100);
-      expect(await x.and(y), const None());
+      expect(await x.and(y), None);
     });
 
     test("andThen", () async {
@@ -23,15 +23,15 @@ void main() {
       FutureOption<int> x = Future.value(Some(2));
       expect(await x.andThen(square), Some(4));
 
-      x = Future.value(const None());
-      expect(await x.andThen(square), const None());
+      x = Future.value(None);
+      expect(await x.andThen(square), None);
     });
 
     test("expect", () async {
       FutureOption<int> x = Future.value(Some(1));
       expect(await x.expect("Error"), 1);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(
           () async => await x.expect("Error occurred"), throwsA(isA<Error>()));
     });
@@ -39,8 +39,8 @@ void main() {
     test("filter", () async {
       Future<bool> isEven(int n) async => n % 2 == 0;
 
-      FutureOption<int> x = Future.value(const None());
-      expect(await x.filter(isEven), const None());
+      FutureOption<int> x = Future.value(None);
+      expect(await x.filter(isEven), None);
 
       x = Future.value(Some(4));
       expect(await x.filter(isEven), Some(4));
@@ -52,7 +52,7 @@ void main() {
       await x.inspect((value) => result = value);
       expect(result, 1);
 
-      FutureOption<int> y = Future.value(const None());
+      FutureOption<int> y = Future.value(None);
       await y.inspect((value) => result = value + 1);
       expect(result, 1); // No change should occur as it's None
     });
@@ -61,7 +61,7 @@ void main() {
       FutureOption<int> x = Future.value(Some(2));
       expect(await x.isNone(), false);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.isNone(), true);
     });
 
@@ -69,7 +69,7 @@ void main() {
       FutureOption<int> x = Future.value(Some(2));
       expect(await x.isSome(), true);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.isSome(), false);
     });
 
@@ -80,7 +80,7 @@ void main() {
       x = Future.value(Some(0));
       expect(await x.isSomeAnd((value) => value > 1), false);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.isSomeAnd((value) => value > 1), false);
     });
 
@@ -89,7 +89,7 @@ void main() {
       Iterable<int> iterable = await x.iter();
       expect(iterable, contains(4));
 
-      x = Future.value(const None());
+      x = Future.value(None);
       iterable = await x.iter();
       expect(iterable, isEmpty);
     });
@@ -98,15 +98,15 @@ void main() {
       FutureOption<String> x = Future.value(Some("hello"));
       expect(await x.map((v) => v.length), Some(5));
 
-      x = Future.value(const None());
-      expect(await x.map((v) => v.length), const None());
+      x = Future.value(None);
+      expect(await x.map((v) => v.length), None);
     });
 
     test("mapOr", () async {
       FutureOption<String> x = Future.value(Some("hello"));
       expect(await x.mapOr(0, (v) => v.length), 5);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.mapOr(0, (v) => v.length), 0);
     });
 
@@ -114,7 +114,7 @@ void main() {
       FutureOption<String> x = Future.value(Some("hello"));
       expect(await x.mapOrElse(() => 0, (v) => v.length), 5);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.mapOrElse(() => 0, (v) => v.length), 0);
     });
 
@@ -122,7 +122,7 @@ void main() {
       FutureOption<String> x = Future.value(Some("foo"));
       expect(await x.okOr(0), Ok("foo"));
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.okOr(0), Err(0));
     });
 
@@ -130,16 +130,16 @@ void main() {
       FutureOption<String> x = Future.value(Some("foo"));
       expect(await x.okOrElse(() => 0), Ok("foo"));
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.okOrElse(() => 0), Err(0));
     });
 
     test("or", () async {
       FutureOption<int> x = Future.value(Some(2));
-      Option<int> y = const None();
+      Option<int> y = None;
       expect(await x.or(y), Some(2));
 
-      x = Future.value(const None());
+      x = Future.value(None);
       y = Some(100);
       expect(await x.or(y), Some(100));
     });
@@ -148,7 +148,7 @@ void main() {
       FutureOption<String> x = Future.value(Some("barbarians"));
       expect(await x.orElse(() => Some("vikings")), Some("barbarians"));
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.orElse(() => Some("vikings")), Some("vikings"));
     });
 
@@ -156,7 +156,7 @@ void main() {
       FutureOption<String> x = Future.value(Some("air"));
       expect(await x.unwrap(), "air");
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(() async => await x.unwrap(), throwsA(isA<Error>()));
     });
 
@@ -164,7 +164,7 @@ void main() {
       FutureOption<String> x = Future.value(Some("car"));
       expect(await x.unwrapOr("bike"), "car");
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.unwrapOr("bike"), "bike");
     });
 
@@ -172,16 +172,16 @@ void main() {
       FutureOption<int> x = Future.value(Some(4));
       expect(await x.unwrapOrElse(() => 10), 4);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.unwrapOrElse(() => 10), 10);
     });
 
     test("xor", () async {
       FutureOption<int> x = Future.value(Some(2));
-      Option<int> y = const None();
+      Option<int> y = None;
       expect(await x.xor(y), Some(2));
 
-      x = Future.value(const None());
+      x = Future.value(None);
       y = Some(2);
       expect(await x.xor(y), Some(2));
     });
@@ -191,8 +191,8 @@ void main() {
       Option<String> y = Some("hi");
       expect(await x.zip(y), Some((1, "hi")));
 
-      y = const None();
-      expect(await x.zip(y), const None());
+      y = None;
+      expect(await x.zip(y), None);
     });
 
     test("zipWith", () async {
@@ -200,23 +200,23 @@ void main() {
       Option<double> y = Some(42.7);
       expect(await x.zipWith(y, (a, b) => a + b), Some(60.2));
 
-      y = const None();
-      expect(await x.zipWith(y, (a, b) => a + b), const None());
+      y = None;
+      expect(await x.zipWith(y, (a, b) => a + b), None);
     });
 
     test("toNullable", () async {
       FutureOption<int> x = Future.value(Some(1));
       expect(await x.toNullable(), 1);
 
-      x = Future.value(const None());
+      x = Future.value(None);
       expect(await x.toNullable(), null);
     });
 
     group("Async Early Return Key", () {
       FutureOption<int> int3Some() => Future.value(Some(3));
-      FutureOption<int> intNone() => Future.value(const None());
+      FutureOption<int> intNone() => Future.value(None);
       FutureOption<double> double3Some() => Future.value(Some(3));
-      FutureOption<double> doubleNone() => Future.value(const None());
+      FutureOption<double> doubleNone() => Future.value(None);
 
       test('No Exit', () async {
         FutureOption<int> earlyReturn(int val) => Option.async(($) async {
@@ -231,7 +231,7 @@ void main() {
               int x = await intNone()[$];
               return Some(val + x);
             });
-        expect(await earlyReturn(2), const None());
+        expect(await earlyReturn(2), None);
       });
 
       test('With different types None', () async {
@@ -240,7 +240,7 @@ void main() {
               return Some((val + x).toInt());
             });
         final _ = await earlyReturn(2);
-        expect(await earlyReturn(2), const None());
+        expect(await earlyReturn(2), None);
       });
 
       test('With different types Some', () async {
