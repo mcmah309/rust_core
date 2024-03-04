@@ -56,9 +56,8 @@ As mentioned `Option` is an extension type of `null` so they can be used interch
 Option<int> intNone() => const None();
 Option<int> option = intNone();
 int? nullable = option.v;
-nullable = option.toNullable()
-option = Option(nullable);
-option = nullable.toOption();
+nullable = option.toNullable(); // or
+option = nullable.toOption(); // or
 ```
 If Dart already supports nullable types, why use an option type? - with null, chaining null specific operations is not possible and the only alternate solution is a bunch of if statements and implicit and explicit type promotion. The `Option` type solves these issues.
 ```dart

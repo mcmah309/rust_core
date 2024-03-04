@@ -1,5 +1,14 @@
 part of 'iterator.dart';
 
+extension IteratorExtension<T extends Object> on Iterator<T> {
+  Option<T> next() {
+    if(moveNext()){
+      return Some(current);
+    }
+    return None();
+  }
+}
+
 extension IterableExtension<T> on Iterable<T> {
   RIterator<T> iter() => RIterator<T>(this);
 }

@@ -1,5 +1,6 @@
 import 'package:rust_core/option.dart';
 import 'package:rust_core/iter.dart';
+import 'package:rust_core/result.dart';
 
 /// An iterator over the elements of a [Slice].
 final class SliceIterator<T> implements Iterator<T> {
@@ -44,10 +45,7 @@ final class Slice<T> extends Iterable<T> {
             other._start == _start &&
             other._end == _end &&
             other._list == _list) ||
-        (other is List<T> &&
-            other.length == _end &&
-            _start == 0 &&
-            _list == other);
+        (other is List<T> && other.length == _end && _start == 0 && _list == other);
   }
 
   @override
@@ -63,35 +61,35 @@ final class Slice<T> extends Iterable<T> {
 
   //************************************************************************//
 
-// align_to: Will not implmented, not possible in Dart
-// align_to_mut: Will not implmented, not possible in Dart
+// align_to: Will not implement, not possible in Dart
+// align_to_mut: Will not implement, not possible in Dart
 // array_chunks: //todo
-// array_chunks_mut: Will not implmented, covered by array_chunks
+// array_chunks_mut: Will not implement, covered by array_chunks
 // array_windows: //todo
-// as_ascii: Will not implmented, not possible in Dart
-// as_ascii_unchecked: Will not implmented, not possible in Dart
-// as_bytes: Will not implmented, not possible in Dart
+// as_ascii: Will not implement, not possible in Dart
+// as_ascii_unchecked: Will not implement, not possible in Dart
+// as_bytes: Will not implement, not possible in Dart
 // as_chunks: //todo
-// as_chunks_mut: Will not implmented, covered by as_chunks
+// as_chunks_mut: Will not implement, covered by as_chunks
 // as_chunks_unchecked: //todo
-// as_chunks_unchecked_mut: Will not implmented, covered by as_chunks_unchecked
-// as_mut_ptr: Will not implmented, not possible in Dart
-// as_mut_ptr_range: Will not implmented, not possible in Dart
-// as_ptr: Will not implmented, not possible in Dart
-// as_ptr_range: Will not implmented, not possible in Dart
+// as_chunks_unchecked_mut: Will not implement, covered by as_chunks_unchecked
+// as_mut_ptr: Will not implement, not possible in Dart
+// as_mut_ptr_range: Will not implement, not possible in Dart
+// as_ptr: Will not implement, not possible in Dart
+// as_ptr_range: Will not implement, not possible in Dart
 // as_rchunks: //todo
-// as_rchunks_mut: Will not implmented, covered by as_rchunks
+// as_rchunks_mut: Will not implement, covered by as_rchunks
 // as_simd: //todo
-// as_simd_mut: Will not implmented, covered by as_simd
-// as_str: Will not implmented, not possible in Dart
+// as_simd_mut: Will not implement, covered by as_simd
+// as_str: Will not implement, not possible in Dart
 // binary_search: //todo
 // binary_search_by: //todo
 // binary_search_by_key: //todo
 // chunks: //todo
 // chunks_exact: //todo
-// chunks_exact_mut: Will not implmented, covered by chunks_exact
-// chunks_mut: Will not implmented, covered by chunks
-// clone_from_slice: Will not implmented, not possible in Dart
+// chunks_exact_mut: Will not implement, covered by chunks_exact
+// chunks_mut: Will not implement, covered by chunks
+// clone_from_slice: Will not implement, not possible in Dart
 
 // contains: Implemented by Iterable.contains
 
@@ -105,8 +103,8 @@ final class Slice<T> extends Iterable<T> {
 
 // copy_within: //todo
 // ends_with: //todo
-// eq_ignore_ascii_case: Will not implmented, not possible in Dart
-// escape_ascii: Will not implmented, not possible in Dart
+// eq_ignore_ascii_case: Will not implement, not possible in Dart
+// escape_ascii: Will not implement, not possible in Dart
 // fill: //todo
 // fill_with: //todo
 
@@ -121,10 +119,10 @@ final class Slice<T> extends Iterable<T> {
   }
 
 // first_chunk: //todo
-// first_chunk_mut: Will not implmented, covered by first_chunk
-// first_mut: Will not implmented, covered by first
+// first_chunk_mut: Will not implement, covered by first_chunk
+// first_mut: Will not implement, covered by first
 // flatten: //todo, but will have to return a new list
-// flatten_mut: Will not implmented, covered by flatten
+// flatten_mut: Will not implement, covered by flatten
 
   Option<T> get(int index) {
     if (index < 0 || index >= _end - _start) {
@@ -134,18 +132,18 @@ final class Slice<T> extends Iterable<T> {
   }
 
 // get_many: //todo `get_many` name over `get_many_mut`
-// get_many_mut: Will not implmented, covered by get_many
+// get_many_mut: Will not implement, covered by get_many
 // get_many_unchecked: //todo `get_many_unchecked` name over `get_many_unchecked_mut`
-// get_many_unchecked_mut: Will not implmented, covered by get_many_unchecked
-// get_mut: Will not implmented, mut the same as get
+// get_many_unchecked_mut: Will not implement, covered by get_many_unchecked
+// get_mut: Will not implement, mut the same as get
 
   /// Returns the element at the given index without doing bounds checking.
   getUnchecked(int index) => this[index];
 
-// get_unchecked_mut: Will not implmented, mut the same as get_unchecked
+// get_unchecked_mut: Will not implement, mut the same as get_unchecked
 // group_by: //todo
-// group_by_mut: Will not implmented, covered by group_by
-// is_ascii: Will not implmented, not possible in Dart
+// group_by_mut: Will not implement, covered by group_by
+// is_ascii: Will not implement, not possible in Dart
 
   @override
   bool get isEmpty => _start == _end;
@@ -165,7 +163,7 @@ final class Slice<T> extends Iterable<T> {
 
   RIterator<T> iter() => RIterator<T>.fromSlice(this);
 
-// iter_mut: Will not implmented, mut the same as iter
+// iter_mut: Will not implement, mut the same as iter
 
   /// Returns the last element of the slice, can throw.
   @override
@@ -182,22 +180,22 @@ final class Slice<T> extends Iterable<T> {
   }
 
 // last_chunk: //todo
-// last_chunk_mut: Will not implmented, covered by last_chunk
-// last_mut: Will not implmented, covered by last
+// last_chunk_mut: Will not implement, covered by last_chunk
+// last_mut: Will not implement, covered by last
 
   /// Returns the length of the slice.
   int len() => _start - _end;
 
-// make_ascii_lowercase: Will not implmented, not possible in Dart
-// make_ascii_uppercase: Will not implmented, not possible in Dart
+// make_ascii_lowercase: Will not implement, not possible in Dart
+// make_ascii_uppercase: Will not implement, not possible in Dart
 // partition_dedup: //todo
 // partition_dedup_by: //todo
 // partition_dedup_by_key: //todo
 // partition_point: //todo
 // rchunks: //todo
 // rchunks_exact: //todo
-// rchunks_exact_mut: Will not implmented, covered by rchunks_exact
-// rchunks_mut: Will not implmented, covered by rchunks
+// rchunks_exact_mut: Will not implement, covered by rchunks_exact
+// rchunks_mut: Will not implement, covered by rchunks
 
   /// Reverses the order of elements in the slice, in place.
   void reverse() {
@@ -210,10 +208,39 @@ final class Slice<T> extends Iterable<T> {
 
 // rotate_left: //todo
 // rotate_right: //todo
-// rsplit: //todo
-// rsplit_array_mut
-// rsplit_array_ref
-// rsplit_mut:
+
+  /// Returns an iterator over subslices separated by elements that match pred,
+  /// starting at the end of the slice and working backwards.
+  /// The matched element is not contained in the subslices.
+  RIterator<Slice<T>> rsplit(bool Function(T) pred) {
+    return RIterator(_rsplitHelper(pred));
+  }
+
+  Iterable<Slice<T>> _rsplitHelper(bool Function(T) pred) sync* {
+    var start = _end - 1;
+    var end = _end - 1;
+    while (start >= _start) {
+      if (pred(_list[start])) {
+        yield Slice(_list, start + 1, end + 1);
+        end = start - 1;
+      }
+      start--;
+    }
+    yield Slice(_list, _start, end + 1);
+  }
+
+  /// Divides one slice into a slice and a remainder slice at an index from the end.
+  /// The slice will contain all indices from [0, len - N) (excluding the index N itself) and the second slice will contain all
+  /// indices from [len - N, len) (excluding the index len itself).
+  (Slice<T>, Slice<T>) rsplitAt(int index) {
+    assert(index >= 0 && index <= _end - _start, "Index out of bounds");
+    return (Slice(_list, _start, _end - index), Slice(_list, _end - index, _end));
+  }
+
+// rsplit_array: Will not implement, would need to allocate another list for the Dart version
+// rsplit_array_mut: Will not implement, see above
+// rsplit_array_ref: Will not implement, see above
+// rsplit_mut: Will not implement, implemented by rsplit
 // rsplit_once
 // rsplitn
 // rsplitn_mut
@@ -225,10 +252,37 @@ final class Slice<T> extends Iterable<T> {
 // sort_unstable
 // sort_unstable_by
 // sort_unstable_by_key
-// split
-// split_array_mut
-// split_array_ref
-// split_at
+
+RIterator<Slice<T>> split(bool Function(T) pred) {
+  return RIterator(_splitHelper(pred));
+}
+
+  /// Returns an iterator over subslices separated by elements that match pred.
+  /// The matched element is not contained in the subslices.
+  Iterable<Slice<T>> _splitHelper(bool Function(T) pred) sync* {
+    var start = _start;
+    var end = _start;
+    while (end < _end) {
+      if (pred(_list[end])) {
+        yield Slice(_list, start, end);
+        start = end + 1;
+      }
+      end++;
+    }
+    yield Slice(_list, start, end);
+  }
+
+// split_array_mut: Will not implement, would need to allocate another list for the Dart version
+// split_array_ref: see above
+
+  /// Divides one mutable slice into a slice and a remainder slice at an index.
+  /// The slice will contain all indices from [0, N) (excluding the index N itself)
+  /// and the second slice will contain all indices from [N, len) (excluding the index len itself).
+  (Slice<T>, Slice<T>) splitAt(int index) {
+    assert(index >= 0 && index <= _end - _start, "Index out of bounds");
+    return (Slice(_list, _start, _start + index), Slice(_list, _start + index, _end));
+  }
+
 // split_at_mut
 // split_at_mut_unchecked
 // split_at_unchecked
@@ -257,14 +311,13 @@ final class Slice<T> extends Iterable<T> {
     _list[j + _start] = temp;
   }
 
-// swap_unchecked: Will not implmented, not possible in Dart
+// swap_unchecked: Will not implement, not possible in Dart
 
   /// Swaps all elements in this with those in other.
   /// The length of other must be the same as this.
   /// Will throw if the length of other is not the same as this.
   void swapWithSlice(Slice<T> other) {
-    assert(_end - _start == other._end - other._start,
-        "Slices must be the same length");
+    assert(_end - _start == other._end - other._start, "Slices must be the same length");
     for (var i = 0; i < _end - _start; i++) {
       var temp = _list[i + _start];
       _list[i + _start] = other._list[i + other._start];
@@ -304,7 +357,7 @@ final class Slice<T> extends Iterable<T> {
     return Some(element);
   }
 
-// take_first_mut: Will not implmented, mut the same as take_first
+// take_first_mut: Will not implement, mut the same as take_first
 
   // Returns the last element of this slice, and removes it from this slice.
   Option<T> takeLast() {
@@ -316,18 +369,17 @@ final class Slice<T> extends Iterable<T> {
     return Some(element);
   }
 
-// take_last_mut: Will not implmented, mut the same as take_last
-// take_mut: Will not implment, same as takeEnd and takeStart
-// trim_ascii: Will not implmented, not possible in Dart
-// trim_ascii_end: Will not implmented, not possible in Dart
-// trim_ascii_start: Will not implmented, not possible in Dart
+// take_last_mut: Will not implement, mut the same as take_last
+// take_mut: Will not implement, same as takeEnd and takeStart
+// trim_ascii: Will not implement, not possible in Dart
+// trim_ascii_end: Will not implement, not possible in Dart
+// trim_ascii_start: Will not implement, not possible in Dart
 
   RIterator<Slice<T>> windows(int size) {
     assert(size > 0, "Size must be positive");
-    assert(size <= _end - _start,
-        "Size must be less than or equal to the length of the slice");
-    return RIterator(Iterable.generate(_end - _start - size + 1,
-        (i) => Slice(_list, _start + i, _start + i + size)));
+    assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
+    return RIterator(Iterable.generate(
+        _end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)));
   }
 
   T operator [](int index) => _list[index + _start];

@@ -1,3 +1,4 @@
+import 'package:rust_core/iter.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 
@@ -109,6 +110,74 @@ main() {
 
     slice[1] = 10;
     expect(list, [1, 2, 10, 4, 5]);
+  });
+
+  test("rsplit", () {
+    var list = [11, 22, 33, 0, 44, 55];
+    var slice =  Slice(list, 0, 6);
+    var iter = slice.rsplit((num) => num == 0).iterator;
+    expect(iter.next().unwrap(), [44, 55]);
+    expect(iter.next().unwrap(), [11, 22, 33]);
+  });
+
+  test("rsplitAt", (){
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    var rsplit = slice.rsplitAt(2);
+    expect(rsplit.$1, [1,2,3]);
+    expect(rsplit.$2, [4,5]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    rsplit = slice.rsplitAt(2);
+    expect(rsplit.$1, [2]);
+    expect(rsplit.$2, [3, 4]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 0, 5);
+    rsplit = slice.rsplitAt(5);
+    expect(rsplit.$1, []);
+    expect(rsplit.$2, [1, 2, 3, 4, 5]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 0, 5);
+    rsplit = slice.rsplitAt(0);
+    expect(rsplit.$1, [1, 2, 3, 4, 5]);
+    expect(rsplit.$2, []);
+  });
+
+  test("split",(){
+    var list = [10, 40, 33, 20];
+    var iter = Slice(list, 0, 4).split((num) => num % 3 == 0).iterator;
+    expect(iter.next().unwrap(), [10, 40]);
+    expect(iter.next().unwrap(), [20]);
+    expect(iter.next().isNone(), true);
+  });
+
+  test("splitAt", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    var split = slice.splitAt(2);
+    expect(split.$1, [1, 2]);
+    expect(split.$2, [3, 4, 5]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    split = slice.splitAt(2);
+    expect(split.$1, [2, 3]);
+    expect(split.$2, [4]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 0, 5);
+    split = slice.splitAt(5);
+    expect(split.$1, [1, 2, 3, 4, 5]);
+    expect(split.$2, []);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 0, 5);
+    split = slice.splitAt(0);
+    expect(split.$1, []);
+    expect(split.$2, [1, 2, 3, 4, 5]);
   });
 
   test("swap", () {

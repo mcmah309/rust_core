@@ -1,6 +1,6 @@
+
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
-import 'package:rust_core/iter.dart';
 
 extension type Array<T>._(List<T> list) {
   
@@ -24,7 +24,9 @@ extension type Array<T>._(List<T> list) {
   }
 
   /// Divides array into two [Slice]s at index from end.
-  (Slice<T>, Slice<T>) rsplit(int index) {
+  /// The first will contain all indices from [0, N - M) (excluding the index N - M itself) and 
+  /// the second will contain all indices from [N - M, N) (excluding the index N itself).
+  (Slice<T>, Slice<T>) rsplitSlice(int index) {
     assert(index >= 0 && index <= list.length, "Index out of bounds");
     return (Slice(list, 0, list.length - index), Slice(list, list.length - index, list.length));
   }
@@ -33,7 +35,9 @@ extension type Array<T>._(List<T> list) {
   // rsplit_array_ref: Will not be implemented, not possible in Dart
 
   /// Divides array into two [Slice]s at index from start.
-  (Slice<T>, Slice<T>) split(int index) {
+  /// The first will contain all indices from [0, M) (excluding the index M itself) and 
+  /// the second will contain all indices from [M, N) (excluding the index N itself).
+  (Slice<T>, Slice<T>) splitSlice(int index) {
     assert(index >= 0 && index <= list.length, "Index out of bounds");
     return (Slice(list, 0, index), Slice(list, index, list.length));
   }
