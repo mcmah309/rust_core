@@ -53,7 +53,7 @@ final class Slice<T> extends Iterable<T> {
 
   @override
   String toString() {
-    return _list.sublist(_start, _end).toString();
+    return toList().toString();
   }
 
   @override
@@ -102,7 +102,20 @@ final class Slice<T> extends Iterable<T> {
   }
 
 // copy_within: //todo
-// ends_with: //todo
+
+  /// Returns true if needle is a suffix of the slice.
+  bool endsWith(Slice<T> needle){
+    if (needle._end - needle._start > _end - _start) {
+      return false;
+    }
+    for (var i = 0; i < needle._end - needle._start; i++) {
+      if (_list[_end - i - 1] != needle._list[needle._end - i - 1]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 // eq_ignore_ascii_case: Will not implement, not possible in Dart
 // escape_ascii: Will not implement, not possible in Dart
 // fill: //todo
@@ -267,6 +280,8 @@ final class Slice<T> extends Iterable<T> {
 // sort_unstable_by: Implmented in extension
 // sort_unstable_by_key: Implmented in extension
 
+  /// Returns an iterator over subslices separated by elements that match pred. 
+  /// The matched element is not contained in the subslices. see [splitInclusive] also.
   RIterator<Slice<T>> split(bool Function(T) pred) {
     return RIterator(_splitHelper(pred));
   }
@@ -297,20 +312,59 @@ final class Slice<T> extends Iterable<T> {
     return (Slice(_list, _start, _start + index), Slice(_list, _start + index, _end));
   }
 
-// split_at_mut
-// split_at_mut_unchecked
-// split_at_unchecked
-// split_first
-// split_first_chunk
-// split_first_chunk_mut
-// split_first_mut
-// split_inclusive
-// split_inclusive_mut
-// split_last
-// split_last_chunk
-// split_last_chunk_mut
-// split_last_mut
-// split_mut
+// split_at_mut: Implemented by splitAt
+// split_at_mut_unchecked: Implemented by splitAt
+// split_at_unchecked: Implemented by splitAt
+
+  /// Returns the first and all the rest of the elements of the slice, or None if it is empty.
+  Option<(T, Slice<T>)> splitFirst() {
+    if (isEmpty) {
+      return None;
+    }
+    var element = _list[_start];
+    _start++;
+    return Some((element, Slice(_list, _start, _end)));
+  }
+
+// split_first_chunk: Will not implement, not possible in Dart needs const generics, otherwise it is just `spitAt` implementation
+// split_first_chunk_mut: Will not implement, see above
+// split_first_mut: Will not implement, implemented by `splitFirst`
+
+  /// Returns an iterator over subslices separated by elements that match pred. 
+  /// The matched element is contained in the end of the previous subslice as a terminator. see [split] also.
+  RIterator<Slice<T>> splitInclusive(bool Function(T) pred) {
+    return RIterator(_splitInclusiveHelper(pred));
+  }
+
+  Iterable<Slice<T>> _splitInclusiveHelper(bool Function(T) pred) sync* {
+    var start = _start;
+    var end = _start;
+    while (end < _end) {
+      if (pred(_list[end])) {
+        yield Slice(_list, start, end + 1);
+        start = end + 1;
+      }
+      end++;
+    }
+    yield Slice(_list, start, end);
+  }
+
+// split_inclusive_mut: Implemented by above
+
+  /// Returns the last and all the rest of the elements of the slice, or None if it is empty.
+  Option<(T, Slice<T>)> splitLast() {
+    if (isEmpty) {
+      return None;
+    }
+    var element = _list[_end - 1];
+    _end--;
+    return Some((element, Slice(_list, _start, _end)));
+  }
+
+// split_last_chunk: Will not implement, not possible in Dart needs const generics
+// split_last_chunk_mut: Will not implement, not possible in Dart needs const generics
+// split_last_mut: Implemented by `splitLast`
+// split_mut: Implemented by `split`
 
   /// Splits the slice on the first element that matches the specified predicate.
   /// If any matching elements are resent in the slice, returns the prefix before the match and suffix after.
@@ -326,11 +380,65 @@ final class Slice<T> extends Iterable<T> {
     return None;
   }
 
-// splitn
-// splitn_mut
-// starts_with
-// strip_prefix
-// strip_suffix
+  /// Returns an iterator over subslices separated by elements that match pred, limited to returning at most n items.
+  /// e.g. n == 1 will return the whole slice.
+  /// The matched element is not contained in the subslices.
+  /// The last element returned, if any, will contain the remainder of the slice.
+  RIterator<Slice<T>> splitn(int n, bool Function(T) pred){
+    assert(n > 0, "n must be positive");
+    if(n < 1){
+      return RIterator(Iterable.empty());
+    }
+    return RIterator(_splitnHelper(n, pred));
+  }
+
+  Iterable<Slice<T>> _splitnHelper(int n, bool Function(T) pred) sync* {
+    var start = _start;
+    var end = _start;
+    var count = 1;
+    while (end < _end && count < n) {
+      if (pred(_list[end])) {
+        yield Slice(_list, start, end);
+        start = end + 1;
+        count++;
+      }
+      end++;
+    }
+    yield Slice(_list, start, _end);
+  }
+  
+
+
+// splitn_mut: Implemented by above
+
+  /// Returns true if needle is a prefix of the slice.
+  bool startsWith(Slice<T> needle) {
+    if (needle._end - needle._start > _end - _start) {
+      return false;
+    }
+    for (var i = 0; i < needle._end - needle._start; i++) {
+      if (_list[i + _start] != needle._list[i + needle._start]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /// Returns a subslice with the prefix removed. Returns none if the prefix is not present.
+  Option<Slice<T>> stripPrefix(Slice<T> prefix) {
+    if (startsWith(prefix)) {
+      return Some(Slice(_list, _start + prefix._end - prefix._start, _end));
+    }
+    return None;
+  }
+
+
+  Option<Slice<T>> stripSuffix(Slice<T> suffix) {
+    if (endsWith(suffix)) {
+      return Some(Slice(_list, _start, _end - suffix._end + suffix._start));
+    }
+    return None;
+  }
 
   /// Swaps two elements in the slice. Will throw if the indices are out of bounds.
   void swap(int i, int j) {
@@ -402,6 +510,12 @@ final class Slice<T> extends Iterable<T> {
 // trim_ascii: Will not implement, not possible in Dart
 // trim_ascii_end: Will not implement, not possible in Dart
 // trim_ascii_start: Will not implement, not possible in Dart
+
+  /// growable param is ignored, but need to satisfy the interface.
+  @override
+  List<T> toList({bool growable = true}) {
+    return _list.sublist(_start, _end);
+  }
 
   RIterator<Slice<T>> windows(int size) {
     assert(size > 0, "Size must be positive");
