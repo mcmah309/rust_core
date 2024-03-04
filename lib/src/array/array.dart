@@ -5,6 +5,10 @@ import 'package:rust_core/slice.dart';
 extension type Array<T>._(List<T> list) {
   
   Array(T defaultVal, int size) : list = List.filled(size, defaultVal, growable: false);
+
+  const Array.constant(this.list);
+
+  Array.fromList(this.list);
   
   T operator [](int index) => list[index];
   void operator []=(int index, T value) => list[index] = value;
