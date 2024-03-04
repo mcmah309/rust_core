@@ -273,12 +273,32 @@ void main() {
     };
     expect(y, 3);
 
+    y = switch (x) {
+      None => 4,
+      Some(v: final _) => 3,
+    };
+    expect(y, 3);
+
+    switch(x){
+      case Some(v: final _):
+        int i = 1;
+      case None:
+        fail('Should not reach here');
+    }
+
     x = intNone();
     y = switch (x) {
       Some(v: final _) => 3,
       None => 4,
     };
     expect(y, 4);
+
+    switch(x){
+      case Some(v: final _):
+        fail('Should not reach here');
+      case None:
+        break;
+    }
   });
 
   group("Option Early Return", () {
