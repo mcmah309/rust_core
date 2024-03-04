@@ -241,21 +241,35 @@ final class Slice<T> extends Iterable<T> {
 // rsplit_array_mut: Will not implement, see above
 // rsplit_array_ref: Will not implement, see above
 // rsplit_mut: Will not implement, implemented by rsplit
-// rsplit_once
-// rsplitn
-// rsplitn_mut
-// select_nth_unstable
-// select_nth_unstable_by
-// select_nth_unstable_by_key
-// sort_floats
-// sort_floats
-// sort_unstable
-// sort_unstable_by
-// sort_unstable_by_key
 
-RIterator<Slice<T>> split(bool Function(T) pred) {
-  return RIterator(_splitHelper(pred));
-}
+  /// Splits the slice on the last element that matches the specified predicate.
+  /// If any matching elements are resent in the slice, returns the prefix before the match and suffix after.
+  /// The matching element itself is not included. If no elements match, returns None.
+  Option<(Slice<T>, Slice<T>)> rsplitOnce(bool Function(T) pred) {
+    var index = _end - 1;
+    while (index >= _start) {
+      if (pred(_list[index])) {
+        return Some((Slice(_list, _start, index), Slice(_list, index + 1, _end)));
+      }
+      index--;
+    }
+    return None;
+  }
+
+// rsplitn: //todo priority low
+// rsplitn_mut: Implemented by above
+// select_nth_unstable: //todo priority low
+// select_nth_unstable_by: // todo priority low
+// select_nth_unstable_by_key: //todo priority low
+// sort_floats: Implmented by sort_unstable
+// sort_floats: Implmented by sort_unstable
+// sort_unstable: Implemented in extension
+// sort_unstable_by: Implmented in extension
+// sort_unstable_by_key: Implmented in extension
+
+  RIterator<Slice<T>> split(bool Function(T) pred) {
+    return RIterator(_splitHelper(pred));
+  }
 
   /// Returns an iterator over subslices separated by elements that match pred.
   /// The matched element is not contained in the subslices.
@@ -297,7 +311,21 @@ RIterator<Slice<T>> split(bool Function(T) pred) {
 // split_last_chunk_mut
 // split_last_mut
 // split_mut
-// split_once
+
+  /// Splits the slice on the first element that matches the specified predicate.
+  /// If any matching elements are resent in the slice, returns the prefix before the match and suffix after.
+  ///  The matching element itself is not included. If no elements match, returns None.
+  Option<(Slice<T>, Slice<T>)> splitOnce(bool Function(T) pred) {
+    var index = _start;
+    while (index < _end) {
+      if (pred(_list[index])) {
+        return Some((Slice(_list, _start, index), Slice(_list, index + 1, _end)));
+      }
+      index++;
+    }
+    return None;
+  }
+
 // splitn
 // splitn_mut
 // starts_with

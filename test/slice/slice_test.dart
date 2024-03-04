@@ -1,6 +1,9 @@
+// ignore_for_file: avoid_types_as_parameter_names
+
 import 'package:rust_core/iter.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
+import 'package:rust_core/option.dart';
 
 main() {
   test("copyFromSlice", () {
@@ -146,6 +149,80 @@ main() {
     expect(rsplit.$2, []);
   });
 
+    test("rsplitOnce",(){
+    var list = [1,2,3,2,4];
+    expect(list.asSlice().rsplitOnce((num) => num == 2).unwrap().$1, [1,2,3]);
+    expect(list.asSlice().rsplitOnce((num) => num == 2).unwrap().$2, [4]);
+    expect(list.asSlice().rsplitOnce((num) => num == 0).isNone(), true);
+    expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$1, []);
+    expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$2, [2,3,2,4]);
+    expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$1, [1,2,3,2]);
+    expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$2, []);
+  });
+
+  test("sortUnstable", (){
+    var list = [5, 4, 3, 2, 1];
+    var slice = Slice(list, 0, 5);
+    slice.sortUnstable();
+    expect(list, [1, 2, 3, 4, 5]);
+
+    list = [5, 4, 3, 2, 1];
+    slice = Slice(list, 1, 4);
+    slice.sortUnstable();
+    expect(list, [5, 2, 3, 4, 1]);
+
+    var doubleList = [5.0, 4.0, 3.0, 2.0, 1.0];
+    var doubleSlice = Slice(doubleList, 0, 5);
+    doubleSlice.sortUnstable();
+
+    var stringList = ["b", "a", "d", "c", "e"];
+    var stringSlice = Slice(stringList, 0, 5);
+    stringSlice.sortUnstable();
+    expect(stringList, ["a", "b", "c", "d", "e"]);
+  });
+
+  test("sortUnstableBy",(){
+    var list = [5, 4, 3, 2, 1];
+    var slice = Slice(list, 0, 5);
+    slice.sortUnstableBy((a, b) => a.compareTo(b));
+    expect(list, [1, 2, 3, 4, 5]);
+
+    list = [5, 4, 3, 2, 1];
+    slice = Slice(list, 1, 4);
+    slice.sortUnstableBy((a, b) => a.compareTo(b));
+    expect(list, [5, 2, 3, 4, 1]);
+
+    var doubleList = [5.0, 4.0, 3.0, 2.0, 1.0];
+    var doubleSlice = Slice(doubleList, 0, 5);
+    doubleSlice.sortUnstableBy((a, b) => a.compareTo(b));
+
+    var stringList = ["b", "a", "d", "c", "e"];
+    var stringSlice = Slice(stringList, 0, 5);
+    stringSlice.sortUnstableBy((a, b) => a.compareTo(b));
+    expect(stringList, ["a", "b", "c", "d", "e"]);
+  });
+
+  test("sortUnstableByKey", (){
+    var list = [5, 4, 3, 2, 1];
+    var slice = Slice(list, 0, 5);
+    slice.sortUnstableByKey((num) => num);
+    expect(list, [1, 2, 3, 4, 5]);
+
+    list = [5, 4, 3, 2, 1];
+    slice = Slice(list, 1, 4);
+    slice.sortUnstableByKey((num) => num);
+    expect(list, [5, 2, 3, 4, 1]);
+
+    var doubleList = [5.0, 4.0, 3.0, 2.0, 1.0];
+    var doubleSlice = Slice(doubleList, 0, 5);
+    doubleSlice.sortUnstableByKey((num) => num);
+
+    var stringList = ["b", "a", "d", "c", "e"];
+    var stringSlice = Slice(stringList, 0, 5);
+    stringSlice.sortUnstableByKey((str) => str);
+    expect(stringList, ["a", "b", "c", "d", "e"]);
+  });
+
   test("split",(){
     var list = [10, 40, 33, 20];
     var iter = Slice(list, 0, 4).split((num) => num % 3 == 0).iterator;
@@ -178,6 +255,17 @@ main() {
     split = slice.splitAt(0);
     expect(split.$1, []);
     expect(split.$2, [1, 2, 3, 4, 5]);
+  });
+
+  test("splitOnce",(){
+    var list = [1,2,3,2,4];
+    expect(list.asSlice().splitOnce((num) => num == 2).unwrap().$1, [1]);
+    expect(list.asSlice().splitOnce((num) => num == 2).unwrap().$2, [3,2,4]);
+    expect(list.asSlice().splitOnce((num) => num == 0).isNone(), true);
+    expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$1, []);
+    expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$2, [2,3,2,4]);
+    expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$1, [1,2,3,2]);
+    expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$2, []);
   });
 
   test("swap", () {

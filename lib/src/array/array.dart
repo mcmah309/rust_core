@@ -2,7 +2,7 @@
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
 
-extension type Array<T>._(List<T> list) {
+extension type Array<T>._(List<T> list) implements Iterable<T> {
   
   Array(T defaultVal, int size) : list = List.filled(size, defaultVal, growable: false);
 
