@@ -9,9 +9,15 @@ extension type Array<T>._(List<T> list) implements Iterable<T> {
   const Array.constant(this.list);
 
   Array.fromList(this.list);
+
+  Array.empty() : list = const [];
   
   T operator [](int index) => list[index];
   void operator []=(int index, T value) => list[index] = value;
+
+  int get length => list.length;
+
+  Array<U> cast<U>() => Array._(list.cast<U>());
 
   // as_ascii: Will not be implemented, not possible in Dart
   // as_ascii_unchecked_mut: Will not be implemented, not possible in Dart

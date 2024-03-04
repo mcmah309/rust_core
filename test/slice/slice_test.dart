@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_types_as_parameter_names
 
 import 'package:rust_core/iter.dart';
+import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/array.dart';
 
 main() {
   test("copyFromSlice", () {
@@ -54,6 +56,39 @@ main() {
     expect(slice.endsWith([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()), false);
   });
 
+  test("getMany",(){
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    expect(slice.getMany(const [0, 1, 2]).unwrap(), [1, 2, 3]);
+    expect(slice.getMany(const [0, 1, 2, 3, 4]).unwrap(), [1, 2, 3, 4, 5]);
+    expect(slice.getMany(const [1, 3]).unwrap(), [2, 4]);
+    expect(slice.getMany(const []).unwrap(), []);
+    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr().reason, GetManyErrorType.tooManyIndices);
+    expect(slice.getMany(const [0, 1, 6]).unwrapErr().reason, GetManyErrorType.requestedIndexOutOfBounds);
+    expect([].asSlice().getMany(const [0]).unwrapErr().reason, GetManyErrorType.tooManyIndices);
+    expect([].asSlice().getMany(const []).unwrap(), []);
+    expect([1].asSlice().getMany(const []).unwrap(), []);
+  });
+
+  test("getManyUnchecked", (){
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    expect(slice.getManyUnchecked(const [0, 1, 2]), [1, 2, 3]);
+    expect(slice.getManyUnchecked(const [0, 1, 2, 3, 4]), [1, 2, 3, 4, 5]);
+    expect(slice.getManyUnchecked(const [1, 3]), [2, 4]);
+    expect(slice.getManyUnchecked(const []), []);
+  });
+
+  test("groupBy", (){
+    var list = [1, 1, 1, 3, 3, 2, 2, 2];
+    var slice = list.asSlice();
+    var iter = slice.groupBy((num1, num2) => num1 == num2).iterator;
+    expect(iter.next().unwrap(), [1, 1, 1]);
+    expect(iter.next().unwrap(), [3, 3]);
+    expect(iter.next().unwrap(), [2, 2, 2]);
+    expect(iter.next().isNone(), true);
+  });
+
   test("isSortedBy", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
@@ -66,6 +101,20 @@ main() {
     list = [1, 2, 3, 4, 5, 3];
     slice = Slice(list, 0, 5);
     expect(slice.isSortedBy((a, b) => a.compareTo(b)), true);
+  });
+
+  test("isSortedByKey",(){
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    expect(slice.isSortedByKey((num) => num), true);
+
+    list = [1, 2, 3, 4, 5, 3];
+    slice = Slice(list, 0, 6);
+    expect(slice.isSortedByKey((num) => num), false);
+
+    list = [1, 2, 3, 4, 5, 3];
+    slice = Slice(list, 0, 5);
+    expect(slice.isSortedByKey((num) => num), true);
   });
 
   test("reverse", () {

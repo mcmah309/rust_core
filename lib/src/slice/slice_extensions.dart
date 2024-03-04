@@ -1,57 +1,80 @@
-import 'package:rust_core/slice.dart';
+part of 'slice.dart';
 
 extension SliceOnListExtension<T> on List<T> {
   Slice<T> asSlice() => Slice.fromList(this);
 }
 
-extension SliceOnSliceIntExtension<T> on Slice<int> {
+extension SliceOnSliceIntExtension<T> on Slice<num> {
   /// Sorts the slice, but might not preserve the order of equal elements.
   void sortUnstable() {
-    _quickSort<num>(this, start, end - 1);
+    _quickSort<num>(this, _start, _end - 1);
   }
 
   /// Sorts the slice with a comparator function, but might not preserve the order of equal elements.
   void sortUnstableBy(int Function(num a, num b) compare) {
-    _quickSortBy<num>(this, start, end - 1, compare);
+    _quickSortBy<num>(this, _start, _end - 1, compare);
   }
 
   /// Sorts the slice with a key extraction function, but might not preserve the order of equal elements.
   void sortUnstableByKey<K extends Comparable<K>>(K Function(num a) key) {
-    _quickSortBy(this, start, end - 1, (a, b) => key(a).compareTo(key(b)));
-  }
-}
-
-extension SliceOnSliceDoubleExtension<T> on Slice<double> {
-  /// Sorts the slice, but might not preserve the order of equal elements.
-  void sortUnstable() {
-    _quickSort<num>(this, start, end - 1);
+    _quickSortBy(this, _start, _end - 1, (a, b) => key(a).compareTo(key(b)));
   }
 
-  /// Sorts the slice with a comparator function, but might not preserve the order of equal elements.
-  void sortUnstableBy(int Function(num a, num b) compare) {
-    _quickSortBy<num>(this, start, end - 1, compare);
+  /// Checks if the elements of this slice are sorted. That is, for each element a and its following element b, a <= b must hold.
+  bool isSorted() {
+    for (int i = _start; i < _end - 1; i++) {
+      if (_list[i] > _list[i + 1]) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  /// Sorts the slice with a key extraction function, but might not preserve the order of equal elements.
-  void sortUnstableByKey<K extends Comparable<K>>(K Function(num a) key) {
-    _quickSortBy(this, start, end - 1, (a, b) => key(a).compareTo(key(b)));
+  /// Checks if the elements of this slice are sorted using the given key extraction function.
+  bool isSortedByKey<K extends Comparable<K>>(K Function(num) key) {
+    for (int i = _start; i < _end - 1; i++) {
+      if (key(_list[i]).compareTo(key(_list[i + 1])) > 0) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 
 extension SliceOnComparableSliceExtension<T extends Comparable<T>> on Slice<T> {
   /// Sorts the slice, but might not preserve the order of equal elements.
   void sortUnstable() {
-    _quickSort(this, start, end - 1);
+    _quickSort(this, _start, _end - 1);
   }
 
   /// Sorts the slice with a comparator function, but might not preserve the order of equal elements.
   void sortUnstableBy(int Function(T a, T b) compare) {
-    _quickSortBy(this, start, end - 1, compare);
+    _quickSortBy(this, _start, _end - 1, compare);
   }
 
   /// Sorts the slice with a key extraction function, but might not preserve the order of equal elements.
   void sortUnstableByKey<K extends Comparable<K>>(K Function(T a) key) {
-    _quickSortBy(this, start, end - 1, (a, b) => key(a).compareTo(key(b)));
+    _quickSortBy(this, _start, _end - 1, (a, b) => key(a).compareTo(key(b)));
+  }
+
+  /// Checks if the elements of this slice are sorted. That is, for each element a and its following element b, a <= b must hold.
+  bool isSorted() {
+    for (int i = _start; i < _end - 1; i++) {
+      if (_list[i].compareTo(_list[i + 1]) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /// Checks if the elements of this slice are sorted using the given key extraction function.
+  bool isSortedByKey<K extends Comparable<K>>(K Function(T) key) {
+    for (int i = _start; i < _end - 1; i++) {
+      if (key(_list[i]).compareTo(key(_list[i + 1])) > 0) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 
@@ -66,17 +89,17 @@ void _quickSort<T extends Comparable<T>>(Slice<T> slice, int low, int high) {
   }
 
   int _partition<T extends Comparable<T>>(Slice<T> slice, int low, int high) {
-    T pivot = slice.list[high];
+    T pivot = slice._list[high];
     int i = low - 1;
 
     for (int j = low; j < high; j++) {
-      if (slice.list[j].compareTo(pivot) < 0) {
+      if (slice._list[j].compareTo(pivot) < 0) {
         i++;
-        _swap(slice.list, i, j);
+        _swap(slice._list, i, j);
       }
     }
 
-    _swap(slice.list, i + 1, high);
+    _swap(slice._list, i + 1, high);
     return i + 1;
   }
 
@@ -89,7 +112,7 @@ void _quickSort<T extends Comparable<T>>(Slice<T> slice, int low, int high) {
   //************************************************************************//
 
   void quickSortBy<T>(Slice<T> slice, int Function(T a, T b) compare) {
-  _quickSortBy(slice, 0, slice.end - 1, compare);
+  _quickSortBy(slice, 0, slice._end - 1, compare);
 }
 
 void _quickSortBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
@@ -101,17 +124,17 @@ void _quickSortBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) c
 }
 
 int _partitionBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
-  T pivot = slice.list[high];
+  T pivot = slice._list[high];
   int i = low - 1;
 
   for (int j = low; j < high; j++) {
-    if (compare(slice.list[j], pivot) < 0) {
+    if (compare(slice._list[j], pivot) < 0) {
       i++;
-      _swapBy(slice.list, i, j);
+      _swapBy(slice._list, i, j);
     }
   }
 
-  _swapBy(slice.list, i + 1, high);
+  _swapBy(slice._list, i + 1, high);
   return i + 1;
 }
 
