@@ -11,7 +11,7 @@ The `Option` Type and features work very similar to [Result]. We are able to cha
 needing a bunch of `if` statements to check if a value is null.
 
 ```dart
-Option<int> intOptionFunc() => const None();
+Option<int> intOptionFunc() => None;
 double halfVal(int val) => val/2;
 Option<double> val = intOptionFunc()
     .map(halfVal);
@@ -24,7 +24,7 @@ You can also use Option in pattern matching
 switch(Some(2)){
   case Some(:final v):
     // do somthing
-  case None():
+  case None:
     // do something
 }
 ```
@@ -33,13 +33,13 @@ switch(Some(2)){
 Option also supports "Early Return Key Notation" (ERKN), which is a derivative of "Do Notation". It allows a 
 function to return early if the value is `None`, and otherwise safely access the inner value directly without needing to unwrap or typecheck.
 ```dart
-Option<int> intNone() => const None();
+Option<int> intNone() => None;
 Option<double> earlyReturn(int val) => Option(($) { // Early Return Key
   // Returns here
   double x = intNone()[$].toDouble();
   return Some(val + x);
 });
-expect(earlyReturn(2), const None());
+expect(earlyReturn(2), None);
 ```
 This is a powerful concept and make you code much more concise without losing any safety.
 
@@ -53,7 +53,7 @@ FutureOption<double> earlyReturn() => Option.async(($) async {
 ### To Option or Not To Option
 As mentioned `Option` is an extension type of `null` so they can be used interchangeably with no runtime cost.
 ```dart
-Option<int> intNone() => const None();
+Option<int> intNone() => None;
 Option<int> option = intNone();
 int? nullable = option.v;
 nullable = option.toNullable(); // or
