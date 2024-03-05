@@ -5,19 +5,19 @@ import 'package:rust_core/array.dart';
 
 void main() {
   test("map", () {
-    var arr = Array(1, 3);
+    var arr = Arr(1, 3);
     var mapped = arr.map((e) => e + 1);
     expect(mapped, [2, 2, 2]);
   });
 
   test("map", () {
-    var arr = Array(1, 3);
+    var arr = Arr(1, 3);
     var mapped = arr.map((e) => e + 1);
     expect(mapped, [2, 2, 2]);
   });
 
   test("rsplitSlice", () {
-    var arr = Array(1, 3);
+    var arr = Arr(1, 3);
     var rsplit = arr.rsplitSlice(1);
     expect(rsplit.$1, [1, 1]);
     expect(rsplit.$2, [1]);
@@ -32,7 +32,7 @@ void main() {
   });
 
   test("splitSlice", () {
-    var arr = Array(1, 3);
+    var arr = Arr(1, 3);
     var split = arr.splitSlice(1);
     expect(split.$1, [1]);
     expect(split.$2, [1, 1]);
@@ -47,13 +47,13 @@ void main() {
   });
 
   test("tryMap Ok", () {
-    var arr = Array(1, 3);
+    var arr = Arr(1, 3);
     var tryMap = arr.tryMap((e) => Ok(e + 1));
     expect(tryMap.unwrap(), [2, 2, 2]);
   });
 
   test("tryMap Err", () {
-    var arr = Array(1, 3);
+    var arr = Arr(1, 3);
     var tryMap = arr.tryMap<int, String>((e) {
       if (e == 1) {
         return Err("Error");
@@ -66,7 +66,7 @@ void main() {
 
   //************************************************************************//
   test("Array and List composability",(){
-    Array<int> arr = Array(1, 3);
+    Arr<int> arr = Arr(1, 3);
     List<String> list = ["1", "1", "1"];
     final other = arr.iter().zip(list);
     RIterator<int> other2 = arr.iter();

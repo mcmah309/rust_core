@@ -158,12 +158,12 @@ final class Slice<T> extends Iterable<T> {
 
   /// Returns mutable references to many indices at once.
   /// Returns an error if any index is out-of-bounds.
-  Result<Array<T>, GetManyError> getMany(List<int> indices){
+  Result<Arr<T>, GetManyError> getMany(List<int> indices){
     if(indices.length > _end - _start) return const Err(GetManyError(GetManyErrorType.tooManyIndices));   
     if (indices.isEmpty) {
-      return Ok(Array.empty());
+      return Ok(Arr.empty());
     }
-    var array = Array(this.first, indices.length);
+    var array = Arr(this.first, indices.length);
     for (final (int i, int index) in indices.iter().enumerate()) {
       if(index < _start || index >= _end) return const Err(GetManyError(GetManyErrorType.requestedIndexOutOfBounds));
       array[i] = this[index];
@@ -175,14 +175,14 @@ final class Slice<T> extends Iterable<T> {
 
 
   /// Returns mutable references to many indices at once, without doing any checks.
-  Array<T> getManyUnchecked(List<int> indices) {
+  Arr<T> getManyUnchecked(List<int> indices) {
     assert(indices.length <= _end - _start,
         "The number of indices must be less than or equal to the length of the slice");   
     if (indices.isEmpty) {
-      return Array.empty();
+      return Arr.empty();
     }
     assert(isNotEmpty, "Requested indices, but this slice is empty.");
-    var array = Array(this.first, indices.length);
+    var array = Arr(this.first, indices.length);
     for (final (int i, int index) in indices.iter().enumerate()) {
       assert(index >= _start && index < _end, "The requiested index out of bounds");
       array[i] = this[index];

@@ -2,22 +2,23 @@
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
 
-extension type Array<T>._(List<T> list) implements Iterable<T> {
+/// A fixed-size array, denoted as [T; N] in Rust.
+extension type Arr<T>._(List<T> list) implements Iterable<T> {
   
-  Array(T defaultVal, int size) : list = List.filled(size, defaultVal, growable: false);
+  Arr(T defaultVal, int size) : list = List.filled(size, defaultVal, growable: false);
 
-  const Array.constant(this.list);
+  const Arr.constant(this.list);
 
-  Array.fromList(this.list);
+  Arr.fromList(this.list);
 
-  Array.empty() : list = const [];
+  Arr.empty() : list = const [];
   
   T operator [](int index) => list[index];
   void operator []=(int index, T value) => list[index] = value;
 
   int get length => list.length;
 
-  Array<U> cast<U>() => Array._(list.cast<U>());
+  Arr<U> cast<U>() => Arr._(list.cast<U>());
 
   // as_ascii: Will not be implemented, not possible in Dart
   // as_ascii_unchecked_mut: Will not be implemented, not possible in Dart
@@ -29,8 +30,8 @@ extension type Array<T>._(List<T> list) implements Iterable<T> {
   // each_ref: Will not be implemented, not possible in Dart
   
   /// Returns an array of the same size as self, with function f applied to each element in order.
-  Array<U> map<U>(U Function(T) f) {
-    return Array._(list.map(f).toList(growable: false));
+  Arr<U> map<U>(U Function(T) f) {
+    return Arr._(list.map(f).toList(growable: false));
   }
 
   /// Divides array into two [Slice]s at index from end.
@@ -57,7 +58,7 @@ extension type Array<T>._(List<T> list) implements Iterable<T> {
   // transpose: Will not be implemented, not possible in Dart
   
   /// A fallible function f applied to each element on this array in order to return an array the same size as this or the first error encountered.
-  Result<Array<S>,F> tryMap<S,F extends Object>(Result<S,F> Function(T) f) {
+  Result<Arr<S>,F> tryMap<S,F extends Object>(Result<S,F> Function(T) f) {
     List<S?> result = List.filled(list.length, null, growable: false);
     for (int i = 0; i < list.length; i++) {
       var res = f(list[i]);
@@ -66,6 +67,6 @@ extension type Array<T>._(List<T> list) implements Iterable<T> {
       }
       result[i] = res.unwrap();
     }
-    return Ok(Array._(result.cast<S>()));
+    return Ok(Arr._(result.cast<S>()));
   }
 }
