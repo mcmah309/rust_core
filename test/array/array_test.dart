@@ -1,3 +1,4 @@
+import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/array.dart';
@@ -61,5 +62,14 @@ void main() {
       }
     });
     expect(tryMap, Err("Error"));
+  });
+
+  //************************************************************************//
+  test("Array and List composability",(){
+    Array<int> arr = Array(1, 3);
+    List<String> list = ["1", "1", "1"];
+    final other = arr.iter().zip(list);
+    RIterator<int> other2 = arr.iter();
+    
   });
 }

@@ -15,8 +15,11 @@ final class SliceIterator<T> implements Iterator<T> {
 
   @override
   bool moveNext() {
-    _index++;
-    return _index < _slice._end;
+    if(_index + 1 < _slice._end){
+      _index++;
+      return true;
+    }
+    return false;
   }
 
   @override
