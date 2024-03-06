@@ -299,6 +299,27 @@ void main() {
       case None:
         break;
     }
+
+  Option<int> w = Some(1);
+  int p;
+  switch (w) {
+    case Some(:final v):
+      p = v;
+    default:
+      fail("Should not reach here");
+  }
+  int z = p;
+
+  // fails since: https://github.com/dart-lang/sdk/issues/55104
+  // w = Some(1);
+  // int u;
+  // switch (w) {
+  //   case Some(:final v):
+  //     p = v;
+  //   case None:
+  //     fail("Should not reach here");
+  // }
+  // z = u;
   });
 
   group("Option Early Return", () {
