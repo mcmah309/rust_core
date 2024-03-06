@@ -5,16 +5,16 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/dart.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
 
-Implementing Rust's Core Library in Dart.
+`rust_core` is an implementation of Rust's Core Library in Dart.
 
-`rust_core` provides a Dart-friendly implementation of Rust's core library, enabling idiomatic programming with 
-predictable control flow. Rust's functionalities are carefully adapted to Dart's paradigms, focusing on smooth 
-and language-compatible integration.
+The goal is to bring Rust's features and ergonomics to Dart. This also provides a seamless developer experience for any developer using both languages.
+
+Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a smooth idiomatic language-compatible integration with predictable control flow.
 
 ## Highlights
 ### Libraries
 
-| [Result] | [Option] | [Cell] | [Slice] | [Iter] | [Array] | [Panic] | [Typedefs] |
+| [Array] | [Cell] | [Iter] | [Option] | [Panic] | [Result] | [Slice] | [Typedefs] |
 
 🔥 **Extensive Extensions:** Dozens of additional extensions with hundreds of methods tailored for Dart. These 
 extensions are designed for maximum composability, addressing specific scenarios.

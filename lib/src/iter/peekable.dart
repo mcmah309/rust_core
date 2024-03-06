@@ -1,5 +1,3 @@
-
-
 import 'package:rust_core/option.dart';
 
 /// An iterator which can use the "peek" to look at the next element of the iterator without consuming it.
