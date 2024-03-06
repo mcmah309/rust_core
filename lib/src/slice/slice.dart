@@ -39,6 +39,9 @@ final class Slice<T> extends Iterable<T> {
 
   Slice.fromList(List<T> list) : this(list, 0, list.length);
 
+  Slice.fromSlice(Slice<T> slice, [int start = 0, int end = -1])
+      : this(slice._list, slice._start + start, end == -1 ? slice._end : slice._start + end);
+
   @override
   bool operator ==(Object other) {
     return (other is Slice<T> &&

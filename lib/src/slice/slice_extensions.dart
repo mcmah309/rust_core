@@ -2,6 +2,11 @@ part of 'slice.dart';
 
 extension SliceOnListExtension<T> on List<T> {
   Slice<T> asSlice() => Slice.fromList(this);
+
+  Slice<T> slice([int start = 0, int? end]) {
+    end ??= length;
+    return Slice(this, start, end);
+  }
 }
 
 extension SliceOnSliceIntExtension<T> on Slice<num> {
