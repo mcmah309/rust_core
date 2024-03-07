@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_renaming_method_parameters
+
 import 'package:rust_core/option.dart';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
@@ -15,7 +17,7 @@ final class SliceIterator<T> implements Iterator<T> {
 
   @override
   bool moveNext() {
-    if(_index + 1 < _slice._end){
+    if (_index + 1 < _slice._end) {
       _index++;
       return true;
     }
@@ -29,7 +31,7 @@ final class SliceIterator<T> implements Iterator<T> {
 /// A contiguous sequence of elements in a [List]. Slices are a view into a list without allocating and copying to a new list,
 /// as such, they do not own their own data.
 /// Note: Shrinking the original list can cause the slices range to become invalid, which may cause an exception.
-final class Slice<T> extends Iterable<T> {
+final class Slice<T> implements Iterable<T> {
   int _start;
   int _end;
   final List<T> _list;
@@ -161,14 +163,16 @@ final class Slice<T> extends Iterable<T> {
 
   /// Returns mutable references to many indices at once.
   /// Returns an error if any index is out-of-bounds.
-  Result<Arr<T>, GetManyError> getMany(List<int> indices){
-    if(indices.length > _end - _start) return const Err(GetManyError(GetManyErrorType.tooManyIndices));   
+  Result<Arr<T>, GetManyError> getMany(List<int> indices) {
+    if (indices.length > _end - _start)
+      return const Err(GetManyError(GetManyErrorType.tooManyIndices));
     if (indices.isEmpty) {
       return Ok(Arr.empty());
     }
     var array = Arr(this.first, indices.length);
     for (final (int i, int index) in indices.iter().enumerate()) {
-      if(index < _start || index >= _end) return const Err(GetManyError(GetManyErrorType.requestedIndexOutOfBounds));
+      if (index < _start || index >= _end)
+        return const Err(GetManyError(GetManyErrorType.requestedIndexOutOfBounds));
       array[i] = this[index];
     }
     return Ok(array);
@@ -176,11 +180,10 @@ final class Slice<T> extends Iterable<T> {
 
 // get_many_mut: Will not implement, covered by get_many
 
-
   /// Returns mutable references to many indices at once, without doing any checks.
   Arr<T> getManyUnchecked(List<int> indices) {
     assert(indices.length <= _end - _start,
-        "The number of indices must be less than or equal to the length of the slice");   
+        "The number of indices must be less than or equal to the length of the slice");
     if (indices.isEmpty) {
       return Arr.empty();
     }
@@ -575,12 +578,6 @@ final class Slice<T> extends Iterable<T> {
 // trim_ascii_end: Will not implement, not possible in Dart
 // trim_ascii_start: Will not implement, not possible in Dart
 
-  /// growable param is ignored, but need to satisfy the interface.
-  @override
-  List<T> toList({bool growable = true}) {
-    return _list.sublist(_start, _end);
-  }
-
   RIterator<Slice<T>> windows(int size) {
     assert(size > 0, "Size must be positive");
     assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
@@ -591,4 +588,91 @@ final class Slice<T> extends Iterable<T> {
   T operator [](int index) => _list[index + _start];
 
   void operator []=(int index, T value) => _list[index + _start] = value;
+
+  // Iterable: Overriding iterable methods
+  //************************************************************************//
+
+  @override
+  bool any(bool Function(T) f) => _list.getRange(_start, _end).any(f);
+
+  @override
+  RIterator<U> cast<U>() => RIterator(_list.getRange(_start, _end).cast<U>());
+
+  @override
+  bool contains(Object? element) => _list.getRange(_start, _end).contains(element);
+
+  @override
+  T elementAt(int index) => _list.getRange(_start, _end).elementAt(index);
+
+  @override
+  bool every(bool Function(T) f) => _list.getRange(_start, _end).every(f);
+
+  @override
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
+      RIterator(_list.getRange(_start, _end).expand(f));
+
+  @override
+  T firstWhere(bool Function(T) f, {T Function()? orElse}) =>
+      _list.getRange(_start, _end).firstWhere(f, orElse: orElse);
+
+  @override
+  U fold<U>(U initialValue, U Function(U previousValue, T element) f) =>
+      _list.getRange(_start, _end).fold(initialValue, f);
+
+  @override
+  RIterator<T> followedBy(Iterable<T> other) =>
+      RIterator(_list.getRange(_start, _end).followedBy(other));
+
+  @override
+  void forEach(void Function(T) f) => _list.getRange(_start, _end).forEach(f);
+
+  @override
+  String join([String separator = '']) => _list.getRange(_start, _end).join(separator);
+
+  @override
+  T lastWhere(bool Function(T) f, {T Function()? orElse}) =>
+      _list.getRange(_start, _end).lastWhere(f, orElse: orElse);
+
+  @override
+  int get length => _end - _start;
+
+  @override
+  RIterator<U> map<U>(U Function(T) f) => RIterator(_list.getRange(_start, _end).map(f));
+
+  @override
+  T reduce(T Function(T, T) f) => _list.getRange(_start, _end).reduce(f);
+
+  @override
+  T get single => _list.getRange(_start, _end).single;
+
+  @override
+  T singleWhere(bool Function(T) f, {T Function()? orElse}) =>
+      _list.getRange(_start, _end).singleWhere(f, orElse: orElse);
+
+  @override
+  RIterator<T> skip(int count) => RIterator(_list.getRange(_start, _end).skip(count));
+
+  @override
+  RIterator<T> skipWhile(bool Function(T) f) =>
+      RIterator(_list.getRange(_start, _end).skipWhile(f));
+
+  @override
+  RIterator<T> take(int count) => RIterator(_list.getRange(_start, _end).take(count));
+
+  @override
+  RIterator<T> takeWhile(bool Function(T) f) =>
+      RIterator(_list.getRange(_start, _end).takeWhile(f));
+
+  /// [growable] is ignore, always returns a growable list.
+  @override
+  List<T> toList({bool growable = true}) => _list.sublist(_start, _end);
+
+  @override
+  Set<T> toSet() => _list.getRange(_start, _end).toSet();
+
+  @override
+  RIterator<T> where(bool Function(T) f) => RIterator(_list.getRange(_start, _end).where(f));
+
+  @override
+  RIterator<U> whereType<U>() => RIterator(_list.getRange(_start, _end).whereType<U>());
 }

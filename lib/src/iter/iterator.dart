@@ -377,6 +377,98 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
   /// If either iterator does not have another element, the iterator stops.
   RIterator<(T, U)> zip<U>(Iterable<U> other) => RIterator(Zip<T, U>(this.iterable, other));
 
-  @override
+  // Iterable: Overriding iterable methods
+  //************************************************************************//
+
+  /// Returns the first element of an iterator, None if empty.
+  Option<T> first() {
+    final first = iterable.firstOrNull;
+    if (first == null) {
+      return None;
+    }
+    return Some(first);
+  }
+
+  /// Returns true if the iterator is empty, false otherwise.
+  bool isEmpty() => iterable.isEmpty;
+
+  /// Returns true if the iterator is not empty, false otherwise.
+  bool isNotEmpty() => iterable.isNotEmpty;
+
   Iterator<T> get iterator => iterable.iterator;
+
+  /// Returns the last element of an iterator, None if empty.
+  Option<T> last() {
+    final last = iterable.lastOrNull;
+    if (last == null) {
+      return None;
+    }
+    return Some(last);
+  }
+
+  /// Returns the length of an iterator.
+  int length() => iterable.length;
+
+  /// Returns the single element of an iterator, None if this is empty or has more than one element.
+  Option<T> single() {
+    final firstTwo = iterable.take(2).iterator;
+    if (!firstTwo.moveNext()) {
+      return None;
+    }
+    final first = firstTwo.current;
+    if (!firstTwo.moveNext()) {
+      return Some(first);
+    }
+    return None;
+  }
+
+  // bool any(bool Function(T) f) {
+  //   return iterable.any(f);
+  // }
+
+  RIterator<U> cast<U>() => RIterator(iterable.cast<U>());
+
+  // bool contains(Object? element) => iterable.contains(element);
+
+  // T elementAt(int index) => iterable.elementAt(index);
+
+  // bool every(bool Function(T) f) => iterable.every(f);
+
+  RIterator<T> expand(Iterable<T> Function(T) f) => RIterator(iterable.expand(f));
+
+  // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
+
+  // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => iterable.fold(initialValue, f);
+
+  RIterator<T> followedBy(Iterable<T> other) => RIterator(iterable.followedBy(other));
+
+  // void forEach(void Function(T) f) => iterable.forEach(f);
+
+  // String join([String separator = '']) => iterable.join(separator);
+
+  // T lastWhere(bool Function(T) f, {T Function()? orElse}) => iterable.lastWhere(f, orElse: orElse);
+
+  RIterator<U> map<U>(U Function(T) f) => RIterator(iterable.map(f));
+
+  // T reduce(T Function(T, T) f) => iterable.reduce(f);
+
+  // T singleWhere(bool Function(T) f, {T Function()? orElse}) => iterable.singleWhere(f, orElse: orElse);
+
+  RIterator<T> skip(int count) => RIterator(iterable.skip(count));
+
+  RIterator<T> skipWhile(bool Function(T) f) => RIterator(iterable.skipWhile(f));
+
+  RIterator<T> take(int count) => RIterator(iterable.take(count));
+
+  RIterator<T> takeWhile(bool Function(T) f) => RIterator(iterable.takeWhile(f));
+
+  // List<T> toList({bool growable = true}) => iterable.toList(growable: growable);
+
+  // Set<T> toSet() => iterable.toSet();
+
+  // String toString() => iterable.toString();
+
+  RIterator<T> where(bool Function(T) f) => RIterator(iterable.where(f));
+
+  RIterator<U> whereType<U>() => RIterator(iterable.whereType<U>());
 }

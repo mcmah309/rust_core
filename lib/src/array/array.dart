@@ -1,6 +1,8 @@
 
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
+import 'package:rust_core/option.dart';
+import 'package:rust_core/iter.dart';
 
 /// A fixed-size array, denoted as [T; N] in Rust.
 extension type Arr<T>._(List<T> list) implements Iterable<T> {
@@ -15,10 +17,6 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   
   T operator [](int index) => list[index];
   void operator []=(int index, T value) => list[index] = value;
-
-  int get length => list.length;
-
-  Arr<U> cast<U>() => Arr._(list.cast<U>());
 
   // as_ascii: Will not be implemented, not possible in Dart
   // as_ascii_unchecked_mut: Will not be implemented, not possible in Dart
@@ -69,4 +67,99 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
     }
     return Ok(Arr._(result.cast<S>()));
   }
+
+  // Iterable: Overriding iterable methods
+  //************************************************************************//
+
+  /// Returns the first element of an iterator, None if empty.
+  Option<T> first() {
+    final first = list.firstOrNull;
+    if (first == null) {
+      return None;
+    }
+    return Some(first);
+  }
+
+  /// Returns true if the iterator is empty, false otherwise.
+  bool isEmpty() => list.isEmpty;
+
+  /// Returns true if the iterator is not empty, false otherwise.
+  bool isNotEmpty() => list.isNotEmpty;
+
+  Iterator<T> get iterator => list.iterator;
+
+  /// Returns the last element of an iterator, None if empty.
+  Option<T> last() {
+    final last = list.lastOrNull;
+    if (last == null) {
+      return None;
+    }
+    return Some(last);
+  }
+
+  /// Returns the length of an iterator.
+  int length() => list.length;
+
+  /// Returns the single element of an iterator, None if this is empty or has more than one element.
+  Option<T> single() {
+    final firstTwo = list.take(2).iterator;
+    if (!firstTwo.moveNext()) {
+      return None;
+    }
+    final first = firstTwo.current;
+    if (!firstTwo.moveNext()) {
+      return Some(first);
+    }
+    return None;
+  }
+
+  // bool any(bool Function(T) f) {
+  //   return list.any(f);
+  // }
+
+  RIterator<U> cast<U>() => RIterator(list.cast<U>());
+
+  // bool contains(Object? element) => list.contains(element);
+
+  // T elementAt(int index) => list.elementAt(index);
+
+  // bool every(bool Function(T) f) => list.every(f);
+
+  RIterator<T> expand(Iterable<T> Function(T) f) => RIterator(list.expand(f));
+
+  // T firstWhere(bool Function(T) f, {T Function()? orElse}) => list.firstWhere(f, orElse: orElse);
+
+  // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => list.fold(initialValue, f);
+
+  RIterator<T> followedBy(Iterable<T> other) => RIterator(list.followedBy(other));
+
+  // void forEach(void Function(T) f) => list.forEach(f);
+
+  // String join([String separator = '']) => list.join(separator);
+
+  // T lastWhere(bool Function(T) f, {T Function()? orElse}) => list.lastWhere(f, orElse: orElse);
+
+  // RIterator<U> map<U>(U Function(T) f) => RIterator(list.map(f));
+
+  // T reduce(T Function(T, T) f) => list.reduce(f);
+
+  // T singleWhere(bool Function(T) f, {T Function()? orElse}) => list.singleWhere(f, orElse: orElse);
+
+  RIterator<T> skip(int count) => RIterator(list.skip(count));
+
+  RIterator<T> skipWhile(bool Function(T) f) => RIterator(list.skipWhile(f));
+
+  RIterator<T> take(int count) => RIterator(list.take(count));
+
+  RIterator<T> takeWhile(bool Function(T) f) => RIterator(list.takeWhile(f));
+
+  // List<T> toList({bool growable = true}) => list.toList(growable: growable);
+
+  // Set<T> toSet() => list.toSet();
+
+  // String toString() => list.toString();
+
+  RIterator<T> where(bool Function(T) f) => RIterator(list.where(f));
+
+  RIterator<U> whereType<U>() => RIterator(list.whereType<U>());
 }
