@@ -125,7 +125,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // bool every(bool Function(T) f) => list.every(f);
 
-  RIterator<T> expand(Iterable<T> Function(T) f) => RIterator(list.expand(f));
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator(list.expand(f));
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => list.firstWhere(f, orElse: orElse);
 

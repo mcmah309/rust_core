@@ -434,7 +434,7 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
 
   // bool every(bool Function(T) f) => iterable.every(f);
 
-  RIterator<T> expand(Iterable<T> Function(T) f) => RIterator(iterable.expand(f));
+    RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator(iterable.expand(f));
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
 
