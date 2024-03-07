@@ -14,7 +14,7 @@ Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a 
 ## Highlights
 ### Libraries
 
-| [Array] | [Cell] | [Iter] | [Option] | [Panic] | [Result] | [Slice] | [Typedefs] |
+| [Array] | [Cell] | [Error] | [Iter] | [Option] | [Panic] | [Result] | [Slice] | [Typedefs] |
 
 🔥 **Extensive Extensions:** Dozens of additional extensions with hundreds of methods tailored for Dart. These 
 extensions are designed for maximum composability, addressing specific scenarios.
@@ -34,6 +34,7 @@ it's also available for `T?`.
 
 
 [Cell]: https://github.com/mcmah309/rust_core/tree/master/lib/src/cell
+[Error]: https://github.com/mcmah309/rust_core/tree/master/lib/src/error
 [Option]: https://github.com/mcmah309/rust_core/tree/master/lib/src/option
 [Panic]: https://github.com/mcmah309/rust_core/tree/master/lib/src/panic
 [Result]: https://github.com/mcmah309/rust_core/tree/master/lib/src/result
@@ -44,6 +45,6 @@ it's also available for `T?`.
 
 
 [anyhow]: https://pub.dev/packages/anyhow
-[anyhow_logging]: https://pub.dev/packages/anyhow_logging
+[anyhow_logging]: https://pub.dev/packages/rewind
 [rust_std]: https://pub.dev/packages/rust_std
 [tapper]: https://pub.dev/packages/tapper
