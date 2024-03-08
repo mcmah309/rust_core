@@ -28,9 +28,10 @@ it's also available for `T?`.
 | Library | Description |
 | ------- | ----------- |
 | [anyhow] | Idiomatic error handling capabilities to make your code safer, more maintainable, and errors easier to debug. |
-| [anyhow_logging] | Dynamic logging utility that allows you to log exactly what you want.  |
+| [rewind] | A logging utility that allows you completely customize what is captured and how your logs look at each logging level.  |
 | [rust_std] | Implementation of Rust's standard library in Dart. |
 | [tapper] | Extension methods on all types that allow transparent, temporary, inspection/mutation (tapping), transformation (piping), or type conversion. |
+| [thiserror] | A library for concisely defining error types (error enums / sealed classes) and their String representation. |
 
 
 [Cell]: https://github.com/mcmah309/rust_core/tree/master/lib/src/cell
@@ -44,6 +45,7 @@ it's also available for `T?`.
 
 
 [anyhow]: https://pub.dev/packages/anyhow
-[anyhow_logging]: https://pub.dev/packages/rewind
+[thiserror]: https://pub.dev/packages/thiserror
+[rewind]: https://pub.dev/packages/rewind
 [rust_std]: https://pub.dev/packages/rust_std
 [tapper]: https://pub.dev/packages/tapper
