@@ -75,6 +75,19 @@ extension IteratorComparable<U,T extends Comparable<U>> on RIterator<T> {
         }
       }
     }
+
+    /// Determines if the elements of this Iterator are lexicographically greater than or equal to those of another.
+    bool ge(Iterable<U> other) {
+      return cmp(other) >= 0;
+    }
+
+    /// Determines if the elements of this Iterator are lexicographically greater than those of another.
+    bool gt(Iterable<U> other) {
+      return cmp(other) > 0;
+    }
+
+  
+
 }
 
 extension IteratorOptionExtension<T> on RIterator<Option<T>> {

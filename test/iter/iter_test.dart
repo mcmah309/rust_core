@@ -5,8 +5,7 @@ import 'package:test/test.dart';
 import 'package:rust_core/option.dart';
 
 main() {
-
-  test("advanceBy",(){
+  test("advanceBy", () {
     var list = [1, 2, 3, 4, 5];
     var advanced = list.iter().advanceBy(2);
     expect(advanced.unwrap(), [3, 4, 5]);
@@ -42,8 +41,7 @@ main() {
     expect(advanced10.unwrapErr(), 6);
   });
 
-
-  test("arrayChunks",(){
+  test("arrayChunks", () {
     var list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     var chunks = list.iter().arrayChunks(3);
     final x = chunks.collectArr();
@@ -56,7 +54,7 @@ main() {
     var chunksIterator = list.iter().arrayChunks(3).iterator;
     while (chunksIterator.moveNext()) {}
     var remainder = chunksIterator.intoRemainder();
-    expect(remainder.isNone(), true);    
+    expect(remainder.isNone(), true);
 
     var chunks2 = list.iter().arrayChunks(4);
     expect(chunks2.toList(), [
@@ -70,13 +68,13 @@ main() {
     expect(remainder2.unwrap(), [9]);
   });
 
-  test("cycle", (){
+  test("cycle", () {
     var list = [1, 2, 3, 4, 5];
     var cycled = list.iter().cycle().take(10);
     expect(cycled, [1, 2, 3, 4, 5, 1, 2, 3, 4, 5]);
   });
 
-  test("cmp",(){
+  test("cmp", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -88,7 +86,7 @@ main() {
     expect(list.iter().cmp(list5.iter()), -1);
   });
 
-  test("cmpBy",(){
+  test("cmpBy", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -100,7 +98,7 @@ main() {
     expect(list.iter().cmpBy(list5.iter(), (int a, int b) => a.compareTo(b)), -1);
   });
 
-  test("eq",(){
+  test("eq", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -112,7 +110,7 @@ main() {
     expect(list.iter().eq(list5.iter()), false);
   });
 
-  test("eqBy", (){
+  test("eqBy", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -178,26 +176,54 @@ main() {
     expect(interspersed3, []);
   });
 
+  test("intersperseWith", () {
+    var list = [1, 2, 3, 4, 5];
+    int count = 0;
+    var interspersed = list.iter().intersperseWith(() {
+      count++;
+      return 0;
+    });
+    expect(interspersed, [1, 0, 2, 0, 3, 0, 4, 0, 5]);
+    expect(count, 4);
 
-  test("maxBy",(){
+    var list2 = [1];
+    count = 0;
+    var interspersed2 = list2.iter().intersperseWith(() {
+      count++;
+      return 0;
+    });
+    expect(interspersed2, [1]);
+    expect(count, 0);
+
+    var list3 = <int>[];
+    count = 0;
+    var interspersed3 = list3.iter().intersperseWith(() {
+      count++;
+      return 0;
+    });
+    expect(interspersed3, []);
+    expect(count, 0);
+  });
+
+  test("maxBy", () {
     var list = [1, 2, 3, 4, 5];
     var max = list.iter().maxBy((int a, int b) => a.compareTo(b));
     expect(max, Some(5));
   });
 
-  test("maxByKey", (){
+  test("maxByKey", () {
     var list = [1, 2, 3, 4, 5];
     var max = list.iter().maxByKey<num>((int a) => a);
     expect(max, Some(5));
   });
 
-  test("minBy",(){
+  test("minBy", () {
     var list = [1, 2, 3, 4, 5];
     var min = list.iter().minBy((int a, int b) => a.compareTo(b));
     expect(min, Some(1));
   });
 
-  test("minByKey", (){
+  test("minByKey", () {
     var list = [1, 2, 3, 4, 5];
     var min = list.iter().minByKey<num>((int a) => a);
     expect(min, Some(1));
@@ -214,7 +240,7 @@ main() {
     expect(mapped, [1, 2, 3]);
   });
 
-  test("peekable",(){
+  test("peekable", () {
     var list = [1, 2, 3, 4, 5];
     PeekableIterator<int> peekable = list.iter().peekable().iterator;
     expect(peekable.peek(), Some(1));
