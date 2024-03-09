@@ -2,6 +2,7 @@ import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/src/array/array_extensions.dart';
 import 'package:rust_core/src/iter/array_chunks.dart';
 
 part 'iterator_extensions.dart';
@@ -9,7 +10,26 @@ part 'iterator_extensions.dart';
 extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
   RIterator.fromSlice(Slice<T> slice) : iterable = slice;
 
-// advance_by: //todo
+    /// Advances the iterator by n elements.
+    /// will return a new iterator advanced by n elements when Ok, or a Err(k) 
+    /// where k is remaining number of steps that could not be advanced because the iterator ran out.
+    Result<RIterator<T>, int> advanceBy(int n) {
+      final self = this.iterable;
+      if(self is List<T>){
+        if(n > self.length){
+          return Err(n - self.length);
+        }
+        return Ok(RIterator(self.sublist(n)));
+      }
+      final iterator = self.iterator;
+      for (var i = 0; i < n; i++) {
+        if (!iterator.moveNext()) {
+          return Err(n - i);
+        }
+      }
+      final arr = iterator.collectArr();
+      return Ok(RIterator(arr));
+    }
 
   bool all(bool Function(T) f) => iterable.every(f);
 
@@ -61,7 +81,7 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-// collect: Will also be implemented by extensions
+// collect: Implemented by extensions
 
   List<T> collectList({bool growable = true}) {
     return iterable.toList(growable: growable);
@@ -78,7 +98,14 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
   /// Counting the number of iterations and returning it.
   int count() => iterable.length;
 
-// cycle: //todo
+  /// Creates an iterator which repeats the elements of the original iterator endlessly.
+  RIterator<T> cycle() => RIterator(_cycleHelper());
+
+  Iterable<T> _cycleHelper() sync* {
+    while (true) {
+      yield* iterable;
+    }
+  }
 
   /// Creates an iterator which gives the current iteration count as well as the next value.
   RIterator<(int, T)> enumerate() => RIterator(iterable.indexed);

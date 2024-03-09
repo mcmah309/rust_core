@@ -6,6 +6,43 @@ import 'package:rust_core/option.dart';
 
 main() {
 
+  test("advanceBy",(){
+    var list = [1, 2, 3, 4, 5];
+    var advanced = list.iter().advanceBy(2);
+    expect(advanced.unwrap(), [3, 4, 5]);
+
+    var advanced2 = list.iter().advanceBy(0);
+    expect(advanced2.unwrap(), [1, 2, 3, 4, 5]);
+
+    var advanced3 = list.iter().advanceBy(5);
+    expect(advanced3.unwrap(), []);
+
+    var advanced4 = list.iter().advanceBy(6);
+    expect(advanced4.unwrapErr(), 1);
+
+    list = [];
+    var advanced5 = list.iter().advanceBy(6);
+    expect(advanced5.unwrapErr(), 6);
+
+    var set = {1, 2, 3, 4, 5};
+    var advanced6 = set.iter().advanceBy(2);
+    expect(advanced6.unwrap(), [3, 4, 5]);
+
+    var advanced7 = set.iter().advanceBy(0);
+    expect(advanced7.unwrap(), [1, 2, 3, 4, 5]);
+
+    var advanced8 = set.iter().advanceBy(5);
+    expect(advanced8.unwrap(), []);
+
+    var advanced9 = set.iter().advanceBy(6);
+    expect(advanced9.unwrapErr(), 1);
+
+    set = {};
+    var advanced10 = set.iter().advanceBy(6);
+    expect(advanced10.unwrapErr(), 6);
+  });
+
+
   test("arrayChunks",(){
     var list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     var chunks = list.iter().arrayChunks(3);
@@ -31,6 +68,12 @@ main() {
     while (chunksIterator2.moveNext()) {}
     var remainder2 = chunksIterator2.intoRemainder();
     expect(remainder2.unwrap(), [9]);
+  });
+
+  test("cycle", (){
+    var list = [1, 2, 3, 4, 5];
+    var cycled = list.iter().cycle().take(10);
+    expect(cycled, [1, 2, 3, 4, 5, 1, 2, 3, 4, 5]);
   });
 
   test("cmp",(){

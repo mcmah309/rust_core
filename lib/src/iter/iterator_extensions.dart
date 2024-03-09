@@ -1,12 +1,21 @@
 part of 'iterator.dart';
 
-extension IteratorExtension<T extends Object> on Iterator<T> {
+extension IteratorExtension<T> on Iterator<T> {
   /// If the iterator is empty, returns None. Otherwise, returns the next value wrapped in Some.
   Option<T> next() {
     if (moveNext()) {
       return Some(current);
     }
     return None;
+  }
+
+  /// Collects the Iterator into a List.
+  List<T> collectList() {
+    final list = <T>[];
+    while (moveNext()) {
+      list.add(current);
+    }
+    return list;
   }
 }
 
