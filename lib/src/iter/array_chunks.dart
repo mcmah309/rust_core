@@ -48,6 +48,7 @@ class ArrayChunksIterator<T> implements Iterator<Arr<T>> {
   }
 }
 
+/// An iterable over N elements of the iterable at a time.
 class ArrayChunks<T> extends Iterable<Arr<T>> {
   final Iterable<T> _iterable;
   final int _chunkSize;

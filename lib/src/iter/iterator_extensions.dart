@@ -38,6 +38,36 @@ extension IteratorIterableExtension<T> on RIterator<Iterable<T>> {
   //todo
 }
 
+
+extension IteratorComparable<U,T extends Comparable<U>> on RIterator<T> {
+    /// Lexicographically compares the elements of this Iterator with those of another.
+    /// Less = -1
+    /// Equal = 0
+    /// Greater = 1
+    int cmp(Iterable<U> other) {
+      final otherIterator = other.iterator;
+      final thisIterator = iterable.iterator;
+      while (true) {
+        if (thisIterator.moveNext()) {
+          if (otherIterator.moveNext()) {
+            final cmp = thisIterator.current.compareTo(otherIterator.current);
+            if (cmp != 0) {
+              return cmp;
+            }
+          } else {
+            return 1;
+          }
+        } else {
+          if (otherIterator.moveNext()) {
+            return -1;
+          } else {
+            return 0;
+          }
+        }
+      }
+    }
+}
+
 extension IteratorOptionExtension<T> on RIterator<Option<T>> {
   /// Creates an iterator which ends after the first None.
   RIterator<T> fuse() {

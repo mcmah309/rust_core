@@ -20,7 +20,7 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
   /// be omitted and can be retrieved from the [.intoRemainder()] function of the iterator.
   ArrayChunks<T> arrayChunks(int size) => ArrayChunks(iterable, size);
 
-// by_ref
+// by_ref: Will not implement, Dart does not have borrowing
 
   /// Takes two iterators and creates a new iterator over both in sequence.
   RIterator<T> chain(Iterable<T> other) {
@@ -32,9 +32,35 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     yield* other;
   }
 
-// cloned
-// cmp
-// cmp_by
+// cloned: Will not implement, Dart objects are not clonable
+// cmp: Implemented in an extension
+
+  /// Lexicographically compares the elements of this Iterator with those of another with respect to the specified comparison function.
+  /// Less = -1
+  /// Equal = 0
+  /// Greater = 1
+  int cmpBy<U>(Iterable<U> other, int Function(T, U) f) {
+    final otherIterator = other.iterator;
+    final thisIterator = iterable.iterator;
+    while (true) {
+      if (thisIterator.moveNext()) {
+        if (otherIterator.moveNext()) {
+          final cmp = f(thisIterator.current, otherIterator.current);
+          if (cmp != 0) {
+            return cmp;
+          }
+        } else {
+          return 1;
+        }
+      } else {
+        if (otherIterator.moveNext()) {
+          return -1;
+        }
+        return 0;
+      }
+    }
+  }
+
 // collect: Will also be implemented by extensions
 
   List<T> collectList({bool growable = true}) {
@@ -57,8 +83,49 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
   /// Creates an iterator which gives the current iteration count as well as the next value.
   RIterator<(int, T)> enumerate() => RIterator(iterable.indexed);
 
-// eq
-// eq_by
+    /// Determines if the elements of this Iterator are equal to those of another using "==".
+    bool eq<U>(Iterable<U> other) {
+      final otherIterator = other.iterator;
+      final thisIterator = iterable.iterator;
+      while (true) {
+        if (thisIterator.moveNext()) {
+          if (otherIterator.moveNext()) {
+            if (thisIterator.current != otherIterator.current) {
+              return false;
+            }
+          } else {
+            return false;
+          }
+        } else {
+          if (otherIterator.moveNext()) {
+            return false;
+          }
+          return true;
+        }
+      }
+    }
+
+  /// Determines if the elements of this Iterator are equal to those of another with respect to the specified equality function.
+  bool eqBy<U>(Iterable<U> other, bool Function(T, U) f) {
+    final otherIterator = other.iterator;
+    final thisIterator = iterable.iterator;
+    while (true) {
+      if (thisIterator.moveNext()) {
+        if (otherIterator.moveNext()) {
+          if (!f(thisIterator.current, otherIterator.current)) {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        if (otherIterator.moveNext()) {
+          return false;
+        }
+        return true;
+      }
+    }
+  }
 
   /// Creates an iterator which uses a closure to determine if an element should be yielded.
   RIterator<T> filter(bool Function(T) f) {

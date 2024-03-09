@@ -33,6 +33,54 @@ main() {
     expect(remainder2.unwrap(), [9]);
   });
 
+  test("cmp",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().cmp(list2.iter()), 0);
+    expect(list.iter().cmp(list3.iter()), -1);
+    expect(list.iter().cmp(list4.iter()), 1);
+    expect(list.iter().cmp(list5.iter()), -1);
+  });
+
+  test("cmpBy",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().cmpBy(list2.iter(), (int a, int b) => a.compareTo(b)), 0);
+    expect(list.iter().cmpBy(list3.iter(), (int a, int b) => a.compareTo(b)), -1);
+    expect(list.iter().cmpBy(list4.iter(), (int a, int b) => a.compareTo(b)), 1);
+    expect(list.iter().cmpBy(list5.iter(), (int a, int b) => a.compareTo(b)), -1);
+  });
+
+  test("eq",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().eq(list2.iter()), true);
+    expect(list.iter().eq(list3.iter()), false);
+    expect(list.iter().eq(list4.iter()), false);
+    expect(list.iter().eq(list5.iter()), false);
+  });
+
+  test("eqBy", (){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().eqBy(list2.iter(), (int a, int b) => a.compareTo(b) == 0), true);
+    expect(list.iter().eqBy(list3.iter(), (int a, int b) => a.compareTo(b) == 0), false);
+    expect(list.iter().eqBy(list4.iter(), (int a, int b) => a.compareTo(b) == 0), false);
+    expect(list.iter().eqBy(list5.iter(), (int a, int b) => a.compareTo(b) == 0), false);
+  });
+
   test("filter", () {
     var list = [1, 2, 3, 4, 5];
     var filtered = list.iter().filter((e) => e % 2 == 0);
