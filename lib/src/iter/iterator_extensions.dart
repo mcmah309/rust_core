@@ -1,6 +1,7 @@
 part of 'iterator.dart';
 
 extension IteratorExtension<T extends Object> on Iterator<T> {
+  /// If the iterator is empty, returns None. Otherwise, returns the next value wrapped in Some.
   Option<T> next() {
     if (moveNext()) {
       return Some(current);
@@ -10,6 +11,7 @@ extension IteratorExtension<T extends Object> on Iterator<T> {
 }
 
 extension IterableExtension<T> on Iterable<T> {
+  /// Returns an [RIterator] over the [Iterable].
   RIterator<T> iter() => RIterator<T>(this);
 }
 

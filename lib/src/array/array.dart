@@ -117,7 +117,8 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   //   return list.any(f);
   // }
 
-  RIterator<U> cast<U>() => RIterator(list.cast<U>());
+  /// Casts this Arr<T> to an Arr<U>.
+  Arr<U> cast<U>() => Arr.fromList(list.cast<U>());
 
   // bool contains(Object? element) => list.contains(element);
 
@@ -162,4 +163,8 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   RIterator<T> where(bool Function(T) f) => RIterator(list.where(f));
 
   RIterator<U> whereType<U>() => RIterator(list.whereType<U>());
+
+  //************************************************************************//
+
+  operator +(Arr<T> other) => Arr._(list + other.list);
 }

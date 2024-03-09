@@ -5,6 +5,9 @@ extension ArrayOnListExtension<T> on List<T> {
   Arr<T> asArr() => Arr.fromList(this);
 }
 extension ArrayOnIterableExtension<T> on Iterable<T> {
-  /// Creates an Array from a List
+  /// Creates an Array from an Iterable
   Arr<T> toArr() => Arr.fromList(toList(growable: false));
+  
+  /// Creates an Array from an Iterable
+  Arr<T> collectArr() => Arr.fromList(toList(growable: false));
 }

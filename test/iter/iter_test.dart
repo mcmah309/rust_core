@@ -1,9 +1,38 @@
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/slice.dart';
+import 'package:rust_core/src/array/array_extensions.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/option.dart';
 
 main() {
+
+  test("arrayChunks",(){
+    var list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var chunks = list.iter().arrayChunks(3);
+    final x = chunks.collectArr();
+    expect(chunks.toList(), [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9]
+    ]);
+
+    var chunksIterator = list.iter().arrayChunks(3).iterator;
+    while (chunksIterator.moveNext()) {}
+    var remainder = chunksIterator.intoRemainder();
+    expect(remainder.isNone(), true);    
+
+    var chunks2 = list.iter().arrayChunks(4);
+    expect(chunks2.toList(), [
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+    ]);
+
+    var chunksIterator2 = list.iter().arrayChunks(4).iterator;
+    while (chunksIterator2.moveNext()) {}
+    var remainder2 = chunksIterator2.intoRemainder();
+    expect(remainder2.unwrap(), [9]);
+  });
+
   test("filter", () {
     var list = [1, 2, 3, 4, 5];
     var filtered = list.iter().filter((e) => e % 2 == 0);

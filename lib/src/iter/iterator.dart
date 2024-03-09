@@ -2,6 +2,7 @@ import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/src/iter/array_chunks.dart';
 
 part 'iterator_extensions.dart';
 
@@ -13,7 +14,12 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
   bool all(bool Function(T) f) => iterable.every(f);
 
 // any: Implemented by Iterable.any
-// array_chunks
+
+  /// Returns an iterator over N elements of the iterator at a time.
+  /// The chunks do not overlap. If N does not divide the length of the iterator, then the last up to N-1 elements will 
+  /// be omitted and can be retrieved from the [.intoRemainder()] function of the iterator.
+  ArrayChunks<T> arrayChunks(int size) => ArrayChunks(iterable, size);
+
 // by_ref
 
   /// Takes two iterators and creates a new iterator over both in sequence.
