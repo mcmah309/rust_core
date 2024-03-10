@@ -126,7 +126,7 @@ extension type const Option<T>._(T? v) {
     }
   }
 
-  /// Returns an iterable over the possibly contained value.
+  /// Returns an RIterator over the possibly contained value.
   RIterator<T> iter() {
     if (v == null) {
       return RIterator(<T>[].iterator);

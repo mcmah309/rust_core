@@ -97,7 +97,10 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 // is_sorted
 // is_sorted_by
 // is_sorted_by_key
-// last: Overriden in RIterator
+
+  /// Consumes the iterator and returns the last element.
+  Option<T> lastOrOption();
+
 // le
 // lt
 // map: Implemented by Iterable.map

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 part of 'iterator.dart';
 
 extension IterableExtension<T> on Iterable<T> {
@@ -107,4 +109,35 @@ extension IteratorOnIteratorTUExtension<T, U> on RIterator<(T, U)> {
     }
     return (first, second);
   }
+}
+
+//************************************************************************//
+
+/// Overrides built in extension methods on nullable [Iterable].
+extension NullableIterableExtensionsOverrides<T extends Object> on RIterator<T?> {
+
+  /// Returns an RIterator over the non-null elements of this iterator.
+  RIterator<T> nonNulls() => RIterator.fromIterable(NullableIterableExtensions(this).nonNulls);
+}
+
+
+/// Overrides built in extension methods on [Iterable].
+extension IterableExtensionsOverrides<T> on RIterator<T> {
+
+  /// Returns an RIterator over the elements of this iterable, paired with their index.
+  RIterator<(int, T)> get indexed => RIterator.fromIterable(IterableExtensions(this).indexed);
+
+  @Deprecated("FirstOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")
+  Never firstOrNull() => 
+      throw "FirstOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.";
+
+  /// Returns the last element of this iterable, or `null` if the iterable is empty.
+  T? lastOrNull() => IterableExtensions(this).lastOrNull;
+
+  @Deprecated("SingleOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")
+  Never singleOrNull() => throw "SingleOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.";
+
+
+  @Deprecated("ElementAtOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use nth() instead.")
+  Never elementAtOrNull(int index) => throw "ElementAtOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use nth() instead.";
 }

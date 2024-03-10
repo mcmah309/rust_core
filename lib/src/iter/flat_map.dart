@@ -1,13 +1,13 @@
 part of 'iterator.dart';
 
 
-class FlatMap<S, T> extends _BaseRIterator<T> {
+final class FlatMap<S, T> extends RIterator<T> {
   final Iterator<S> _iterator;
   final Iterator<T> Function(S) _f;
   late Iterator<T> _currentExpansion;
 
   FlatMap(this._iterator, this._f): super.late(){
-    wIterator = this;
+    _wIterator = this;
   }
 
   @override

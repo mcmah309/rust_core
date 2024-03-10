@@ -1,13 +1,13 @@
 part of 'iterator.dart';
 
 /// Creates an iterator which repeats the elements of the original iterator endlessly.
-class Cycle<T> extends _BaseRIterator<T> {
+final class Cycle<T> extends RIterator<T> {
   final List<T> _cycled = [];
   final Iterator<T> _iterator;
   int index = -1;
 
   Cycle(this._iterator): super.late(){
-    wIterator = this;
+    _wIterator = this;
   }
 
   @override

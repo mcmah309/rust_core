@@ -140,7 +140,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // T lastWhere(bool Function(T) f, {T Function()? orElse}) => list.lastWhere(f, orElse: orElse);
 
-  // RIterator<U> map<U>(U Function(T) f) => RIterator(list.map(f));
+  // RIterator<U> map<U>(U Function(T) f) => list.map(f));
 
   // T reduce(T Function(T, T) f) => list.reduce(f);
 

@@ -1,13 +1,13 @@
 part of 'iterator.dart';
 
 /// Zips to iterators into a single iterator of pairs.
-class Zip<T,U> extends _BaseRIterator<(T,U)> {
+final class Zip<T,U> extends RIterator<(T,U)> {
   final Iterator<T> _iteratorT;
   final Iterator<U> _iteratorU;
   late (T,U) _current;
 
   Zip(this._iteratorT,this._iteratorU): super.late(){
-    wIterator = this;
+    _wIterator = this;
   }
 
   @override

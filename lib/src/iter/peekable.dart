@@ -1,12 +1,12 @@
 part of 'iterator.dart';
 
 /// An iterator which can use the "peek" to look at the next element of the iterator without consuming it.
-class Peekable<T> extends _BaseRIterator<T> {
+final class Peekable<T> extends RIterator<T> {
   final Iterator<T> _iterator;
   Option<T> _peeked = None;
 
   Peekable(this._iterator): super.late() {
-    wIterator = this;
+    _wIterator = this;
   }
 
   /// Returns the next element of the iterator without consuming it.

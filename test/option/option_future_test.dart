@@ -86,12 +86,12 @@ void main() {
 
     test("iter", () async {
       FutureOption<int> x = Future.value(Some(4));
-      Iterable<int> iterable = await x.iter();
+      Iterator<int> iterable = await x.iter();
       expect(iterable, contains(4));
 
       x = Future.value(None);
       iterable = await x.iter();
-      expect(iterable, isEmpty);
+      expect(iterable, const []);
     });
 
     test("map", () async {

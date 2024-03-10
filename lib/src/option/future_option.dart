@@ -43,7 +43,7 @@ extension FutureOptionExtension<T> on FutureOption<T> {
     return then((option) async => option.isSome() && await f(option.unwrap()));
   }
 
-  Future<Iterable<T>> iter() {
+  Future<RIterator<T>> iter() {
     return then((option) => option.iter());
   }
 

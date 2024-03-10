@@ -58,7 +58,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
 
   //************************************************************************//
 
-  Future<Iterable<S>> iter() {
+  Future<RIterator<S>> iter() {
     return then((result) => result.iter());
   }
 

@@ -345,6 +345,16 @@ main() {
 
   //************************************************************************//
 
+  test("take", (){
+    var list = [1, 2, 3, 4, 5];
+    final original = list.iter();
+    var taken = original.take(3);
+    expect(taken, [1, 2, 3]);
+    expect(original, [4, 5]);
+  });
+
+  //************************************************************************//
+
   test("Can take slice", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 1, 3);
