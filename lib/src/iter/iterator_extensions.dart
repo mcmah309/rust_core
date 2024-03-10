@@ -72,14 +72,18 @@ extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
   }
 
   /// Determines if the elements of this Iterator are lexicographically less or equal to those of another.
-  bool le(Iterator<U> other){
+  bool le(Iterator<U> other) {
     return cmp(other) <= 0;
   }
-  
-  /// Determines if the elements of this Iterator are lexicographically less than those of another.
-  bool lt(Iterator<U> other){
-    return cmp(other) < 0;
 
+  /// Determines if the elements of this Iterator are lexicographically less than those of another.
+  bool lt(Iterator<U> other) {
+    return cmp(other) < 0;
+  }
+
+  /// Determines if the elements of this Iterator are not equal to those of another.
+  bool ne(Iterator<U> other) {
+    return cmp(other) != 0;
   }
 }
 
@@ -96,6 +100,34 @@ extension IteratorComparableSelf<T extends Comparable<T>> on RIterator<T> {
       }
     }
     return true;
+  }
+
+  /// Returns the maximum element of an iterator.
+  Option<T> max() {
+    if (!moveNext()) {
+      return None;
+    }
+    var max = current;
+    while (moveNext()) {
+      if (current.compareTo(max) > 0) {
+        max = current;
+      }
+    }
+    return Some(max);
+  }
+
+  /// Returns the minimum element of an iterator.
+  Option<T> min() {
+    if (!moveNext()) {
+      return None;
+    }
+    var min = current;
+    while (moveNext()) {
+      if (current.compareTo(min) < 0) {
+        min = current;
+      }
+    }
+    return Some(min);
   }
 }
 
@@ -116,7 +148,129 @@ extension IteratorOptionExtension<T> on RIterator<Option<T>> {
 }
 
 extension IteratorResultExtension<T, E extends Object> on RIterator<Result<T, E>> {
-  //todo
+  /// Transforms an iterator into a collection, short circuiting if a Err is encountered.
+  Result<List<T>, E> tryCollect() {
+    final result = <T>[];
+    for (final res in this) {
+      if (res.isErr()) {
+        return res.intoUnchecked();
+      }
+      result.add(res.unwrap());
+    }
+    return Ok(result);
+  }
+
+  /// Applies function to the elements of iterator and returns the first true result or the first Err element.
+  Result<Option<T>, E> tryFind(bool Function(T) f) {
+    for (final res in this) {
+      if (res.isErr()) {
+        return res.intoUnchecked();
+      }
+      if (f(res.unwrap())) {
+        return Ok(Some(res.unwrap()));
+      }
+    }
+    return Ok(None);
+  }
+
+  /// An iterator method that applies a function producing a single value, returns Err is encounted.
+  Result<U, E> tryFold<U>(U initial, U Function(U, T) f) {
+    var accum = initial;
+    for (final res in this) {
+      if (res.isErr()) {
+        return res.intoUnchecked();
+      }
+      accum = f(accum, res.unwrap());
+    }
+    return Ok(accum);
+  }
+
+  /// An iterator method that applies a function, stopping at the first Err and returning that Err.
+  Result<(), E> tryForEach(void Function(T) f) {
+    for (final res in this) {
+      if (res.isErr()) {
+        return res.intoUnchecked();
+      }
+      f(res.unwrap());
+    }
+    return const Ok(());
+  }
+
+  /// Reduces the elements to a single one by repeatedly applying a reducing operation. If a Err is encounted it is returned.
+  Result<Option<T>, E> tryReduce(T Function(T, T) f) {
+    if (!moveNext()) {
+      return Ok(None);
+    }
+    var accumRes = current;
+    if (accumRes.isErr()) {
+      return accumRes.intoUnchecked();
+    }
+    var accum = accumRes.unwrap();
+    while (moveNext()) {
+      if (current.isErr()) {
+        return current.intoUnchecked();
+      }
+      accum = f(accum, current.unwrap());
+    }
+    return Ok(Some(accum));
+  }
+}
+
+extension IteratorResultFuncExtension<T> on RIterator<T> {
+  /// Applies function to the elements of iterator and returns the first true result or the first error.
+  Result<Option<T>, E> tryFind<E extends Object>(Result<bool, E> Function(T) f) {
+    for (final res in this) {
+      final found = f(res);
+      if (found.isErr()) {
+        return found.intoUnchecked();
+      }
+      if (found.unwrap()) {
+        return Ok(Some(res));
+      }
+    }
+    return Ok(None);
+  }
+
+  /// An iterator method that applies a function as long as it returns successfully, producing a single, final value.
+  Result<U, E> tryFold<U, E extends Object>(U initial, Result<U, E> Function(U, T) f) {
+    var accum = initial;
+    for (final res in this) {
+      final folded = f(accum, res);
+      if (folded.isErr()) {
+        return folded.intoUnchecked();
+      }
+      accum = folded.unwrap();
+    }
+    return Ok(accum);
+  }
+
+  /// An iterator method that applies a fallible function to each item in the iterator, stopping at the first error and returning that error.
+  Result<(), E> tryForEach<E extends Object>(Result<(), E> Function(T) f) {
+    for (final res in this) {
+      final result = f(res);
+      if (result.isErr()) {
+        return result.intoUnchecked();
+      }
+    }
+    return const Ok(());
+  }
+
+  /// Reduces the elements to a single one by repeatedly applying a reducing operation. If the closure returns a failure, the failure is propagated back to the caller immediately.
+  Result<Option<T>, E> tryReduce<E extends Object>(Result<T, E> Function(T, T) f) {
+    if (!moveNext()) {
+      return Ok(None);
+    }
+    var accum = current;
+    while (moveNext()) {
+      final next = current;
+      final res = f(accum, next);
+      if (res.isErr()) {
+        return res.intoUnchecked();
+      }
+      accum = res.unwrap();
+    }
+    return Ok(Some(accum));
+  }
 }
 
 extension IteratorOnIteratorTUExtension<T, U> on RIterator<(T, U)> {

@@ -1,4 +1,5 @@
 import 'package:rust_core/iter.dart';
+import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/option.dart';
@@ -81,7 +82,7 @@ main() {
     expect(remainder2.unwrap(), [9]);
   });
 
-  test("chain",(){
+  test("chain", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [6, 7, 8, 9, 10];
     var chained = list.iter().chain(list2.iter());
@@ -235,7 +236,7 @@ main() {
     expect(count, 0);
   });
 
-  test("isPartitioned",(){
+  test("isPartitioned", () {
     var list = [1, 2, 3, 4, 5];
     var isPartitioned = list.iter().isPartitioned((e) => e % 2 == 0);
     expect(isPartitioned, false);
@@ -253,7 +254,7 @@ main() {
     expect(isPartitioned4, true);
   });
 
-  test("isSorted",(){
+  test("isSorted", () {
     var list = <num>[1, 2, 3, 4, 5];
     var isSorted = list.iter().isSorted();
     expect(isSorted, true);
@@ -271,7 +272,7 @@ main() {
     expect(isSorted4, true);
   });
 
-  test("isSortedBy",(){
+  test("isSortedBy", () {
     var list = <num>[1, 2, 3, 4, 5];
     var isSorted = list.iter().isSortedBy((a, b) => a.compareTo(b));
     expect(isSorted, true);
@@ -289,7 +290,7 @@ main() {
     expect(isSorted4, true);
   });
 
-  test("isSortedByKey",(){
+  test("isSortedByKey", () {
     var list = <num>[1, 2, 3, 4, 5];
     var isSorted = list.iter().isSortedByKey<num>((a) => a);
     expect(isSorted, true);
@@ -307,7 +308,7 @@ main() {
     expect(isSorted4, true);
   });
 
-  test("ge",(){
+  test("ge", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -319,7 +320,7 @@ main() {
     expect(list.iter().ge(list5.iter()), false);
   });
 
-  test("gt",(){
+  test("gt", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -331,7 +332,7 @@ main() {
     expect(list.iter().gt(list5.iter()), false);
   });
 
-  test("le",(){
+  test("le", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -343,7 +344,7 @@ main() {
     expect(list.iter().le(list5.iter()), true);
   });
 
-  test("lt",(){
+  test("lt", () {
     var list = [1, 2, 3, 4, 5];
     var list2 = [1, 2, 3, 4, 5];
     var list3 = [1, 2, 3, 4, 6];
@@ -353,6 +354,24 @@ main() {
     expect(list.iter().lt(list3.iter()), true);
     expect(list.iter().lt(list4.iter()), false);
     expect(list.iter().lt(list5.iter()), true);
+  });
+
+  test("ne", () {
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().ne(list2.iter()), false);
+    expect(list.iter().ne(list3.iter()), true);
+    expect(list.iter().ne(list4.iter()), true);
+    expect(list.iter().ne(list5.iter()), true);
+  });
+
+  test("max", () {
+    var list = <num>[1, 2, 3, 4, 5];
+    var max = list.iter().max();
+    expect(max, Some(5));
   });
 
   test("maxBy", () {
@@ -365,6 +384,12 @@ main() {
     var list = [1, 2, 3, 4, 5];
     var max = list.iter().maxByKey<num>((int a) => a);
     expect(max, Some(5));
+  });
+
+  test("min", () {
+    var list = <num>[1, 2, 3, 4, 5];
+    var min = list.iter().min();
+    expect(min, Some(1));
   });
 
   test("minBy", () {
@@ -396,8 +421,28 @@ main() {
     expect(mapped, [3, 5, 7]);
 
     var list2 = [1, 2, 3, 4, 5];
-    var mapped2 = list2.iter().mapWindows(3, (window) => window[0] + window[1] + window[2]).toList();
+    var mapped2 =
+        list2.iter().mapWindows(3, (window) => window[0] + window[1] + window[2]).toList();
     expect(mapped2, [6, 9, 12]);
+  });
+
+  test("partition", () {
+    var list = [1, 2, 3, 4, 5];
+    var partitioned = list.iter().partition((e) => e % 2 == 0);
+    expect(partitioned.$1, [2, 4]);
+    expect(partitioned.$2, [1, 3, 5]);
+  });
+
+  test("partionInPlace", () {
+    var list = [1, 2, 3, 4, 5];
+    var iter = list.iter();
+    var partitioned = iter.partitionInPlace((e) => e % 2 == 0);
+    expect(partitioned, 2);
+    final resultingList = iter.toList();
+    print(resultingList);
+    expect(Slice(resultingList, 0, 2), containsAll([4, 2]));
+    expect(Slice(resultingList, 2, 5), containsAll([3, 5, 1]));
+    expect(resultingList.length, 5);
   });
 
   test("peekable", () {
@@ -428,6 +473,28 @@ main() {
     var list = [1, 2, 3, 4, 5];
     var rpos = list.iter().rposition((e) => e == 2);
     expect(rpos, Some(1));
+  });
+
+  test("scan", () {
+    var list = [1, 2, 3, 4, 5];
+    var scanned = list.iter().scan(0, (acc, e) => Some(acc + e));
+    expect(scanned, [1, 3, 6, 10, 15]);
+
+    var list2 = [1, 2, 3, 4, 5];
+    var scanned2 = list2.iter().scan(0, (acc, e) {
+      if (e < 4) {
+        return Some(acc + e);
+      }
+      return None;
+    });
+
+    expect(scanned2, [1, 3, 6]);
+  });
+
+  test("stepBy", () {
+    var list = [1, 2, 3, 4, 5];
+    var stepped = list.iter().stepBy(2);
+    expect(stepped, [1, 3, 5]);
   });
 
   test("unzip", () {
@@ -475,43 +542,147 @@ main() {
 
   //************************************************************************//
 
-  test("cast",(){
+  test("tryCollect", () {
+    var list = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Ok(4), Ok(5)];
+    var collected = list.iter().tryCollect();
+    expect(collected.unwrap(), Ok<List<int>, String>([1, 2, 3, 4, 5]).unwrap());
+
+    var list2 = <Result<int, String>>[Ok(1), Ok(2), Err("error"), Ok(4), Ok(5)];
+    var collected2 = list2.iter().tryCollect();
+    expect(collected2, Err<List<int>, String>("error"));
+  });
+
+  test("tryFold Result", () {
+    final list = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Ok(4), Ok(5)];
+    final folded = list.iter().tryFold(0, (acc, e) => acc + e);
+    expect(folded, Ok(15));
+
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Err("error"), Ok(5)];
+    final folded2 = list2.iter().tryFold(0, (acc, e) => acc + e);
+    expect(folded2, Err("error"));
+  });
+
+  test("tryFold", () {
+    final list = [1, 2, 3, 4, 5];
+    final folded = list.iter().tryFold(0, (acc, e) => Ok<int, String>(acc + e));
+    expect(folded, Ok<int, String>(15));
+
+    final list2 = [1, 2, 3, 4, 5];
+    final folded2 = list2.iter().tryFold(0, (acc, e) {
+      if (e < 4) {
+        return Ok<int, String>(acc + e);
+      }
+      return Err<int, String>("error");
+    });
+    expect(folded2, Err<int, String>("error"));
+  });
+
+  test("tryForEach Result",(){
+    final list = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Ok(4), Ok(5)];
+    final collect = <int>[];
+    final forEach = list.iter().tryForEach((e) {
+      collect.add(e);
+      return;
+    });
+    expect(forEach, Ok<(), String>(()));
+    expect(collect, [1, 2, 3, 4, 5]);
+
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Err("error"), Ok(4), Ok(5)];
+    final collect2 = <int>[];
+    final forEach2 = list2.iter().tryForEach((e) {
+      collect2.add(e);
+      return;
+    });
+    expect(forEach2, Err("error"));
+  });
+
+  test("tryForEach", () {
+    final list = [1, 2, 3, 4, 5];
+    final collect = <int>[];
+    final forEach = list.iter().tryForEach((e) {
+      collect.add(e);
+      return const Ok<(), String>(());
+    });
+    expect(forEach, Ok<(), String>(()));
+    expect(collect, [1, 2, 3, 4, 5]);
+
+    final list2 = [1, 2, 3, 4, 5];
+    final collect2 = <int>[];
+    final forEach2 = list2.iter().tryForEach((e) {
+      if (e < 4) {
+        collect2.add(e);
+        return const Ok<(), String>(());
+      }
+      return const Err<(), String>("error");
+    });
+    expect(forEach2, Err<(), String>("error"));
+    expect(collect2, [1, 2, 3]);
+  });
+
+  test("tryReduce Result",(){
+    final list = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Ok(4), Ok(5)];
+    final reduced = list.iter().tryReduce((acc, e) => acc + e);
+    expect(reduced, Ok(15));
+
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Err("error"), Ok(5)];
+    final reduced2 = list2.iter().tryReduce((acc, e) => acc + e);
+    expect(reduced2, Err("error"));
+  });
+
+  test("tryReduce", () {
+    final list = [1, 2, 3, 4, 5];
+    final reduced = list.iter().tryReduce((acc, e) => Ok<int, String>(acc + e));
+    expect(reduced, Ok<int, String>(15));
+
+    final list2 = [1, 2, 3, 4, 5];
+    final reduced2 = list2.iter().tryReduce((acc, e) {
+      if (e < 4) {
+        return Ok<int, String>(acc + e);
+      }
+      return Err<int, String>("error");
+    });
+    expect(reduced2, Err<int, String>("error"));
+  });
+
+  //************************************************************************//
+
+  test("cast", () {
     var list = [1, 2, 3, 4, 5];
     var casted = list.iter().cast<num>();
     expect(casted, [1.0, 2.0, 3.0, 4.0, 5.0]);
   });
 
-  test("expand",(){
+  test("expand", () {
     var list = [1, 2, 3, 4, 5];
     var expanded = list.iter().expand((e) => [e, e]);
     expect(expanded, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]);
   });
 
-  test("followedBy",(){
+  test("followedBy", () {
     var list = [1, 2, 3, 4, 5];
     var followedBy = list.iter().followedBy([6, 7, 8, 9, 10]);
     expect(followedBy, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
-  test("map",(){
+  test("map", () {
     var list = [1, 2, 3, 4, 5];
     var mapped = list.iter().map((e) => e * e);
     expect(mapped, [1, 4, 9, 16, 25]);
   });
 
-  test("skip",(){
+  test("skip", () {
     var list = [1, 2, 3, 4, 5];
     var skipped = list.iter().skip(3);
     expect(skipped, [4, 5]);
   });
 
-  test("skipWhile",(){
+  test("skipWhile", () {
     var list = [1, 2, 3, 4, 5];
     var skipped = list.iter().skipWhile((e) => e < 3);
     expect(skipped, [3, 4, 5]);
   });
 
-  test("take", (){
+  test("take", () {
     var list = [1, 2, 3, 4, 5];
     final original = list.iter();
     var taken = original.take(3);
@@ -519,19 +690,19 @@ main() {
     expect(original, [4, 5]);
   });
 
-  test("takeWhile",(){
+  test("takeWhile", () {
     var list = [1, 2, 3, 4, 5];
     var taken = list.iter().takeWhile((e) => e < 3);
     expect(taken, [1, 2]);
   });
 
-  test("where",(){
+  test("where", () {
     var list = [1, 2, 3, 4, 5];
     var where = list.iter().where((e) => e % 2 == 0);
     expect(where, [2, 4]);
   });
 
-  test("whereType",(){
+  test("whereType", () {
     var list = [1, 2, 3, 4, 5];
     var whereType = list.iter().whereType<int>();
     expect(whereType, [1, 2, 3, 4, 5]);
@@ -552,7 +723,7 @@ main() {
     expect(slice, [2, 3]);
   });
 
-  test("RIterator is a union of Iterable and Iterator",(){
+  test("RIterator is a union of Iterable and Iterator", () {
     final list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     final rIterator = list.iter();
     final collect = [];
@@ -568,7 +739,7 @@ main() {
     next = rIterator.next();
     collect.add(next);
     expect(next, Some(7));
-    while(rIterator.moveNext()){
+    while (rIterator.moveNext()) {
       collect.add(rIterator.current * rIterator.current);
     }
     expect(collect, [4, 16, 6, 7, 64, 81]);

@@ -17,7 +17,7 @@ part 'zip.dart';
 /// RIterator is the union between an Iterator and an Iterable. Most iterator methods are consuming
 /// and should be assumed to be so unless otherwise stated.
 class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
-  late final Iterator<T> _wIterator;
+  late Iterator<T> _wIterator;
 
   RIterator(this._wIterator);
 
@@ -458,6 +458,18 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
+  Result<Arr<T>, RIterator> nextChunk(int size){
+    final arr = Arr<T?>(null, size);
+    for (var i = 0; i < size; i++) {
+      if (!moveNext()) {
+        return Err(this);
+      }
+      arr[i] = current;
+    }
+    return Ok(arr.cast<T>());
+  }
+
+  @override
   Option<T> nth(int n) {
     if (n < 0) {
       return None;
@@ -484,6 +496,25 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
       }
     }
     return (first, second);
+  }
+  
+  @override
+  int partitionInPlace(bool Function(T) f){
+    final list = toList(growable: false);
+    var i = 0;
+    var j = list.length - 1;
+    while (i < j) {
+      if (f(list[i])) {
+        i++;
+      } else {
+        final temp = list[i];
+        list[i] = list[j];
+        list[j] = temp;
+        j--;
+      }
+    }
+    _wIterator = list.iterator;
+    return i;
   }
 
   @override
@@ -515,6 +546,24 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
       index--;
     }
     return None;
+  }
+
+  @override
+  RIterator<U> scan<U>(U initial, Option<U> Function(U, T) f){
+    return RIterator.fromIterable(_scanHelper(initial, f));
+  }
+
+  Iterable<U> _scanHelper<U>(U initial, Option<U> Function(U, T) f) sync* {
+    var current = initial;
+    for (final element in this) {
+      final result = f(current, element);
+      if (result.isSome()) {
+        current = result.v as U;
+        yield current;
+      } else {
+        break;
+      }
+    }
   }
 
   @override

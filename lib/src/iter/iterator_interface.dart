@@ -128,7 +128,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// e.g. [1, 2, 3, 4] with size 2 will yield windows of [1, 2], [2, 3], [3, 4]
   RIterator<U> mapWindows<U>(int size, U Function(Arr<T>) f);
 
-// max: // todo in an extesion
+// max: Implemented in extension
 
   /// Returns the element that gives the maximum value with respect to the specified comparison function.
   Option<T> maxBy(int Function(T, T) f);
@@ -136,7 +136,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Returns the element that gives the maximum value from the specified function.
   Option<T> maxByKey<U extends Comparable<U>>(U Function(T) f);
 
-// min: // todo in an extesion
+// min: Implemented in extension
 
   /// Returns the element that gives the minimum value with respect to the specified comparison function.
   Option<T> minBy(int Function(T, T) f);
@@ -144,22 +144,29 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Returns the element that gives the minimum value from the specified function.
   Option<T> minByKey<U extends Comparable<U>>(U Function(T) f);
 
-// ne
-// next_chunk
+// ne: Implemented in extension
+
+  /// Returns the next n elements of the iterator as an [Arr], 
+  /// If there are not enough elements to fill the array then Err is returned containing an iterator over the remaining elements.
+  Result<Arr<T>, RIterator> nextChunk(int size);
 
   /// Returns the nth element of the iterator.
   /// Like most indexing operations, the count starts from zero, so nth(0) returns the first value, nth(1) the second, and so on.
   /// nth() will return None if n is greater than or equal to the length of the iterator.
   Option<T> nth(int n);
 
-// partial_cmp
-// partial_cmp_by
+// partial_cmp: Will not implement, Dart does not have partial comparison
+// partial_cmp_by: Will not implement, Dart does not have partial comparison
 
   /// Consumes an iterator, creating two collections from it.
   /// partition() returns a pair, all of the elements for which it returned true, and all of the elements for which it returned false.
   (List<T>, List<T>) partition(bool Function(T) f);
 
-// partition_in_place: Will not implement, not possible in Dart
+  /// Reorders the elements of this iterator in-place according to the given predicate, 
+  /// such that all those that return true precede all those that return false. 
+  /// Returns the number of true elements found.
+  /// The relative order of partitioned items is not maintained.
+  int partitionInPlace(bool Function(T) f);
 
   /// Creates an iterator which can use the "peek" to look at the next element of the iterator without consuming it.
   Peekable<T> peekable();
@@ -167,7 +174,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Searches for an element in an iterator, returning its index.
   Option<int> position(bool Function(T) f);
 
-// product
+// product: Will not implement, not possible in Dart
 // reduce: Implemented by Iterable.reduce
 
   /// Reverses the iterable
@@ -177,18 +184,22 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Recommended to use with a list, as it is more efficient, otherwise use [position].
   Option<int> rposition(bool Function(T) f);
 
-// scan: //todo
-// size_hint
+  /// An iterator which, like fold, holds internal state, but unlike fold, produces a new iterator.
+  /// On iteration, the closure will be applied to each element of the iterator and the return value from the closure.
+  /// The closure can return Some(value) to yield value, or None to end the iteration.
+  RIterator<U> scan<U>(U initial, Option<U> Function(U, T) f);
+
+// size_hint: Will not implement, not possible in Dart, would likely be implemented by any downstreams but do not to expect to have any.
 // skip: Implemented by Iterable.skip
 // skip_while: Implemented by Iterable.skipWhile
 
   /// Creates an iterator starting at the same point, but stepping by the given amount at each iteration.
   RIterator<T> stepBy(int step);
 
-// sum
+// sum: Will not implement, not possible in Dart
 // take: Implemented by Iterable.take
 // take_while: Implemented by Iterable.takeWhile
-// try_collect
+// try_collect: Implemented by extension
 // try_find
 // try_fold
 // try_for_each
