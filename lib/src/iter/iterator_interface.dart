@@ -115,15 +115,19 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Consumes the iterator and returns the last element.
   Option<T> lastOrOption();
 
-// le
-// lt
+
+// le: Implemented in an extension
+// lt: Implemented in an extension
 // map: Implemented by Iterable.map
 
   /// Creates an iterator that both yields elements based on a predicate and maps.
   /// It will call this closure on each element of the iterator, and yield elements while it returns Some(_).
   RIterator<U> mapWhile<U>(Option<U> Function(T) f);
 
-// map_windows
+  /// Calls the given function f for each contiguous window of [size] over self and returns an iterator over the outputs of f
+  /// e.g. [1, 2, 3, 4] with size 2 will yield windows of [1, 2], [2, 3], [3, 4]
+  RIterator<U> mapWindows<U>(int size, U Function(Arr<T>) f);
+
 // max: // todo in an extesion
 
   /// Returns the element that gives the maximum value with respect to the specified comparison function.

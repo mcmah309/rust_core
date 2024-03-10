@@ -307,6 +307,54 @@ main() {
     expect(isSorted4, true);
   });
 
+  test("ge",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().ge(list2.iter()), true);
+    expect(list.iter().ge(list3.iter()), false);
+    expect(list.iter().ge(list4.iter()), true);
+    expect(list.iter().ge(list5.iter()), false);
+  });
+
+  test("gt",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().gt(list2.iter()), false);
+    expect(list.iter().gt(list3.iter()), false);
+    expect(list.iter().gt(list4.iter()), true);
+    expect(list.iter().gt(list5.iter()), false);
+  });
+
+  test("le",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().le(list2.iter()), true);
+    expect(list.iter().le(list3.iter()), true);
+    expect(list.iter().le(list4.iter()), false);
+    expect(list.iter().le(list5.iter()), true);
+  });
+
+  test("lt",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [1, 2, 3, 4, 5];
+    var list3 = [1, 2, 3, 4, 6];
+    var list4 = [1, 2, 3, 4];
+    var list5 = [1, 2, 3, 4, 5, 6];
+    expect(list.iter().lt(list2.iter()), false);
+    expect(list.iter().lt(list3.iter()), true);
+    expect(list.iter().lt(list4.iter()), false);
+    expect(list.iter().lt(list5.iter()), true);
+  });
+
   test("maxBy", () {
     var list = [1, 2, 3, 4, 5];
     var max = list.iter().maxBy((int a, int b) => a.compareTo(b));
@@ -340,6 +388,16 @@ main() {
       return None;
     });
     expect(mapped, [1, 2, 3]);
+  });
+
+  test("mapWindows", () {
+    var list = [1, 2, 3, 4];
+    var mapped = list.iter().mapWindows(2, (window) => window[0] + window[1]).toList();
+    expect(mapped, [3, 5, 7]);
+
+    var list2 = [1, 2, 3, 4, 5];
+    var mapped2 = list2.iter().mapWindows(3, (window) => window[0] + window[1] + window[2]).toList();
+    expect(mapped2, [6, 9, 12]);
   });
 
   test("peekable", () {

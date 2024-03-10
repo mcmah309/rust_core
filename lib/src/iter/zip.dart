@@ -6,7 +6,7 @@ final class Zip<T,U> extends RIterator<(T,U)> {
   final Iterator<U> _iteratorU;
   late (T,U) _current;
 
-  Zip(this._iteratorT,this._iteratorU): super.late(){
+  Zip(this._iteratorT,this._iteratorU): super._late(){
     _wIterator = this;
   }
 

@@ -40,13 +40,11 @@ extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
   /// Less = -1
   /// Equal = 0
   /// Greater = 1
-  int cmp(Iterable<U> other) {
-    final otherIterator = other.iterator;
-    final thisIterator = iterator;
+  int cmp(Iterator<U> other) {
     while (true) {
-      if (thisIterator.moveNext()) {
-        if (otherIterator.moveNext()) {
-          final cmp = thisIterator.current.compareTo(otherIterator.current);
+      if (moveNext()) {
+        if (other.moveNext()) {
+          final cmp = current.compareTo(other.current);
           if (cmp != 0) {
             return cmp;
           }
@@ -54,7 +52,7 @@ extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
           return 1;
         }
       } else {
-        if (otherIterator.moveNext()) {
+        if (other.moveNext()) {
           return -1;
         } else {
           return 0;
@@ -64,13 +62,24 @@ extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
   }
 
   /// Determines if the elements of this Iterator are lexicographically greater than or equal to those of another.
-  bool ge(Iterable<U> other) {
+  bool ge(Iterator<U> other) {
     return cmp(other) >= 0;
   }
 
   /// Determines if the elements of this Iterator are lexicographically greater than those of another.
-  bool gt(Iterable<U> other) {
+  bool gt(Iterator<U> other) {
     return cmp(other) > 0;
+  }
+
+  /// Determines if the elements of this Iterator are lexicographically less or equal to those of another.
+  bool le(Iterator<U> other){
+    return cmp(other) <= 0;
+  }
+  
+  /// Determines if the elements of this Iterator are lexicographically less than those of another.
+  bool lt(Iterator<U> other){
+    return cmp(other) < 0;
+
   }
 }
 

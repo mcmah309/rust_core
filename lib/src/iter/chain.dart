@@ -6,7 +6,7 @@ final class Chain<T> extends RIterator<T> {
   final Iterator<T> _second;
   bool isFirst = true;
 
-  Chain(this._first, this._second) : super.late() {
+  Chain(this._first, this._second) : super._late() {
     _wIterator = this;
   }
 

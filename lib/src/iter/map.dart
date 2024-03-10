@@ -5,7 +5,7 @@ class Map<S, T> extends RIterator<T>{
   final Iterator<S> _iterator;
   final T Function(S) _f;
 
-  Map(this._iterator, this._f): super.late(){
+  Map(this._iterator, this._f): super._late(){
     _wIterator = this;
   }
 

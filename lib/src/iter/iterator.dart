@@ -23,7 +23,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   RIterator.fromIterable(Iterable<T> iterable) : _wIterator = iterable.iterator;
 
-  RIterator.late();
+  RIterator._late();
 
   @override
   T get current => _wIterator.current;
@@ -354,6 +354,33 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
         yield result.v!;
       } else {
         break;
+      }
+    }
+  }
+
+  @override
+  RIterator<U> mapWindows<U>(int size, U Function(Arr<T>) f){
+    assert(size > 0, "Size must be greater than 0");
+    return RIterator.fromIterable(_mapWindowsHelper(size, f));
+  }
+
+  Iterable<U> _mapWindowsHelper<U>(int size, U Function(Arr<T>) f) sync* {
+    final window = Arr<T?>(null,size);
+    int index = 0;
+    int lastIndex = size - 1;
+    while (moveNext()) {
+      window[index] = current;
+      index++;
+      if (index == size) {
+        index = lastIndex;
+        yield f(window.cast<T>());
+        T? newest = window[lastIndex];
+        T? secondNewest;
+        for(int j = lastIndex; j > 0; j--){
+          secondNewest = window[j - 1];
+          window[j - 1] = newest;
+          newest = secondNewest;
+        }
       }
     }
   }
