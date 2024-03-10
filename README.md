@@ -22,7 +22,7 @@ extensions are designed for maximum composability, addressing specific scenarios
 🚀 **Dart Friendly:** Developed with ergonomics in mind. e.g. Dual Support for `Option` and Nullable Types. If a method or extension exists for `Option<T>`,
 it's also available for `T?`.
 
-🧪 **Robust Testing:** Every feature tested. Around 400 meaningful tests. Reliability and performance in every feature.
+🧪 **Robust Testing:** Every feature tested. Over 400 meaningful tests. Reliability and performance in every feature.
 
 ### Official Packages Based Off rust_core
 | Library | Description |
