@@ -127,6 +127,8 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 
   /// Calls the given function f for each contiguous window of [size] over self and returns an iterator over the outputs of f
   /// e.g. [1, 2, 3, 4] with size 2 will yield windows of [1, 2], [2, 3], [3, 4]
+  /// The windows indicies should be treated as immutable, as they are shared between calls to minize allocations.
+  /// Therefore, you should not modify or store the window, but clone it if you need to.
   RIterator<U> mapWindows<U>(int size, U Function(Arr<T>) f);
 
 // max: Implemented in extension

@@ -27,14 +27,6 @@ extension IteratorOnIteratorIterabel<T> on RIterator<Iterable<T>> {
   }
 }
 
-extension IteratorSliceExtension<T> on RIterator<Slice<T>> {
-  //todo
-}
-
-extension IteratorIterableExtension<T> on RIterator<Iterable<T>> {
-  //todo
-}
-
 extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
   /// Lexicographically compares the elements of this Iterator with those of another.
   /// Less = -1

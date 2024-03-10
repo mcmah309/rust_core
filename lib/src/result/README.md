@@ -103,9 +103,17 @@ Effects on a `Result` can be chained in a safe way without
 needing a bunch of `if` statements, similar to `Option`.
 ```dart
 Result<int,String> result = Ok(4);
-Result<String,String> result2 = result
-    .map((ok) => '=' * ok);
-expect(result2.unwrap(), '====');
+Result<String, String> finalResult = initialResult
+    .map((okValue) => okValue * 2) // Doubling the `Ok` value if present.
+    .andThen((okValue) => okValue != 0 ? Ok(10 ~/ okValue) : Err('Division by zero')) // Potentially failing operation.
+    .map((okValue) => 'Result is $okValue') // Transforming the successful result into a string.
+    .mapErr((errValue) => 'Error: $errValue'); // Transforming any potential error.
+
+// Handling the final `Result`:
+finalResult.match(
+  ok: (value) => print('Success: $value'),
+  err: (error) => print('Failure: $error'),
+);
 ```
 See the [docs] for all methods and extensions.
 
@@ -114,7 +122,7 @@ At times, you may need to integrate with legacy code that may throw or code outs
 can just wrap in a helper function like `executeProtected`
 ```dart
 void main() {
-  Result<int,Object> result = executeProtected(() => functionWillThrow());
+  Result<int,Object> result = executeProtected(functionWillThrow);
   print(result);
 }
 

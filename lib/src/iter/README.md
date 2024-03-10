@@ -10,7 +10,7 @@ makes working with collections of `rust_core` types and regular Dart types a bre
       if (e % 2 == 0) {
         return Some(e * 2);
       }
-      return None();
+      return None;
     });
     expect(filtered, [4, 8]);
 ```
