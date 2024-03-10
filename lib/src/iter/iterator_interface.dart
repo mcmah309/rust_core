@@ -33,7 +33,8 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Less = -1
   /// Equal = 0
   /// Greater = 1
-  int cmpBy<U>(Iterator<U> other, int Function(T, U) f); // todo change to iterator
+  int cmpBy<U>(
+      Iterator<U> other, int Function(T, U) f); // todo change to iterator
 
 // collect: Implemented by extensions
 
@@ -74,7 +75,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   Option<U> findMap<U>(Option<U> Function(T) f);
 
   /// Creates an iterator that works like map, but flattens nested structure.
-  FlatMap<T,U> flatMap<U>(Iterator<U> Function(T) f);
+  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f);
 
 // flatten: Implemented in an extension
 // fold: Implemented by Iterable.fold
@@ -116,7 +117,6 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Consumes the iterator and returns the last element.
   Option<T> lastOrOption();
 
-
 // le: Implemented in an extension
 // lt: Implemented in an extension
 // map: Implemented by Iterable.map
@@ -149,7 +149,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 
 // ne: Implemented in extension
 
-  /// Returns the next n elements of the iterator as an [Arr], 
+  /// Returns the next n elements of the iterator as an [Arr],
   /// If there are not enough elements to fill the array then Err is returned containing an iterator over the remaining elements.
   Result<Arr<T>, RIterator> nextChunk(int size);
 
@@ -165,8 +165,8 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// partition() returns a pair, all of the elements for which it returned true, and all of the elements for which it returned false.
   (List<T>, List<T>) partition(bool Function(T) f);
 
-  /// Reorders the elements of this iterator in-place according to the given predicate, 
-  /// such that all those that return true precede all those that return false. 
+  /// Reorders the elements of this iterator in-place according to the given predicate,
+  /// such that all those that return true precede all those that return false.
   /// Returns the number of true elements found.
   /// The relative order of partitioned items is not maintained.
   int partitionInPlace(bool Function(T) f);

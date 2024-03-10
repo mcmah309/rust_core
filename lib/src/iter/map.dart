@@ -1,11 +1,11 @@
 part of 'iterator.dart';
 
-class Map<S, T> extends RIterator<T>{
+class Map<S, T> extends RIterator<T> {
   T? _current;
   final Iterator<S> _iterator;
   final T Function(S) _f;
 
-  Map(this._iterator, this._f): super._late(){
+  Map(this._iterator, this._f) : super._late() {
     _wIterator = this;
   }
 

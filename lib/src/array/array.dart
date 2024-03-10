@@ -1,4 +1,3 @@
-
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
 import 'package:rust_core/option.dart';
@@ -6,45 +5,48 @@ import 'package:rust_core/iter.dart';
 
 /// A fixed-size array, denoted as [T; N] in Rust.
 extension type Arr<T>._(List<T> list) implements Iterable<T> {
-  
-  Arr(T defaultVal, int size) : list = List.filled(size, defaultVal, growable: false);
+  Arr(T defaultVal, int size)
+      : list = List.filled(size, defaultVal, growable: false);
 
   const Arr.constant(this.list);
 
   Arr.fromList(this.list);
 
   Arr.empty() : list = const [];
-  
+
   T operator [](int index) => list[index];
   void operator []=(int index, T value) => list[index] = value;
 
   // as_ascii: Will not be implemented, not possible in Dart
   // as_ascii_unchecked_mut: Will not be implemented, not possible in Dart
   // as_mut_slice: Will not be implemented, covered by `asSlice`
-  
+
   Slice<T> asSlice() => Slice.fromList(list);
 
   // each_mut: Will not be implemented, not possible in Dart
   // each_ref: Will not be implemented, not possible in Dart
-  
+
   /// Returns an array of the same size as self, with function f applied to each element in order.
   Arr<U> map<U>(U Function(T) f) {
     return Arr._(list.map(f).toList(growable: false));
   }
 
   /// Divides array into two [Slice]s at index from end.
-  /// The first will contain all indices from [0, N - M) (excluding the index N - M itself) and 
+  /// The first will contain all indices from [0, N - M) (excluding the index N - M itself) and
   /// the second will contain all indices from [N - M, N) (excluding the index N itself).
   (Slice<T>, Slice<T>) rsplitSlice(int index) {
     assert(index >= 0 && index <= list.length, "Index out of bounds");
-    return (Slice(list, 0, list.length - index), Slice(list, list.length - index, list.length));
+    return (
+      Slice(list, 0, list.length - index),
+      Slice(list, list.length - index, list.length)
+    );
   }
 
   // rsplit_array_mut: Will not be implemented, not possible in Dart
   // rsplit_array_ref: Will not be implemented, not possible in Dart
 
   /// Divides array into two [Slice]s at index from start.
-  /// The first will contain all indices from [0, M) (excluding the index M itself) and 
+  /// The first will contain all indices from [0, M) (excluding the index M itself) and
   /// the second will contain all indices from [M, N) (excluding the index N itself).
   (Slice<T>, Slice<T>) splitSlice(int index) {
     assert(index >= 0 && index <= list.length, "Index out of bounds");
@@ -54,13 +56,13 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   // split_array_mut: Will not be implemented, not possible in Dart
   // split_array_ref: Will not be implemented, not possible in Dart
   // transpose: Will not be implemented, not possible in Dart
-  
+
   /// A fallible function f applied to each element on this array in order to return an array the same size as this or the first error encountered.
-  Result<Arr<S>,F> tryMap<S,F extends Object>(Result<S,F> Function(T) f) {
+  Result<Arr<S>, F> tryMap<S, F extends Object>(Result<S, F> Function(T) f) {
     List<S?> result = List.filled(list.length, null, growable: false);
     for (int i = 0; i < list.length; i++) {
       var res = f(list[i]);
-      if (res case Err()){
+      if (res case Err()) {
         return res.into();
       }
       result[i] = res.unwrap();
@@ -126,13 +128,15 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // bool every(bool Function(T) f) => list.every(f);
 
-  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator(list.expand(f).iterator);
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
+      RIterator(list.expand(f).iterator);
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => list.firstWhere(f, orElse: orElse);
 
   // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => list.fold(initialValue, f);
 
-  RIterator<T> followedBy(Iterable<T> other) => RIterator(list.followedBy(other).iterator);
+  RIterator<T> followedBy(Iterable<T> other) =>
+      RIterator(list.followedBy(other).iterator);
 
   // void forEach(void Function(T) f) => list.forEach(f);
 
@@ -148,11 +152,13 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   RIterator<T> skip(int count) => RIterator(list.skip(count).iterator);
 
-  RIterator<T> skipWhile(bool Function(T) f) => RIterator(list.skipWhile(f).iterator);
+  RIterator<T> skipWhile(bool Function(T) f) =>
+      RIterator(list.skipWhile(f).iterator);
 
   RIterator<T> take(int count) => RIterator(list.take(count).iterator);
 
-  RIterator<T> takeWhile(bool Function(T) f) => RIterator(list.takeWhile(f).iterator);
+  RIterator<T> takeWhile(bool Function(T) f) =>
+      RIterator(list.takeWhile(f).iterator);
 
   // List<T> toList({bool growable = true}) => list.toList(growable: growable);
 

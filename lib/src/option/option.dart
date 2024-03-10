@@ -285,7 +285,8 @@ extension type const Option<T>._(T? v) {
   //************************************************************************//
 
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
-  T operator [](_OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
+  T operator [](
+      _OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
   {
     if (v == null) {
       throw const _OptionEarlyReturnNotification();
@@ -542,6 +543,8 @@ final class _OptionEarlyReturnNotification {
   const _OptionEarlyReturnNotification();
 }
 
-typedef _OptionEarlyReturnFunction<T> = Option<T> Function(_OptionEarlyReturnKey);
+typedef _OptionEarlyReturnFunction<T> = Option<T> Function(
+    _OptionEarlyReturnKey);
 
-typedef _OptionAsyncEarlyReturnFunction<T> = Future<Option<T>> Function(_OptionEarlyReturnKey);
+typedef _OptionAsyncEarlyReturnFunction<T> = Future<Option<T>> Function(
+    _OptionEarlyReturnKey);

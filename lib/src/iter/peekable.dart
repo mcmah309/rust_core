@@ -5,7 +5,7 @@ final class Peekable<T> extends RIterator<T> {
   final Iterator<T> _iterator;
   Option<T> _peeked = None;
 
-  Peekable(this._iterator): super._late() {
+  Peekable(this._iterator) : super._late() {
     _wIterator = this;
   }
 

@@ -18,8 +18,7 @@ void main() {
           Future.value(Ok(Some(5)));
       expect(await okSomeResult.transpose(), Some(Ok(5)));
 
-      FutureResult<Option<int>, String> okNoneResult =
-          Future.value(Ok(None));
+      FutureResult<Option<int>, String> okNoneResult = Future.value(Ok(None));
       expect(await okNoneResult.transpose(), None);
 
       FutureResult<Option<int>, String> errResult = Future.value(Err("Error"));

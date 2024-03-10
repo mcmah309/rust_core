@@ -1,6 +1,5 @@
 import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
-import 'package:rust_core/slice.dart';
 import 'package:rust_core/array.dart';
 
 part 'array_chunks.dart';
@@ -110,7 +109,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  int count() => length;
+  int count() => super.length;
 
   @override
   Cycle<T> cycle() => Cycle(_wIterator);
@@ -200,7 +199,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  FlatMap<T,U> flatMap<U>(Iterator<U> Function(T) f) => FlatMap<T,U>(this, f);
+  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f) => FlatMap<T, U>(this, f);
 
   @override
   RIterator<T> inspect(void Function(T) f) {
@@ -263,7 +262,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  bool isSortedBy(int Function(T, T) f){
+  bool isSortedBy(int Function(T, T) f) {
     T prev;
     if (moveNext()) {
       prev = current;
@@ -271,7 +270,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
       return true;
     }
     for (final element in this) {
-      if(f(prev, element) > 0){
+      if (f(prev, element) > 0) {
         return false;
       }
       prev = element;
@@ -280,7 +279,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  bool isSortedByKey<U extends Comparable<U>>(U Function(T) f){
+  bool isSortedByKey<U extends Comparable<U>>(U Function(T) f) {
     U prev;
     if (moveNext()) {
       prev = f(current);
@@ -289,14 +288,14 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
     }
     for (final element in this) {
       final val = f(element);
-      if(prev.compareTo(val) > 0){
+      if (prev.compareTo(val) > 0) {
         return false;
       }
       prev = val;
     }
     return true;
   }
-  
+
   @override
   RIterator<T> intersperseWith(T Function() f) {
     return RIterator.fromIterable(_intersperseWithHelper(f));
@@ -330,8 +329,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
     }
   }
 
-    @override
-    Option<T> lastOrOption() {
+  @override
+  Option<T> lastOrOption() {
     if (moveNext()) {
       var last = current;
       while (moveNext()) {
@@ -359,13 +358,13 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  RIterator<U> mapWindows<U>(int size, U Function(Arr<T>) f){
+  RIterator<U> mapWindows<U>(int size, U Function(Arr<T>) f) {
     assert(size > 0, "Size must be greater than 0");
     return RIterator.fromIterable(_mapWindowsHelper(size, f));
   }
 
   Iterable<U> _mapWindowsHelper<U>(int size, U Function(Arr<T>) f) sync* {
-    final window = Arr<T?>(null,size);
+    final window = Arr<T?>(null, size);
     int index = 0;
     int lastIndex = size - 1;
     while (moveNext()) {
@@ -376,7 +375,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
         yield f(window.cast<T>());
         T? newest = window[lastIndex];
         T? secondNewest;
-        for(int j = lastIndex; j > 0; j--){
+        for (int j = lastIndex; j > 0; j--) {
           secondNewest = window[j - 1];
           window[j - 1] = newest;
           newest = secondNewest;
@@ -458,7 +457,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  Result<Arr<T>, RIterator> nextChunk(int size){
+  Result<Arr<T>, RIterator> nextChunk(int size) {
     final arr = Arr<T?>(null, size);
     for (var i = 0; i < size; i++) {
       if (!moveNext()) {
@@ -497,9 +496,9 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
     }
     return (first, second);
   }
-  
+
   @override
-  int partitionInPlace(bool Function(T) f){
+  int partitionInPlace(bool Function(T) f) {
     final list = toList(growable: false);
     var i = 0;
     var j = list.length - 1;
@@ -533,7 +532,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  RIterator<T> rev() => RIterator.fromIterable(toList(growable: false).reversed);
+  RIterator<T> rev() =>
+      RIterator.fromIterable(toList(growable: false).reversed);
 
   @override
   Option<int> rposition(bool Function(T) f) {
@@ -549,7 +549,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  RIterator<U> scan<U>(U initial, Option<U> Function(U, T) f){
+  RIterator<U> scan<U>(U initial, Option<U> Function(U, T) f) {
     return RIterator.fromIterable(_scanHelper(initial, f));
   }
 
@@ -601,7 +601,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Expands each element of this RIterator into zero or more elements.
   @override
-  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator.fromIterable(super.expand(f));
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
+      RIterator.fromIterable(super.expand(f));
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
 
@@ -609,7 +610,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Creates the lazy concatenation of this Iterator and [other]
   @override
-  RIterator<T> followedBy(Iterable<T> other) => RIterator.fromIterable(super.followedBy(other));
+  RIterator<T> followedBy(Iterable<T> other) =>
+      RIterator.fromIterable(super.followedBy(other));
 
   // void forEach(void Function(T) f) => iterable.forEach(f);
 
@@ -631,7 +633,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Consumes and skips elements while [f] is true and returns the rest.
   @override
-  RIterator<T> skipWhile(bool Function(T) f) => RIterator.fromIterable(super.skipWhile(f));
+  RIterator<T> skipWhile(bool Function(T) f) =>
+      RIterator.fromIterable(super.skipWhile(f));
 
   /// Takes the first [count] elements from the RIterator.
   @override
@@ -639,7 +642,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// TTakes the first [count] elements from the RIterator while [f] is true.
   @override
-  RIterator<T> takeWhile(bool Function(T) f) => RIterator.fromIterable(super.takeWhile(f));
+  RIterator<T> takeWhile(bool Function(T) f) =>
+      RIterator.fromIterable(super.takeWhile(f));
 
   // List<T> toList({bool growable = true}) => iterable.toList(growable: growable);
 
@@ -649,7 +653,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Creates an RIterator where all the elements satisfy the predicate [f].
   @override
-  RIterator<T> where(bool Function(T) f) => RIterator.fromIterable(super.where(f));
+  RIterator<T> where(bool Function(T) f) =>
+      RIterator.fromIterable(super.where(f));
 
   /// Creates an RIterator where all the elements are of Type U.
   @override
@@ -658,44 +663,56 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   //************************************************************************//
 
   @override
-  @Deprecated("Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.")
+  @Deprecated(
+      "Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.")
   T get first {
-    assert(false, "Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.");
+    assert(false,
+        "Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.");
     return super.first;
   }
 
   @override
-  @Deprecated("Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.")
+  @Deprecated(
+      "Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.")
   T get last {
-    assert(false, "Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.");
+    assert(false,
+        "Use next() instead. This consumes the first element of the iterator. Which is likely not the users intent.");
     return super.last;
   }
 
   @override
-  @Deprecated("Single is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.")
+  @Deprecated(
+      "Single is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.")
   T get single {
-    assert(false, "Single is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.");
+    assert(false,
+        "Single is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.");
     return super.single;
   }
 
   @override
-  @Deprecated("IsEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.")
+  @Deprecated(
+      "IsEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.")
   bool get isEmpty {
-    assert(false, "IsEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.");
+    assert(false,
+        "IsEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.");
     return super.isEmpty;
   }
 
   @override
-  @Deprecated("IsNotEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.")
+  @Deprecated(
+      "IsNotEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.")
   bool get isNotEmpty {
-    assert(false, "IsNotEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.");
+    assert(false,
+        "IsNotEmpty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.");
     return super.isNotEmpty;
   }
 
   @override
-  @Deprecated("Length is not supported as it would require consuming the iterator, which is likely not the users intent. Use count() instead.")
+  @Deprecated(
+      "Length is not supported as it would require consuming the iterator, which is likely not the users intent. Use count() instead.")
   int get length {
-    assert(false, "Length is not supported as it would require consuming the iterator, which is likely not the users intent. Use count() instead.");
+    assert(false,
+        "Length is not supported as it would require consuming the iterator, which is likely not the users intent. Use count() instead.");
     return super.length;
   }
 }

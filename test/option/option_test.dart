@@ -55,7 +55,6 @@ void main() {
     final none = None;
     try {
       none.expect("Error occurred");
-      fail("Should have thrown an error");
     } catch (e) {
       expect(e.toString(), contains("Error occurred"));
     }
@@ -279,9 +278,9 @@ void main() {
     };
     expect(y, 3);
 
-    switch(x){
+    switch (x) {
       case Some(v: final _):
-        int i = 1;
+        int _ = 1;
       case None:
         fail('Should not reach here');
     }
@@ -293,33 +292,33 @@ void main() {
     };
     expect(y, 4);
 
-    switch(x){
+    switch (x) {
       case Some(v: final _):
         fail('Should not reach here');
       case None:
         break;
     }
 
-  Option<int> w = Some(1);
-  int p;
-  switch (w) {
-    case Some(:final v):
-      p = v;
-    default:
-      fail("Should not reach here");
-  }
-  int z = p;
+    Option<int> w = Some(1);
+    int p;
+    switch (w) {
+      case Some(:final v):
+        p = v;
+      default:
+        fail("Should not reach here");
+    }
+    int _ = p;
 
-  // fails since: https://github.com/dart-lang/sdk/issues/55104
-  // w = Some(1);
-  // int u;
-  // switch (w) {
-  //   case Some(:final v):
-  //     p = v;
-  //   case None:
-  //     fail("Should not reach here");
-  // }
-  // z = u;
+    // fails since: https://github.com/dart-lang/sdk/issues/55104
+    // w = Some(1);
+    // int u;
+    // switch (w) {
+    //   case Some(:final v):
+    //     p = v;
+    //   case None:
+    //     fail("Should not reach here");
+    // }
+    // z = u;
   });
 
   group("Option Early Return", () {

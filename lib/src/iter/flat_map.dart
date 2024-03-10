@@ -6,7 +6,7 @@ final class FlatMap<S, T> extends RIterator<T> {
   final Iterator<T> Function(S) _f;
   Iterator<T>? _currentExpansion;
 
-  FlatMap(this._iterator, this._f): super._late(){
+  FlatMap(this._iterator, this._f) : super._late() {
     _wIterator = this;
   }
 

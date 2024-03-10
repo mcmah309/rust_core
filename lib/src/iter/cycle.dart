@@ -6,14 +6,14 @@ final class Cycle<T> extends RIterator<T> {
   final Iterator<T> _iterator;
   int index = -1;
 
-  Cycle(this._iterator): super._late(){
+  Cycle(this._iterator) : super._late() {
     _wIterator = this;
   }
 
   @override
   bool moveNext() {
     index++;
-    if (_iterator.moveNext()){
+    if (_iterator.moveNext()) {
       _cycled.add(_iterator.current);
       return true;
     }

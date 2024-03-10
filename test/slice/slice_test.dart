@@ -1,11 +1,7 @@
 // ignore_for_file: avoid_types_as_parameter_names
 
-import 'package:rust_core/iter.dart';
-import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
-import 'package:rust_core/option.dart';
-import 'package:rust_core/array.dart';
 
 main() {
   test("copyFromSlice", () {
@@ -31,7 +27,7 @@ main() {
     expect(dstList, [2, 3, 4, 9, 10]);
   });
 
-  test("endsWith",(){
+  test("endsWith", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.endsWith([4, 5].asSlice()), true);
@@ -56,21 +52,24 @@ main() {
     expect(slice.endsWith([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()), false);
   });
 
-  test("getMany",(){
+  test("getMany", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.getMany(const [0, 1, 2]).unwrap(), [1, 2, 3]);
     expect(slice.getMany(const [0, 1, 2, 3, 4]).unwrap(), [1, 2, 3, 4, 5]);
     expect(slice.getMany(const [1, 3]).unwrap(), [2, 4]);
     expect(slice.getMany(const []).unwrap(), []);
-    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr(), GetManyErrorTooManyIndices());
-    expect(slice.getMany(const [0, 1, 6]).unwrapErr(), GetManyErrorRequestedIndexOutOfBounds());
-    expect([].asSlice().getMany(const [0]).unwrapErr(), GetManyErrorTooManyIndices());
+    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr(),
+        GetManyErrorTooManyIndices());
+    expect(slice.getMany(const [0, 1, 6]).unwrapErr(),
+        GetManyErrorRequestedIndexOutOfBounds());
+    expect([].asSlice().getMany(const [0]).unwrapErr(),
+        GetManyErrorTooManyIndices());
     expect([].asSlice().getMany(const []).unwrap(), []);
     expect([1].asSlice().getMany(const []).unwrap(), []);
   });
 
-  test("getManyUnchecked", (){
+  test("getManyUnchecked", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.getManyUnchecked(const [0, 1, 2]), [1, 2, 3]);
@@ -79,7 +78,7 @@ main() {
     expect(slice.getManyUnchecked(const []), []);
   });
 
-  test("groupBy", (){
+  test("groupBy", () {
     var list = [1, 1, 1, 3, 3, 2, 2, 2];
     var slice = list.asSlice();
     var iter = slice.groupBy((num1, num2) => num1 == num2);
@@ -103,7 +102,7 @@ main() {
     expect(slice.isSortedBy((a, b) => a.compareTo(b)), true);
   });
 
-  test("isSortedByKey",(){
+  test("isSortedByKey", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.isSortedByKey((num) => num), true);
@@ -229,8 +228,10 @@ main() {
     expect(list.asSlice().rsplitOnce((num) => num == 2).unwrap().$2, [4]);
     expect(list.asSlice().rsplitOnce((num) => num == 0).isNone(), true);
     expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$1, []);
-    expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
-    expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
+    expect(
+        list.asSlice().rsplitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
+    expect(
+        list.asSlice().rsplitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
     expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$2, []);
   });
 
@@ -367,8 +368,10 @@ main() {
     expect(list.asSlice().splitOnce((num) => num == 2).unwrap().$2, [3, 2, 4]);
     expect(list.asSlice().splitOnce((num) => num == 0).isNone(), true);
     expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$1, []);
-    expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
-    expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
+    expect(
+        list.asSlice().splitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
+    expect(
+        list.asSlice().splitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
     expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$2, []);
   });
 
@@ -442,7 +445,9 @@ main() {
     expect(slice.stripPrefix([1, 2, 4].asSlice()).isNone(), true);
     expect(slice.stripPrefix([1, 3].asSlice()).isNone(), true);
     expect(slice.stripPrefix([2].asSlice()).isNone(), true);
-    expect(slice.stripPrefix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(), true);
+    expect(
+        slice.stripPrefix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(),
+        true);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
@@ -456,7 +461,7 @@ main() {
     expect(slice.stripPrefix([2, 5].asSlice()).isNone(), true);
   });
 
-  test("stripSuffix",(){
+  test("stripSuffix", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.stripSuffix(<int>[].asSlice()).unwrap(), [1, 2, 3, 4, 5]);
@@ -471,7 +476,9 @@ main() {
     expect(slice.stripSuffix([1, 2, 4].asSlice()).isNone(), true);
     expect(slice.stripSuffix([1, 3].asSlice()).isNone(), true);
     expect(slice.stripSuffix([2].asSlice()).isNone(), true);
-    expect(slice.stripSuffix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(), true);
+    expect(
+        slice.stripSuffix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(),
+        true);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);

@@ -139,7 +139,8 @@ extension IteratorOptionExtension<T> on RIterator<Option<T>> {
   }
 }
 
-extension IteratorResultExtension<T, E extends Object> on RIterator<Result<T, E>> {
+extension IteratorResultExtension<T, E extends Object>
+    on RIterator<Result<T, E>> {
   /// Transforms an iterator into a collection, short circuiting if a Err is encountered.
   Result<List<T>, E> tryCollect() {
     final result = <T>[];
@@ -210,7 +211,8 @@ extension IteratorResultExtension<T, E extends Object> on RIterator<Result<T, E>
 
 extension IteratorResultFuncExtension<T> on RIterator<T> {
   /// Applies function to the elements of iterator and returns the first true result or the first error.
-  Result<Option<T>, E> tryFind<E extends Object>(Result<bool, E> Function(T) f) {
+  Result<Option<T>, E> tryFind<E extends Object>(
+      Result<bool, E> Function(T) f) {
     for (final res in this) {
       final found = f(res);
       if (found.isErr()) {
@@ -224,7 +226,8 @@ extension IteratorResultFuncExtension<T> on RIterator<T> {
   }
 
   /// An iterator method that applies a function as long as it returns successfully, producing a single, final value.
-  Result<U, E> tryFold<U, E extends Object>(U initial, Result<U, E> Function(U, T) f) {
+  Result<U, E> tryFold<U, E extends Object>(
+      U initial, Result<U, E> Function(U, T) f) {
     var accum = initial;
     for (final res in this) {
       final folded = f(accum, res);
@@ -248,7 +251,8 @@ extension IteratorResultFuncExtension<T> on RIterator<T> {
   }
 
   /// Reduces the elements to a single one by repeatedly applying a reducing operation. If the closure returns a failure, the failure is propagated back to the caller immediately.
-  Result<Option<T>, E> tryReduce<E extends Object>(Result<T, E> Function(T, T) f) {
+  Result<Option<T>, E> tryReduce<E extends Object>(
+      Result<T, E> Function(T, T) f) {
     if (!moveNext()) {
       return Ok(None);
     }
@@ -281,15 +285,18 @@ extension IteratorOnIteratorTUExtension<T, U> on RIterator<(T, U)> {
 //************************************************************************//
 
 /// Overrides built in extension methods on nullable [Iterable].
-extension NullableIterableExtensionsOverrides<T extends Object> on RIterator<T?> {
+extension NullableIterableExtensionsOverrides<T extends Object>
+    on RIterator<T?> {
   /// Returns an RIterator over the non-null elements of this iterator.
-  RIterator<T> nonNulls() => RIterator.fromIterable(NullableIterableExtensions(this).nonNulls);
+  RIterator<T> nonNulls() =>
+      RIterator.fromIterable(NullableIterableExtensions(this).nonNulls);
 }
 
 /// Overrides built in extension methods on [Iterable].
 extension IterableExtensionsOverrides<T> on RIterator<T> {
   /// Returns an RIterator over the elements of this iterable, paired with their index.
-  RIterator<(int, T)> get indexed => RIterator.fromIterable(IterableExtensions(this).indexed);
+  RIterator<(int, T)> get indexed =>
+      RIterator.fromIterable(IterableExtensions(this).indexed);
 
   @Deprecated(
       "FirstOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")

@@ -86,41 +86,42 @@ extension SliceOnComparableSliceExtension<T extends Comparable<T>> on Slice<T> {
 //************************************************************************//
 
 void _quickSort<T extends Comparable<T>>(Slice<T> slice, int low, int high) {
-    if (low < high) {
-      int pivotIndex = _partition(slice, low, high);
-      _quickSort(slice, low, pivotIndex - 1);
-      _quickSort(slice, pivotIndex + 1, high);
+  if (low < high) {
+    int pivotIndex = _partition(slice, low, high);
+    _quickSort(slice, low, pivotIndex - 1);
+    _quickSort(slice, pivotIndex + 1, high);
+  }
+}
+
+int _partition<T extends Comparable<T>>(Slice<T> slice, int low, int high) {
+  T pivot = slice._list[high];
+  int i = low - 1;
+
+  for (int j = low; j < high; j++) {
+    if (slice._list[j].compareTo(pivot) < 0) {
+      i++;
+      _swap(slice._list, i, j);
     }
   }
 
-  int _partition<T extends Comparable<T>>(Slice<T> slice, int low, int high) {
-    T pivot = slice._list[high];
-    int i = low - 1;
+  _swap(slice._list, i + 1, high);
+  return i + 1;
+}
 
-    for (int j = low; j < high; j++) {
-      if (slice._list[j].compareTo(pivot) < 0) {
-        i++;
-        _swap(slice._list, i, j);
-      }
-    }
+void _swap<T extends Comparable<T>>(List<T> list, int i, int j) {
+  T temp = list[i];
+  list[i] = list[j];
+  list[j] = temp;
+}
 
-    _swap(slice._list, i + 1, high);
-    return i + 1;
-  }
+//************************************************************************//
 
-  void _swap<T extends Comparable<T>>(List<T> list, int i, int j) {
-    T temp = list[i];
-    list[i] = list[j];
-    list[j] = temp;
-  }
-
-  //************************************************************************//
-
-  void quickSortBy<T>(Slice<T> slice, int Function(T a, T b) compare) {
+void quickSortBy<T>(Slice<T> slice, int Function(T a, T b) compare) {
   _quickSortBy(slice, 0, slice._end - 1, compare);
 }
 
-void _quickSortBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
+void _quickSortBy<T>(
+    Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
   if (low < high) {
     int pivotIndex = _partitionBy(slice, low, high, compare);
     _quickSortBy(slice, low, pivotIndex - 1, compare);
@@ -128,7 +129,8 @@ void _quickSortBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) c
   }
 }
 
-int _partitionBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
+int _partitionBy<T>(
+    Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
   T pivot = slice._list[high];
   int i = low - 1;
 

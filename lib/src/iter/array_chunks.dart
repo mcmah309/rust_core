@@ -11,9 +11,10 @@ final class ArrayChunks<T> extends RIterator<Arr<T>> {
   int _count = 0;
 
   ArrayChunks(this._iterator, this._chunkSize)
-      :  assert(_chunkSize > 0, "Chunk size must be greater than 0"), super._late(){
-        _wIterator = this;
-      }
+      : assert(_chunkSize > 0, "Chunk size must be greater than 0"),
+        super._late() {
+    _wIterator = this;
+  }
 
   @override
   bool moveNext() {
