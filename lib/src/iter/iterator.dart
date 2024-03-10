@@ -248,6 +248,56 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
+  bool isPartitioned(bool Function(T) f) {
+    var foundFalse = false;
+    for (final element in this) {
+      if (f(element)) {
+        if (foundFalse) {
+          return false;
+        }
+      } else {
+        foundFalse = true;
+      }
+    }
+    return true;
+  }
+
+  @override
+  bool isSortedBy(int Function(T, T) f){
+    T prev;
+    if (moveNext()) {
+      prev = current;
+    } else {
+      return true;
+    }
+    for (final element in this) {
+      if(f(prev, element) > 0){
+        return false;
+      }
+      prev = element;
+    }
+    return true;
+  }
+
+  @override
+  bool isSortedByKey<U extends Comparable<U>>(U Function(T) f){
+    U prev;
+    if (moveNext()) {
+      prev = f(current);
+    } else {
+      return true;
+    }
+    for (final element in this) {
+      final val = f(element);
+      if(prev.compareTo(val) > 0){
+        return false;
+      }
+      prev = val;
+    }
+    return true;
+  }
+  
+  @override
   RIterator<T> intersperseWith(T Function() f) {
     return RIterator.fromIterable(_intersperseWithHelper(f));
   }

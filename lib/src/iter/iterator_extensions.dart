@@ -35,47 +35,59 @@ extension IteratorIterableExtension<T> on RIterator<Iterable<T>> {
   //todo
 }
 
-
-extension IteratorComparable<U,T extends Comparable<U>> on RIterator<T> {
-    /// Lexicographically compares the elements of this Iterator with those of another.
-    /// Less = -1
-    /// Equal = 0
-    /// Greater = 1
-    int cmp(Iterable<U> other) {
-      final otherIterator = other.iterator;
-      final thisIterator = iterator;
-      while (true) {
-        if (thisIterator.moveNext()) {
-          if (otherIterator.moveNext()) {
-            final cmp = thisIterator.current.compareTo(otherIterator.current);
-            if (cmp != 0) {
-              return cmp;
-            }
-          } else {
-            return 1;
+extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
+  /// Lexicographically compares the elements of this Iterator with those of another.
+  /// Less = -1
+  /// Equal = 0
+  /// Greater = 1
+  int cmp(Iterable<U> other) {
+    final otherIterator = other.iterator;
+    final thisIterator = iterator;
+    while (true) {
+      if (thisIterator.moveNext()) {
+        if (otherIterator.moveNext()) {
+          final cmp = thisIterator.current.compareTo(otherIterator.current);
+          if (cmp != 0) {
+            return cmp;
           }
         } else {
-          if (otherIterator.moveNext()) {
-            return -1;
-          } else {
-            return 0;
-          }
+          return 1;
+        }
+      } else {
+        if (otherIterator.moveNext()) {
+          return -1;
+        } else {
+          return 0;
         }
       }
     }
+  }
 
-    /// Determines if the elements of this Iterator are lexicographically greater than or equal to those of another.
-    bool ge(Iterable<U> other) {
-      return cmp(other) >= 0;
+  /// Determines if the elements of this Iterator are lexicographically greater than or equal to those of another.
+  bool ge(Iterable<U> other) {
+    return cmp(other) >= 0;
+  }
+
+  /// Determines if the elements of this Iterator are lexicographically greater than those of another.
+  bool gt(Iterable<U> other) {
+    return cmp(other) > 0;
+  }
+}
+
+extension IteratorComparableSelf<T extends Comparable<T>> on RIterator<T> {
+  /// Checks if the elements of this iterator are sorted.
+  /// That is, for each element a and its following element b, a <= b must hold. If the iterator yields exactly zero or one element, true is returned.
+  bool isSorted() {
+    while (moveNext()) {
+      var prevVal = current;
+      if (moveNext()) {
+        if (prevVal.compareTo(current) > 0) {
+          return false;
+        }
+      }
     }
-
-    /// Determines if the elements of this Iterator are lexicographically greater than those of another.
-    bool gt(Iterable<U> other) {
-      return cmp(other) > 0;
-    }
-
-  
-
+    return true;
+  }
 }
 
 extension IteratorOptionExtension<T> on RIterator<Option<T>> {
@@ -115,29 +127,30 @@ extension IteratorOnIteratorTUExtension<T, U> on RIterator<(T, U)> {
 
 /// Overrides built in extension methods on nullable [Iterable].
 extension NullableIterableExtensionsOverrides<T extends Object> on RIterator<T?> {
-
   /// Returns an RIterator over the non-null elements of this iterator.
   RIterator<T> nonNulls() => RIterator.fromIterable(NullableIterableExtensions(this).nonNulls);
 }
 
-
 /// Overrides built in extension methods on [Iterable].
 extension IterableExtensionsOverrides<T> on RIterator<T> {
-
   /// Returns an RIterator over the elements of this iterable, paired with their index.
   RIterator<(int, T)> get indexed => RIterator.fromIterable(IterableExtensions(this).indexed);
 
-  @Deprecated("FirstOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")
-  Never firstOrNull() => 
+  @Deprecated(
+      "FirstOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")
+  Never firstOrNull() =>
       throw "FirstOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.";
 
   /// Returns the last element of this iterable, or `null` if the iterable is empty.
   T? lastOrNull() => IterableExtensions(this).lastOrNull;
 
-  @Deprecated("SingleOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")
-  Never singleOrNull() => throw "SingleOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.";
+  @Deprecated(
+      "SingleOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")
+  Never singleOrNull() =>
+      throw "SingleOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peekable() instead.";
 
-
-  @Deprecated("ElementAtOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use nth() instead.")
-  Never elementAtOrNull(int index) => throw "ElementAtOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use nth() instead.";
+  @Deprecated(
+      "ElementAtOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use nth() instead.")
+  Never elementAtOrNull(int index) =>
+      throw "ElementAtOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use nth() instead.";
 }

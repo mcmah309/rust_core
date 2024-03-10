@@ -93,10 +93,24 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// The closure will be called each time to generate the separator.
   RIterator<T> intersperseWith(T Function() f);
 
-// is_partitioned
-// is_sorted
-// is_sorted_by
-// is_sorted_by_key
+  /// Checks if the elements of this iterator are partitioned according to the given predicate, such that all those that return true precede all those that return false.
+  bool isPartitioned(bool Function(T) f);
+
+// is_sorted: Implemented as an extension
+
+  /// Checks if the elements of this iterator are sorted by f.
+  /// That is, for each element f(a,b) and its following element f(b,c), f(a,b) <= f(b,c) must hold. If the iterator yields exactly zero or one element, true is returned.
+  /// negative if a < b
+  /// zero if a == b
+  /// positive if a > b
+  bool isSortedBy(int Function(T, T) f);
+
+  /// Checks if the elements of this iterator are sorted by a key.
+  /// That is, for each element f(a) and its following element f(b), f(a) <= f(b) must hold. If the iterator yields exactly zero or one element, true is returned.
+  /// negative if a < b
+  /// zero if a == b
+  /// positive if a > b
+  bool isSortedByKey<U extends Comparable<U>>(U Function(T) f);
 
   /// Consumes the iterator and returns the last element.
   Option<T> lastOrOption();

@@ -235,6 +235,78 @@ main() {
     expect(count, 0);
   });
 
+  test("isPartitioned",(){
+    var list = [1, 2, 3, 4, 5];
+    var isPartitioned = list.iter().isPartitioned((e) => e % 2 == 0);
+    expect(isPartitioned, false);
+
+    var list2 = [2, 4, 6, 8, 10];
+    var isPartitioned2 = list2.iter().isPartitioned((e) => e % 2 == 0);
+    expect(isPartitioned2, true);
+
+    var list3 = [1, 3, 6, 8, 10];
+    var isPartitioned3 = list3.iter().isPartitioned((e) => e % 2 == 0);
+    expect(isPartitioned3, false);
+
+    var list4 = [6, 8, 10, 1, 3];
+    var isPartitioned4 = list4.iter().isPartitioned((e) => e % 2 == 0);
+    expect(isPartitioned4, true);
+  });
+
+  test("isSorted",(){
+    var list = <num>[1, 2, 3, 4, 5];
+    var isSorted = list.iter().isSorted();
+    expect(isSorted, true);
+
+    var list2 = <num>[1, 2, 3, 4, 5, 4];
+    var isSorted2 = list2.iter().isSorted();
+    expect(isSorted2, false);
+
+    var list3 = <num>[5, 4, 3, 2, 1];
+    var isSorted3 = list3.iter().isSorted();
+    expect(isSorted3, false);
+
+    var list4 = <num>[1, 2, 3, 4, 5, 5];
+    var isSorted4 = list4.iter().isSorted();
+    expect(isSorted4, true);
+  });
+
+  test("isSortedBy",(){
+    var list = <num>[1, 2, 3, 4, 5];
+    var isSorted = list.iter().isSortedBy((a, b) => a.compareTo(b));
+    expect(isSorted, true);
+
+    var list2 = <num>[1, 2, 3, 4, 5, 4];
+    var isSorted2 = list2.iter().isSortedBy((a, b) => a.compareTo(b));
+    expect(isSorted2, false);
+
+    var list3 = <num>[5, 4, 3, 2, 1];
+    var isSorted3 = list3.iter().isSortedBy((a, b) => a.compareTo(b));
+    expect(isSorted3, false);
+
+    var list4 = <num>[1, 2, 3, 4, 5, 5];
+    var isSorted4 = list4.iter().isSortedBy((a, b) => a.compareTo(b));
+    expect(isSorted4, true);
+  });
+
+  test("isSortedByKey",(){
+    var list = <num>[1, 2, 3, 4, 5];
+    var isSorted = list.iter().isSortedByKey<num>((a) => a);
+    expect(isSorted, true);
+
+    var list2 = <num>[1, 2, 3, 4, 5, 4];
+    var isSorted2 = list2.iter().isSortedByKey<num>((a) => a);
+    expect(isSorted2, false);
+
+    var list3 = <num>[5, 4, 3, 2, 1];
+    var isSorted3 = list3.iter().isSortedByKey<num>((a) => a);
+    expect(isSorted3, false);
+
+    var list4 = <num>[1, 2, 3, 4, 5, 5];
+    var isSorted4 = list4.iter().isSortedByKey<num>((a) => a);
+    expect(isSorted4, true);
+  });
+
   test("maxBy", () {
     var list = [1, 2, 3, 4, 5];
     var max = list.iter().maxBy((int a, int b) => a.compareTo(b));
