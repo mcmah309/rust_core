@@ -1,5 +1,6 @@
 part of 'iterator.dart';
 
+/// Iterface for Rust only methods. Not included is some methods that are already implemented by Dart's Iterable.
 abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// If the iterator is empty, returns None. Otherwise, returns the next value wrapped in Some.
   Option<T> next();
@@ -200,10 +201,10 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 // take: Implemented by Iterable.take
 // take_while: Implemented by Iterable.takeWhile
 // try_collect: Implemented by extension
-// try_find
-// try_fold
-// try_for_each
-// try_reduce
+// try_find: Implemented by extension
+// try_fold: Implemented by extension
+// try_for_each: Implemented by extension
+// try_reduce: Implemented by extension
 // unzip: Implemented in extension
 
   // Zips this iterator with another and yields pairs of elements.

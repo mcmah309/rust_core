@@ -5,6 +5,7 @@ class FollowedByIterator<E> implements Iterator<E> {
   FollowedByIterator(Iterable<E> first, this._nextIterable)
       : _currentIterator = first.iterator;
 
+  @override
   bool moveNext() {
     if (_currentIterator.moveNext()) return true;
     if (_nextIterable != null) {
@@ -15,5 +16,6 @@ class FollowedByIterator<E> implements Iterator<E> {
     return false;
   }
 
+  @override
   E get current => _currentIterator.current;
 }

@@ -63,9 +63,9 @@ main() {
     expect(slice.getMany(const [0, 1, 2, 3, 4]).unwrap(), [1, 2, 3, 4, 5]);
     expect(slice.getMany(const [1, 3]).unwrap(), [2, 4]);
     expect(slice.getMany(const []).unwrap(), []);
-    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr().reason, GetManyErrorType.tooManyIndices);
-    expect(slice.getMany(const [0, 1, 6]).unwrapErr().reason, GetManyErrorType.requestedIndexOutOfBounds);
-    expect([].asSlice().getMany(const [0]).unwrapErr().reason, GetManyErrorType.tooManyIndices);
+    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr(), GetManyErrorTooManyIndices());
+    expect(slice.getMany(const [0, 1, 6]).unwrapErr(), GetManyErrorRequestedIndexOutOfBounds());
+    expect([].asSlice().getMany(const [0]).unwrapErr(), GetManyErrorTooManyIndices());
     expect([].asSlice().getMany(const []).unwrap(), []);
     expect([1].asSlice().getMany(const []).unwrap(), []);
   });

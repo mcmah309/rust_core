@@ -439,7 +439,6 @@ main() {
     var partitioned = iter.partitionInPlace((e) => e % 2 == 0);
     expect(partitioned, 2);
     final resultingList = iter.toList();
-    print(resultingList);
     expect(Slice(resultingList, 0, 2), containsAll([4, 2]));
     expect(Slice(resultingList, 2, 5), containsAll([3, 5, 1]));
     expect(resultingList.length, 5);

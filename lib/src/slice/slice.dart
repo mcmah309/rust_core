@@ -5,6 +5,7 @@ import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/array.dart';
 import 'package:rust_core/slice.dart';
+import 'package:rust_core/src/slice/errors.dart';
 
 part 'slice_extensions.dart';
 
@@ -164,15 +165,17 @@ final class Slice<T> implements Iterable<T> {
   /// Returns mutable references to many indices at once.
   /// Returns an error if any index is out-of-bounds.
   Result<Arr<T>, GetManyError> getMany(List<int> indices) {
-    if (indices.length > _end - _start)
-      return const Err(GetManyError(GetManyErrorType.tooManyIndices));
+    if (indices.length > _end - _start) {
+      return const Err(GetManyErrorTooManyIndices());
+    }
     if (indices.isEmpty) {
       return Ok(Arr.empty());
     }
     var array = Arr(this.first, indices.length);
     for (final (int i, int index) in indices.iter().enumerate()) {
-      if (index < _start || index >= _end)
-        return const Err(GetManyError(GetManyErrorType.requestedIndexOutOfBounds));
+      if (index < _start || index >= _end) {
+        return const Err(GetManyErrorRequestedIndexOutOfBounds());
+      }
       array[i] = this[index];
     }
     return Ok(array);
