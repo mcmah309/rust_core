@@ -1,6 +1,16 @@
+## 0.5.0
+
+ - Breaking: Change `None()` to `None`
+ - Breaking: Migrate RIterator to an Iterable Iterator union
+ - Add Array type
+ - Implement all of Iter
+ - Implement most of Slice
+ - More extensions
+ - Add prelude library
+
 ## 0.4.0
 
-- Migrate Option to a extension type
+- Breaking: Migrate Option to a extension type
 - slice library
 - iter library
 - Various additional extensions
