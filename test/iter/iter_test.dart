@@ -345,12 +345,70 @@ main() {
 
   //************************************************************************//
 
+  test("cast",(){
+    var list = [1, 2, 3, 4, 5];
+    var casted = list.iter().cast<num>();
+    expect(casted, [1.0, 2.0, 3.0, 4.0, 5.0]);
+  });
+
+  test("expand",(){
+    var list = [1, 2, 3, 4, 5];
+    var expanded = list.iter().expand((e) => [e, e]);
+    expect(expanded, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]);
+  });
+
+  test("followedBy",(){
+    var list = [1, 2, 3, 4, 5];
+    var followedBy = list.iter().followedBy([6, 7, 8, 9, 10]);
+    expect(followedBy, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  });
+
+  test("map",(){
+    var list = [1, 2, 3, 4, 5];
+    var mapped = list.iter().map((e) => e * e);
+    expect(mapped, [1, 4, 9, 16, 25]);
+  });
+
+  test("skip",(){
+    var list = [1, 2, 3, 4, 5];
+    var skipped = list.iter().skip(3);
+    expect(skipped, [4, 5]);
+  });
+
+  test("skipWhile",(){
+    var list = [1, 2, 3, 4, 5];
+    var skipped = list.iter().skipWhile((e) => e < 3);
+    expect(skipped, [3, 4, 5]);
+  });
+
   test("take", (){
     var list = [1, 2, 3, 4, 5];
     final original = list.iter();
     var taken = original.take(3);
     expect(taken, [1, 2, 3]);
     expect(original, [4, 5]);
+  });
+
+  test("takeWhile",(){
+    var list = [1, 2, 3, 4, 5];
+    var taken = list.iter().takeWhile((e) => e < 3);
+    expect(taken, [1, 2]);
+  });
+
+  test("where",(){
+    var list = [1, 2, 3, 4, 5];
+    var where = list.iter().where((e) => e % 2 == 0);
+    expect(where, [2, 4]);
+  });
+
+  test("whereType",(){
+    var list = [1, 2, 3, 4, 5];
+    var whereType = list.iter().whereType<int>();
+    expect(whereType, [1, 2, 3, 4, 5]);
+
+    var list2 = [1, 2, 3, 4, 5, "6"];
+    var whereType2 = list2.iter().whereType<int>();
+    expect(whereType2, [1, 2, 3, 4, 5]);
   });
 
   //************************************************************************//
