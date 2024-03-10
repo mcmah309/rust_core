@@ -1,57 +1,70 @@
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/slice.dart';
-import 'package:rust_core/src/array/array_extensions.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/option.dart';
 
 main() {
   test("advanceBy", () {
     var list = [1, 2, 3, 4, 5];
-    var advanced = list.iter().advanceBy(2);
-    expect(advanced.unwrap(), [3, 4, 5]);
-
-    var advanced2 = list.iter().advanceBy(0);
-    expect(advanced2.unwrap(), [1, 2, 3, 4, 5]);
-
-    var advanced3 = list.iter().advanceBy(5);
-    expect(advanced3.unwrap(), []);
-
-    var advanced4 = list.iter().advanceBy(6);
+    var iter = list.iter();
+    var advanced = iter.advanceBy(2);
+    expect(advanced.isOk(), true);
+    expect(iter, [3, 4, 5]);
+    iter = list.iter();
+    var advanced2 = iter.advanceBy(0);
+    expect(advanced2.isOk(), true);
+    expect(iter, [1, 2, 3, 4, 5]);
+    iter = list.iter();
+    var advanced3 = iter.advanceBy(5);
+    expect(advanced3.isOk(), true);
+    expect(iter, []);
+    iter = list.iter();
+    var advanced4 = iter.advanceBy(6);
     expect(advanced4.unwrapErr(), 1);
-
+    expect(iter, []);
+    iter = list.iter();
     list = [];
-    var advanced5 = list.iter().advanceBy(6);
+    iter = list.iter();
+    var advanced5 = iter.advanceBy(6);
     expect(advanced5.unwrapErr(), 6);
-
+    expect(iter, []);
+    iter = list.iter();
     var set = {1, 2, 3, 4, 5};
-    var advanced6 = set.iter().advanceBy(2);
-    expect(advanced6.unwrap(), [3, 4, 5]);
-
-    var advanced7 = set.iter().advanceBy(0);
-    expect(advanced7.unwrap(), [1, 2, 3, 4, 5]);
-
-    var advanced8 = set.iter().advanceBy(5);
-    expect(advanced8.unwrap(), []);
-
-    var advanced9 = set.iter().advanceBy(6);
+    iter = set.iter();
+    var advanced6 = iter.advanceBy(2);
+    expect(advanced6.isOk(), true);
+    expect(iter, [3, 4, 5]);
+    iter = set.iter();
+    var advanced7 = iter.advanceBy(0);
+    expect(advanced7.isOk(), true);
+    expect(iter, [1, 2, 3, 4, 5]);
+    iter = set.iter();
+    var advanced8 = iter.advanceBy(5);
+    expect(advanced8.isOk(), true);
+    expect(iter, []);
+    iter = set.iter();
+    var advanced9 = iter.advanceBy(6);
     expect(advanced9.unwrapErr(), 1);
-
+    expect(iter, []);
+    iter = set.iter();
     set = {};
-    var advanced10 = set.iter().advanceBy(6);
+    iter = set.iter();
+    var advanced10 = iter.advanceBy(6);
     expect(advanced10.unwrapErr(), 6);
+    expect(iter, []);
   });
 
   test("arrayChunks", () {
     var list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     var chunks = list.iter().arrayChunks(3);
-    final x = chunks.collectArr();
-    expect(chunks.toList(), [
+    final newChunkList = chunks.toList();
+    expect(newChunkList, [
       [1, 2, 3],
       [4, 5, 6],
       [7, 8, 9]
     ]);
 
-    var chunksIterator = list.iter().arrayChunks(3).iterator;
+    var chunksIterator = list.iter().arrayChunks(3);
     while (chunksIterator.moveNext()) {}
     var remainder = chunksIterator.intoRemainder();
     expect(remainder.isNone(), true);
@@ -62,10 +75,27 @@ main() {
       [5, 6, 7, 8],
     ]);
 
-    var chunksIterator2 = list.iter().arrayChunks(4).iterator;
+    var chunksIterator2 = list.iter().arrayChunks(4);
     while (chunksIterator2.moveNext()) {}
     var remainder2 = chunksIterator2.intoRemainder();
     expect(remainder2.unwrap(), [9]);
+  });
+
+  test("chain",(){
+    var list = [1, 2, 3, 4, 5];
+    var list2 = [6, 7, 8, 9, 10];
+    var chained = list.iter().chain(list2.iter());
+    expect(chained, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    var list3 = [1, 2, 3, 4, 5];
+    var list4 = <int>[];
+    var chained2 = list3.iter().chain(list4.iter());
+    expect(chained2, [1, 2, 3, 4, 5]);
+
+    var list5 = <int>[];
+    var list6 = [6, 7, 8, 9, 10];
+    var chained3 = list5.iter().chain(list6.iter());
+    expect(chained3, [6, 7, 8, 9, 10]);
   });
 
   test("cycle", () {
@@ -242,7 +272,7 @@ main() {
 
   test("peekable", () {
     var list = [1, 2, 3, 4, 5];
-    PeekableIterator<int> peekable = list.iter().peekable().iterator;
+    Peekable<int> peekable = list.iter().peekable();
     expect(peekable.peek(), Some(1));
     expect(peekable.next(), Some(1));
     expect(peekable.peek(), Some(2));
@@ -284,7 +314,7 @@ main() {
 
   test("zip", () {
     var list = [1, 2, 3, 4, 5];
-    var zipped = list.iter().zip([6, 7, 8, 9, 10]);
+    var zipped = list.iter().zip([6, 7, 8, 9, 10].iterator);
     expect(zipped, [
       (1, 6),
       (2, 7),
@@ -292,14 +322,14 @@ main() {
       (4, 9),
       (5, 10),
     ]);
-    var zipped2 = list.iter().zip([6, 7, 8, 9]);
+    var zipped2 = list.iter().zip([6, 7, 8, 9].iterator);
     expect(zipped2, [
       (1, 6),
       (2, 7),
       (3, 8),
       (4, 9),
     ]);
-    var zipped3 = list.iter().zip([6, 7, 8, 9, 10, 11]);
+    var zipped3 = list.iter().zip([6, 7, 8, 9, 10, 11].iterator);
     expect(zipped3, [
       (1, 6),
       (2, 7),
@@ -307,9 +337,9 @@ main() {
       (4, 9),
       (5, 10),
     ]);
-    var zipped4 = list.iter().zip([]);
+    var zipped4 = list.iter().zip([].iterator);
     expect(zipped4, []);
-    var zipped5 = [].iter().zip([6, 7, 8, 9, 10]);
+    var zipped5 = [].iter().zip([6, 7, 8, 9, 10].iterator);
     expect(zipped5, []);
   });
 
@@ -318,9 +348,9 @@ main() {
   test("Can take slice", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 1, 3);
-    var iter = RIterator<int>(slice);
-    iter = RIterator(slice);
-    RIterator<int> iter2 = RIterator(slice);
+    var iter = RIterator<int>(slice.iterator);
+    iter = RIterator(slice.iterator);
+    RIterator<int> iter2 = RIterator(slice.iterator);
     expect(slice, [2, 3]);
   });
 }

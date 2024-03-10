@@ -1,37 +1,23 @@
 part of 'iterator.dart';
 
-extension IteratorExtension<T> on Iterator<T> {
-  /// If the iterator is empty, returns None. Otherwise, returns the next value wrapped in Some.
-  Option<T> next() {
-    if (moveNext()) {
-      return Some(current);
-    }
-    return None;
-  }
-
-  /// Collects the Iterator into a List.
-  List<T> collectList() {
-    final list = <T>[];
-    while (moveNext()) {
-      list.add(current);
-    }
-    return list;
-  }
-}
-
 extension IterableExtension<T> on Iterable<T> {
   /// Returns an [RIterator] over the [Iterable].
+  RIterator<T> iter() => RIterator<T>(iterator);
+}
+
+extension IteratorExtension<T> on Iterator<T> {
+  /// Returns an [RIterator] for this [Iterator].
   RIterator<T> iter() => RIterator<T>(this);
 }
 
 extension IteratorOnIteratorIterabel<T> on RIterator<Iterable<T>> {
   /// Flatten an iterator of iterators into a single iterator.
   RIterator<T> flatten() {
-    return RIterator(_flattenHelper());
+    return RIterator(_flattenHelper().iterator);
   }
 
   Iterable<T> _flattenHelper() sync* {
-    for (final iterator in iterable) {
+    for (final iterator in this) {
       for (final value in iterator) {
         yield value;
       }
@@ -55,7 +41,7 @@ extension IteratorComparable<U,T extends Comparable<U>> on RIterator<T> {
     /// Greater = 1
     int cmp(Iterable<U> other) {
       final otherIterator = other.iterator;
-      final thisIterator = iterable.iterator;
+      final thisIterator = iterator;
       while (true) {
         if (thisIterator.moveNext()) {
           if (otherIterator.moveNext()) {
@@ -93,11 +79,11 @@ extension IteratorComparable<U,T extends Comparable<U>> on RIterator<T> {
 extension IteratorOptionExtension<T> on RIterator<Option<T>> {
   /// Creates an iterator which ends after the first None.
   RIterator<T> fuse() {
-    return RIterator(_fuseHelper());
+    return RIterator(_fuseHelper().iterator);
   }
 
   Iterable<T> _fuseHelper() sync* {
-    for (final option in iterable) {
+    for (final option in this) {
       if (option.isNone()) {
         break;
       }
@@ -115,7 +101,7 @@ extension IteratorOnIteratorTUExtension<T, U> on RIterator<(T, U)> {
   (List<T>, List<U>) unzip() {
     final first = <T>[];
     final second = <U>[];
-    for (final (t, u) in iterable) {
+    for (final (t, u) in this) {
       first.add(t);
       second.add(u);
     }

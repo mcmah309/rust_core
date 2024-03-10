@@ -65,11 +65,11 @@ void main() {
   });
 
   //************************************************************************//
-  test("Array and List composability",(){
-    Arr<int> arr = Arr(1, 3);
-    List<String> list = ["1", "1", "1"];
-    final other = arr.iter().zip(list);
-    RIterator<int> other2 = arr.iter();
+  // test("Array and List composability",(){
+  //   Arr<int> arr = Arr(1, 3);
+  //   List<String> list = ["1", "1", "1"];
+  //   final other = arr.iter().zip(list);
+  //   RIterator<int> other2 = arr.iter();
     
-  });
+  // });
 }

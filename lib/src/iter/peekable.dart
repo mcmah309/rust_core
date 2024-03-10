@@ -1,11 +1,13 @@
-import 'package:rust_core/option.dart';
+part of 'iterator.dart';
 
 /// An iterator which can use the "peek" to look at the next element of the iterator without consuming it.
-class PeekableIterator<T> implements Iterator<T> {
+class Peekable<T> extends _BaseRIterator<T> {
   final Iterator<T> _iterator;
   Option<T> _peeked = None;
 
-  PeekableIterator(this._iterator);
+  Peekable(this._iterator): super.late() {
+    wIterator = this;
+  }
 
   /// Returns the next element of the iterator without consuming it.
   Option<T> peek() {
@@ -28,16 +30,4 @@ class PeekableIterator<T> implements Iterator<T> {
 
   @override
   T get current => _peeked.unwrapOr(_iterator.current);
-}
-
-/// An iterable which can use the "peek" to look at the next element of the iterator without consuming it.
-class Peekable<T> extends Iterable<T> {
-  final Iterable<T> _iterable;
-
-  Peekable(this._iterable);
-
-  @override
-  PeekableIterator<T> get iterator {
-    return PeekableIterator(_iterable.iterator);
-  }
 }

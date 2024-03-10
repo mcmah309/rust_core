@@ -1,71 +1,190 @@
-import 'package:rust_core/iter.dart';
+import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
-import 'package:rust_core/option.dart';
-import 'package:rust_core/src/array/array_extensions.dart';
-import 'package:rust_core/src/iter/array_chunks.dart';
+import 'package:rust_core/array.dart';
 
+part 'array_chunks.dart';
+part 'chain.dart';
+part 'peekable.dart';
 part 'iterator_extensions.dart';
+part 'iterator_interface.dart';
+part 'cycle.dart';
+part 'flat_map.dart';
+part 'zip.dart';
 
-extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
-  RIterator.fromSlice(Slice<T> slice) : iterable = slice;
+/// RIterator is the union between an Iterator and an Iterable. Most iterator methods are consuming
+/// and should be assumed to be so unless otherwise stated.
+extension type RIterator<T>._(_BaseRIterator<T> _rIterator) implements _RIterator<T> {
+  RIterator(Iterator<T> wrappedIterator) : _rIterator = _BaseRIterator(wrappedIterator);
 
-    /// Advances the iterator by n elements.
-    /// will return a new iterator advanced by n elements when Ok, or a Err(k) 
-    /// where k is remaining number of steps that could not be advanced because the iterator ran out.
-    Result<RIterator<T>, int> advanceBy(int n) {
-      final self = this.iterable;
-      if(self is List<T>){
-        if(n > self.length){
-          return Err(n - self.length);
-        }
-        return Ok(RIterator(self.sublist(n)));
+  RIterator.fromIterable(Iterable<T> iterable) : _rIterator = _BaseRIterator.fromIterable(iterable);
+
+  // Iterable: Overriding iterable methods
+  //************************************************************************//
+
+  /// Do not call. Will throw an error.
+  /// Dev Note: Cannot remove since must implement iterable.
+  @Deprecated("Is Not Supported as it would require consuming part of the iterator, which is likely not the users intent. Use peek() instead.")
+  Never first() =>
+      throw "First is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.";
+
+  /// Do not call. Will throw an error.
+  /// Dev Note: Cannot remove since must implement iterable.
+  @Deprecated("Is Empty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peek() instead.")
+  Never isEmpty() =>
+      throw "Is Empty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peek() instead.";
+
+  /// Do not call. Will throw an error.
+  /// Dev Note: Cannot remove since must implement iterable.
+  Never isNotEmpty() =>
+      throw "Is Not Empty is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use peek() instead.";
+
+  /// Consumes the iterator, returning the last element of an iterator, None if empty.
+  Option<T> last() {
+    if (moveNext()) {
+      var last = current;
+      while (moveNext()) {
+        last = current;
       }
-      final iterator = self.iterator;
-      for (var i = 0; i < n; i++) {
-        if (!iterator.moveNext()) {
-          return Err(n - i);
-        }
-      }
-      final arr = iterator.collectArr();
-      return Ok(RIterator(arr));
+      return Some(last);
     }
-
-  bool all(bool Function(T) f) => iterable.every(f);
-
-// any: Implemented by Iterable.any
-
-  /// Returns an iterator over N elements of the iterator at a time.
-  /// The chunks do not overlap. If N does not divide the length of the iterator, then the last up to N-1 elements will 
-  /// be omitted and can be retrieved from the [.intoRemainder()] function of the iterator.
-  ArrayChunks<T> arrayChunks(int size) => ArrayChunks(iterable, size);
-
-// by_ref: Will not implement, Dart does not have borrowing
-
-  /// Takes two iterators and creates a new iterator over both in sequence.
-  RIterator<T> chain(Iterable<T> other) {
-    return RIterator(_chainHelper(other));
+    return None;
   }
 
-  Iterable<T> _chainHelper(Iterable<T> other) sync* {
-    yield* iterable;
-    yield* other;
+  /// Do not call. Will throw an error.
+  /// Dev Note: Cannot remove since must implement iterable.
+  @Deprecated("Length is not supported as it would require consuming the iterator, which is likely not the users intent. Use count() instead.")
+  Never length() =>
+      throw "Length is not supported as it would require consuming the iterator, which is likely not the users intent. Use count() instead.";
+
+  /// Returns the single element of an iterator, None if this is empty or has more than one element.
+  /// Dev Note: Cannot remove since must implement iterable.
+  @Deprecated("Single is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")
+  Never single() => throw "Single is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.";
+
+  // bool any(bool Function(T) f) {
+  //   return iterable.any(f);
+  // }
+
+  /// Casts this RIterator<T> to an RIterator<U>.
+  RIterator<U> cast<U>() => RIterator(_BaseRIterator.fromIterable(_rIterator.cast<U>()));
+
+  // bool contains(Object? element) => iterable.contains(element);
+
+  // T elementAt(int index) => iterable.elementAt(index);
+
+  // bool every(bool Function(T) f) => iterable.every(f);
+
+  /// Expands each element of this RIterator into zero or more elements.
+  RIterator<U> expand<U>(RIterator<U> Function(T) f) =>
+      RIterator(_BaseRIterator.fromIterable(_rIterator.expand(f)));
+
+  // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
+
+  // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => iterable.fold(initialValue, f);
+
+  /// Creates the lazy concatenation of this Iterator and [other]
+  RIterator<T> followedBy(Iterator<T> other) =>
+      RIterator(_BaseRIterator.fromIterable(_rIterator.followedBy(other.iter())));
+
+  // void forEach(void Function(T) f) => iterable.forEach(f);
+
+  // String join([String separator = '']) => iterable.join(separator);
+
+  // T lastWhere(bool Function(T) f, {T Function()? orElse}) => iterable.lastWhere(f, orElse: orElse);
+
+  /// Maps each element of this RIterator to a new RIterator<U> using the function f.
+  RIterator<U> map<U>(U Function(T) f) => RIterator(_BaseRIterator.fromIterable(_rIterator.map(f)));
+
+  // T reduce(T Function(T, T) f) => iterable.reduce(f);
+
+  // T singleWhere(bool Function(T) f, {T Function()? orElse}) => iterable.singleWhere(f, orElse: orElse);
+
+  /// Skips the first [count] elements.
+  RIterator<T> skip(int count) => RIterator(_BaseRIterator.fromIterable(_rIterator.skip(count)));
+
+  /// Skips elements while [f] is true and returns the rest.
+  RIterator<T> skipWhile(bool Function(T) f) =>
+      RIterator(_BaseRIterator.fromIterable(_rIterator.skipWhile(f)));
+
+  /// Returns the first [count] elements.
+  RIterator<T> take(int count) => RIterator(_BaseRIterator.fromIterable(_rIterator.take(count)));
+
+  /// Takes elements while [f] is true and returns the rest.
+  RIterator<T> takeWhile(bool Function(T) f) =>
+      RIterator(_BaseRIterator.fromIterable(_rIterator.takeWhile(f)));
+
+  // List<T> toList({bool growable = true}) => iterable.toList(growable: growable);
+
+  // Set<T> toSet() => iterable.toSet();
+
+  // String toString() => iterable.toString();
+
+  /// Creates an RIterator where all the elements satisfy the predicate [f].
+  RIterator<T> where(bool Function(T) f) =>
+      RIterator(_BaseRIterator.fromIterable(_rIterator.where(f)));
+
+  /// Creates an RIterator where all the elements are of Type U.
+  RIterator<U> whereType<U>() => RIterator(_BaseRIterator.fromIterable(_rIterator.whereType<U>()));
+}
+
+//************************************************************************//
+
+/// Implementation of the RIterator interface.
+/// Dev Note: This is private because some of the methods should not be use and are obscured or signatures changed by the RIterator interface.
+class _BaseRIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
+  // todo add protected
+  late final Iterator<T> wIterator;
+
+  _BaseRIterator(this.wIterator);
+
+  _BaseRIterator.fromIterable(Iterable<T> iterable) : wIterator = iterable.iterator;
+
+  _BaseRIterator.late();
+
+  @override
+  T get current => wIterator.current;
+
+  @override
+  bool moveNext() => wIterator.moveNext();
+
+  @override
+  Iterator<T> get iterator => wIterator;
+
+  @override
+  Option<T> next() {
+    if (moveNext()) {
+      return Some(current);
+    }
+    return None;
   }
 
-// cloned: Will not implement, Dart objects are not clonable
-// cmp: Implemented in an extension
+  @override
+  Result<(), int> advanceBy(int n) {
+    for (var i = 0; i < n; i++) {
+      if (!moveNext()) {
+        return Err(n - i);
+      }
+    }
+    return Ok(());
+  }
 
-  /// Lexicographically compares the elements of this Iterator with those of another with respect to the specified comparison function.
-  /// Less = -1
-  /// Equal = 0
-  /// Greater = 1
-  int cmpBy<U>(Iterable<U> other, int Function(T, U) f) {
-    final otherIterator = other.iterator;
-    final thisIterator = iterable.iterator;
+  @override
+  bool all(bool Function(T) f) => every(f);
+
+  @override
+  ArrayChunks<T> arrayChunks(int size) => ArrayChunks(wIterator, size);
+
+  @override
+  RIterator<T> chain(Iterator<T> other) => RIterator(Chain(this, other));
+
+  @override
+  int cmpBy<U>(Iterator<U> other, int Function(T, U) f) {
+    //todo change to iterator
     while (true) {
-      if (thisIterator.moveNext()) {
-        if (otherIterator.moveNext()) {
-          final cmp = f(thisIterator.current, otherIterator.current);
+      if (moveNext()) {
+        if (other.moveNext()) {
+          final cmp = f(current, other.current);
           if (cmp != 0) {
             return cmp;
           }
@@ -73,7 +192,7 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
           return 1;
         }
       } else {
-        if (otherIterator.moveNext()) {
+        if (other.moveNext()) {
           return -1;
         }
         return 0;
@@ -81,72 +200,54 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-// collect: Implemented by extensions
-
+  @override
   List<T> collectList({bool growable = true}) {
-    return iterable.toList(growable: growable);
+    final list = <T>[];
+    while (moveNext()) {
+      list.add(current);
+    }
+    return list;
   }
 
+  @override
   Set<T> collectSet() {
-    return iterable.toSet();
+    final set = <T>{};
+    while (moveNext()) {
+      set.add(current);
+    }
+    return set;
   }
 
-// collect_into: Will not be implemented, no dart equivalent
-// contains: Implemented by Iterable.contains
-// copied: Will not be implemented, no dart equivalent
-
-  /// Counting the number of iterations and returning it.
-  int count() => iterable.length;
-
-  /// Creates an iterator which repeats the elements of the original iterator endlessly.
-  RIterator<T> cycle() => RIterator(_cycleHelper());
-
-  Iterable<T> _cycleHelper() sync* {
-    while (true) {
-      yield* iterable;
+  Arr<T> collectArr() {
+    final list = <T>[];
+    while (moveNext()) {
+      list.add(current);
     }
+    return Arr.fromList(list);
   }
 
-  /// Creates an iterator which gives the current iteration count as well as the next value.
-  RIterator<(int, T)> enumerate() => RIterator(iterable.indexed);
+  @override
+  int count() => length;
 
-    /// Determines if the elements of this Iterator are equal to those of another using "==".
-    bool eq<U>(Iterable<U> other) {
-      final otherIterator = other.iterator;
-      final thisIterator = iterable.iterator;
-      while (true) {
-        if (thisIterator.moveNext()) {
-          if (otherIterator.moveNext()) {
-            if (thisIterator.current != otherIterator.current) {
-              return false;
-            }
-          } else {
-            return false;
-          }
-        } else {
-          if (otherIterator.moveNext()) {
-            return false;
-          }
-          return true;
-        }
-      }
-    }
+  @override
+  Cycle<T> cycle() => Cycle(wIterator);
 
-  /// Determines if the elements of this Iterator are equal to those of another with respect to the specified equality function.
-  bool eqBy<U>(Iterable<U> other, bool Function(T, U) f) {
-    final otherIterator = other.iterator;
-    final thisIterator = iterable.iterator;
+  @override
+  RIterator<(int, T)> enumerate() => RIterator(_BaseRIterator.fromIterable(indexed));
+
+  @override
+  bool eq<U>(Iterator<U> other) {
     while (true) {
-      if (thisIterator.moveNext()) {
-        if (otherIterator.moveNext()) {
-          if (!f(thisIterator.current, otherIterator.current)) {
+      if (moveNext()) {
+        if (other.moveNext()) {
+          if (current != other.current) {
             return false;
           }
         } else {
           return false;
         }
       } else {
-        if (otherIterator.moveNext()) {
+        if (other.moveNext()) {
           return false;
         }
         return true;
@@ -154,19 +255,39 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-  /// Creates an iterator which uses a closure to determine if an element should be yielded.
-  RIterator<T> filter(bool Function(T) f) {
-    return RIterator<T>(iterable.where((element) => f(element)));
+  @override
+  bool eqBy<U>(Iterator<U> other, bool Function(T, U) f) {
+    //todo change to iterator
+    while (true) {
+      if (iterator.moveNext()) {
+        if (other.moveNext()) {
+          if (!f(iterator.current, other.current)) {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        if (other.moveNext()) {
+          return false;
+        }
+        return true;
+      }
+    }
   }
 
-  /// Creates an iterator that both filters and maps.
-  /// The returned iterator yields only the values for which the supplied closure returns Some(value).
+  @override
+  RIterator<T> filter(bool Function(T) f) {
+    return RIterator<T>(_BaseRIterator.fromIterable(where((element) => f(element))));
+  }
+
+  @override
   RIterator<U> filterMap<U>(Option<U> Function(T) f) {
-    return RIterator(_filterMapHelper(f));
+    return RIterator(_BaseRIterator.fromIterable(_filterMapHelper(f)));
   }
 
   Iterable<U> _filterMapHelper<U>(Option<U> Function(T) f) sync* {
-    for (final element in iterable) {
+    for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
         yield result.v!;
@@ -174,9 +295,9 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-  /// Searches for an element of an iterator that satisfies a predicate.
+  @override
   Option<T> find(bool Function(T) f) {
-    for (final element in iterable) {
+    for (final element in this) {
       if (f(element)) {
         return Some(element);
       }
@@ -184,9 +305,9 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return None;
   }
 
-  /// Applies the function to the elements of iterator and returns the first non-none result.
+  @override
   Option<U> findMap<U>(Option<U> Function(T) f) {
-    for (final element in iterable) {
+    for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
         return result;
@@ -195,38 +316,28 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return None;
   }
 
-  /// Creates an iterator that works like map, but flattens nested structure.
-  RIterator<U> flatMap<U>(Iterable<U> Function(T) f) {
-    return RIterator(iterable.expand(f));
-  }
+  @override
+  FlatMap<T,U> flatMap<U>(Iterator<U> Function(T) f) => FlatMap<T,U>(this, f);
 
-// flatten: Implemented in an extension
-// fold: Implemented by Iterable.fold
-// for_each: Implemented by Iterable.forEach
-// fuse: Implemented in an extension
-// ge: Implemented in an extension
-// gt: Implemented in an extension
-
-  /// Does something with each element of an iterator, passing the value on.
+  @override
   RIterator<T> inspect(void Function(T) f) {
-    return RIterator(_inspectHelper(f));
+    return RIterator(_BaseRIterator.fromIterable(_inspectHelper(f)));
   }
 
   Iterable<T> _inspectHelper(void Function(T) f) sync* {
-    for (final element in iterable) {
+    for (final element in this) {
       f(element);
       yield element;
     }
   }
 
-  /// Creates a new iterator which places a separator between adjacent items of the original iterator.
-  /// Similar to join with strings.
+  @override
   RIterator<T> intersperse(T element) {
-    return RIterator(_intersperseHelper(element));
+    return RIterator(_BaseRIterator.fromIterable(_intersperseHelper(element)));
   }
 
   Iterable<T> _intersperseHelper(T element) sync* {
-    final iterator = iterable.iterator;
+    final iterator = this.iterator;
     if (iterator.moveNext()) {
       var current = iterator.current;
       if (iterator.moveNext()) {
@@ -253,14 +364,13 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-  /// Creates a new iterator which places an item generated by separator between adjacent items of the original iterator.
-  /// The closure will be called each time to generate the separator.
+  @override
   RIterator<T> intersperseWith(T Function() f) {
-    return RIterator(_intersperseWithHelper(f));
+    return RIterator(_BaseRIterator.fromIterable(_intersperseWithHelper(f)));
   }
 
   Iterable<T> _intersperseWithHelper(T Function() f) sync* {
-    final iterator = iterable.iterator;
+    final iterator = this.iterator;
     if (iterator.moveNext()) {
       var current = iterator.current;
       if (iterator.moveNext()) {
@@ -287,32 +397,13 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-// is_partitioned
-// is_sorted
-// is_sorted_by
-// is_sorted_by_key
-// last: Implemented by Iterable.last
-
-  /// Returns the last element of an iterator, or None if it is empty.
-  Option<T> lastOrOption() {
-    if (iterable.isEmpty) {
-      return None;
-    }
-    return Some(iterable.last);
-  }
-
-// le
-// lt
-// map: Implemented by Iterable.map
-
-  /// Creates an iterator that both yields elements based on a predicate and maps.
-  /// It will call this closure on each element of the iterator, and yield elements while it returns Some(_).
+  @override
   RIterator<U> mapWhile<U>(Option<U> Function(T) f) {
-    return RIterator(_mapWhileHelper(f));
+    return RIterator(_BaseRIterator.fromIterable(_mapWhileHelper(f)));
   }
 
   Iterable<U> _mapWhileHelper<U>(Option<U> Function(T) f) sync* {
-    for (final element in iterable) {
+    for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
         yield result.v!;
@@ -322,17 +413,15 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-
-// map_windows
-// max: // todo in an extesion
-
-  /// Returns the element that gives the maximum value with respect to the specified comparison function.
-  Option<T> maxBy(int Function(T,T) f){
-    if (iterable.isEmpty) {
+  @override
+  Option<T> maxBy(int Function(T, T) f) {
+    T max;
+    if (moveNext()) {
+      max = current;
+    } else {
       return None;
     }
-    var max = iterable.first;
-    for (final element in iterable) {
+    for (final element in this) {
       if (f(element, max) > 0) {
         max = element;
       }
@@ -340,14 +429,17 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return Some(max);
   }
 
-  /// Returns the element that gives the maximum value from the specified function.
+  @override
   Option<T> maxByKey<U extends Comparable<U>>(U Function(T) f) {
-    if (iterable.isEmpty) {
+    T max;
+    U maxVal;
+    if (moveNext()) {
+      max = current;
+      maxVal = f(max);
+    } else {
       return None;
     }
-    var max = iterable.first;
-    var maxVal = f(max);
-    for (final element in iterable) {
+    for (final element in this) {
       final val = f(element);
       if (val.compareTo(maxVal) > 0) {
         max = element;
@@ -357,15 +449,15 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return Some(max);
   }
 
-// min: // todo in an extesion
-
-  /// Returns the element that gives the minimum value with respect to the specified comparison function.
-  Option<T> minBy(int Function(T,T) f){
-    if (iterable.isEmpty) {
+  @override
+  Option<T> minBy(int Function(T, T) f) {
+    T min;
+    if (moveNext()) {
+      min = current;
+    } else {
       return None;
     }
-    var min = iterable.first;
-    for (final element in iterable) {
+    for (final element in this) {
       if (f(element, min) < 0) {
         min = element;
       }
@@ -373,14 +465,17 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return Some(min);
   }
 
-  /// Returns the element that gives the minimum value from the specified function.
+  @override
   Option<T> minByKey<U extends Comparable<U>>(U Function(T) f) {
-    if (iterable.isEmpty) {
+    T min;
+    U minVal;
+    if (moveNext()) {
+      min = current;
+      minVal = f(min);
+    } else {
       return None;
     }
-    var min = iterable.first;
-    var minVal = f(min);
-    for (final element in iterable) {
+    for (final element in this) {
       final val = f(element);
       if (val.compareTo(minVal) < 0) {
         min = element;
@@ -390,18 +485,13 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return Some(min);
   }
 
-// ne
-// next_chunk
-
-  /// Returns the nth element of the iterator.
-  /// Like most indexing operations, the count starts from zero, so nth(0) returns the first value, nth(1) the second, and so on.
-  /// nth() will return None if n is greater than or equal to the length of the iterator.
+  @override
   Option<T> nth(int n) {
     if (n < 0) {
       return None;
     }
     var index = 0;
-    for (final element in iterable) {
+    for (final element in this) {
       if (index == n) {
         return Some(element);
       }
@@ -410,15 +500,11 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return None;
   }
 
-// partial_cmp
-// partial_cmp_by
-
-  /// Consumes an iterator, creating two collections from it.
-  /// partition() returns a pair, all of the elements for which it returned true, and all of the elements for which it returned false.
+  @override
   (List<T>, List<T>) partition(bool Function(T) f) {
     final first = <T>[];
     final second = <T>[];
-    for (final element in iterable) {
+    for (final element in this) {
       if (f(element)) {
         first.add(element);
       } else {
@@ -428,16 +514,13 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return (first, second);
   }
 
-// partition_in_place: Will not implement, not possible in Dart
+  @override
+  Peekable<T> peekable() => Peekable(wIterator);
 
-  /// Creates an iterator which can use the "peek" to look at the next element of the iterator without consuming it.
-  Peekable<T> peekable() => Peekable(iterable);
-
-
-  /// Searches for an element in an iterator, returning its index.
+  @override
   Option<int> position(bool Function(T) f) {
     var index = 0;
-    for (final element in iterable) {
+    for (final element in this) {
       if (f(element)) {
         return Some(index);
       }
@@ -446,26 +529,14 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return None;
   }
 
-// product
-// reduce: Implemented by Iterable.reduce
+  @override
+  RIterator<T> rev() => RIterator(_BaseRIterator.fromIterable(toList(growable: false).reversed));
 
-  /// Reverses the iterable
-  RIterator<T> rev() => RIterator(iterable.toList(growable: false).reversed);
-
-  /// Searches for an element in an iterator from the right, returning its index.
-  /// Recommended to use with a list, as it is more efficient, otherwise use [position].
+  @override
   Option<int> rposition(bool Function(T) f) {
-    var index = iterable.length - 1;
-    final self = this.iterable;
-    if(self is List<T>){
-      for (var i = self.length - 1; i >= 0; i--) {
-        if (f(self[i])) {
-          return Some(i);
-        }
-      }
-      return None;
-    }
-    for (final element in iterable.toList(growable: false).reversed) {
+    final list = toList(growable: false).reversed;
+    var index = list.length - 1;
+    for (final element in list) {
       if (f(element)) {
         return Some(index);
       }
@@ -474,20 +545,15 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     return None;
   }
 
-// scan: //todo
-// size_hint
-// skip: Implemented by Iterable.skip
-// skip_while: Implemented by Iterable.skipWhile
-
-  /// Creates an iterator starting at the same point, but stepping by the given amount at each iteration.
+  @override
   RIterator<T> stepBy(int step) {
     assert(step > 0, 'Step must be greater than 0');
-    return RIterator(_stepByHelper(step));
+    return RIterator(_BaseRIterator.fromIterable(_stepByHelper(step)));
   }
 
   Iterable<T> _stepByHelper(int step) sync* {
     var index = 0;
-    for (final element in iterable) {
+    for (final element in this) {
       if (index % step == 0) {
         yield element;
       }
@@ -495,113 +561,6 @@ extension type RIterator<T>(Iterable<T> iterable) implements Iterable<T> {
     }
   }
 
-// sum
-// take: Implemented by Iterable.take
-// take_while: Implemented by Iterable.takeWhile
-// try_collect
-// try_find
-// try_fold
-// try_for_each
-// try_reduce
-// unzip: Implemented in extension
-
-  /// Zips this iterator with another and yields pairs of elements.
-  /// The first element comes from the first iterator, and the second element comes from the second iterator.
-  /// If either iterator does not have another element, the iterator stops.
-  RIterator<(T, U)> zip<U>(Iterable<U> other) => RIterator(Zip<T, U>(this.iterable, other));
-
-  // Iterable: Overriding iterable methods
-  //************************************************************************//
-
-  /// Returns the first element of an iterator, None if empty.
-  Option<T> first() {
-    final first = iterable.firstOrNull;
-    if (first == null) {
-      return None;
-    }
-    return Some(first);
-  }
-
-  /// Returns true if the iterator is empty, false otherwise.
-  bool isEmpty() => iterable.isEmpty;
-
-  /// Returns true if the iterator is not empty, false otherwise.
-  bool isNotEmpty() => iterable.isNotEmpty;
-
-  Iterator<T> get iterator => iterable.iterator;
-
-  /// Returns the last element of an iterator, None if empty.
-  Option<T> last() {
-    final last = iterable.lastOrNull;
-    if (last == null) {
-      return None;
-    }
-    return Some(last);
-  }
-
-  /// Returns the length of an iterator.
-  int length() => iterable.length;
-
-  /// Returns the single element of an iterator, None if this is empty or has more than one element.
-  Option<T> single() {
-    final firstTwo = iterable.take(2).iterator;
-    if (!firstTwo.moveNext()) {
-      return None;
-    }
-    final first = firstTwo.current;
-    if (!firstTwo.moveNext()) {
-      return Some(first);
-    }
-    return None;
-  }
-
-  // bool any(bool Function(T) f) {
-  //   return iterable.any(f);
-  // }
-
-  RIterator<U> cast<U>() => RIterator(iterable.cast<U>());
-
-  // bool contains(Object? element) => iterable.contains(element);
-
-  // T elementAt(int index) => iterable.elementAt(index);
-
-  // bool every(bool Function(T) f) => iterable.every(f);
-
-    RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator(iterable.expand(f));
-
-  // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
-
-  // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => iterable.fold(initialValue, f);
-
-  RIterator<T> followedBy(Iterable<T> other) => RIterator(iterable.followedBy(other));
-
-  // void forEach(void Function(T) f) => iterable.forEach(f);
-
-  // String join([String separator = '']) => iterable.join(separator);
-
-  // T lastWhere(bool Function(T) f, {T Function()? orElse}) => iterable.lastWhere(f, orElse: orElse);
-
-  RIterator<U> map<U>(U Function(T) f) => RIterator(iterable.map(f));
-
-  // T reduce(T Function(T, T) f) => iterable.reduce(f);
-
-  // T singleWhere(bool Function(T) f, {T Function()? orElse}) => iterable.singleWhere(f, orElse: orElse);
-
-  RIterator<T> skip(int count) => RIterator(iterable.skip(count));
-
-  RIterator<T> skipWhile(bool Function(T) f) => RIterator(iterable.skipWhile(f));
-
-  RIterator<T> take(int count) => RIterator(iterable.take(count));
-
-  RIterator<T> takeWhile(bool Function(T) f) => RIterator(iterable.takeWhile(f));
-
-  // List<T> toList({bool growable = true}) => iterable.toList(growable: growable);
-
-  // Set<T> toSet() => iterable.toSet();
-
-  // String toString() => iterable.toString();
-
-  RIterator<T> where(bool Function(T) f) => RIterator(iterable.where(f));
-
-  RIterator<U> whereType<U>() => RIterator(iterable.whereType<U>());
+  @override
+  Zip<T, U> zip<U>(Iterator<U> other) => Zip<T, U>(this, other);
 }

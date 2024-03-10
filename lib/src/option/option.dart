@@ -129,9 +129,9 @@ extension type const Option<T>._(T? v) {
   /// Returns an iterable over the possibly contained value.
   RIterator<T> iter() {
     if (v == null) {
-      return RIterator(const []);
+      return RIterator(<T>[].iterator);
     } else {
-      return RIterator([v as T]);
+      return RIterator([v as T].iterator);
     }
   }
 
@@ -339,7 +339,7 @@ extension type const Some<T>._(T v) implements Option<T> {
   }
 
   RIterator<T> iter() {
-    return RIterator([v]);
+    return RIterator([v].iterator);
   }
 
   Some<U> map<U>(U Function(T self) f) {
@@ -458,7 +458,7 @@ extension type const _None._(Null _) implements Option<Infallible> {
   }
 
   RIterator<_None> iter() {
-    return RIterator(const []);
+    return RIterator((const <_None>[]).iterator);
   }
 
   _None map<U>(U Function(void self) f) {

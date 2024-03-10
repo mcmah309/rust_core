@@ -82,7 +82,7 @@ main() {
   test("groupBy", (){
     var list = [1, 1, 1, 3, 3, 2, 2, 2];
     var slice = list.asSlice();
-    var iter = slice.groupBy((num1, num2) => num1 == num2).iterator;
+    var iter = slice.groupBy((num1, num2) => num1 == num2);
     expect(iter.next().unwrap(), [1, 1, 1]);
     expect(iter.next().unwrap(), [3, 3]);
     expect(iter.next().unwrap(), [2, 2, 2]);
@@ -192,7 +192,7 @@ main() {
   test("rsplit", () {
     var list = [11, 22, 33, 0, 44, 55];
     var slice = Slice(list, 0, 6);
-    var iter = slice.rsplit((num) => num == 0).iterator;
+    var iter = slice.rsplit((num) => num == 0);
     expect(iter.next().unwrap(), [44, 55]);
     expect(iter.next().unwrap(), [11, 22, 33]);
   });
@@ -299,7 +299,7 @@ main() {
 
   test("split", () {
     var list = [10, 40, 33, 20];
-    var iter = Slice(list, 0, 4).split((num) => num % 3 == 0).iterator;
+    var iter = Slice(list, 0, 4).split((num) => num % 3 == 0);
     expect(iter.next().unwrap(), [10, 40]);
     expect(iter.next().unwrap(), [20]);
     expect(iter.next().isNone(), true);
@@ -344,7 +344,7 @@ main() {
 
   test("splitInclusive", () {
     var list = [10, 40, 33, 20];
-    var iter = Slice(list, 0, 4).splitInclusive((num) => num % 3 == 0).iterator;
+    var iter = Slice(list, 0, 4).splitInclusive((num) => num % 3 == 0);
     expect(iter.next().unwrap(), [10, 40, 33]);
     expect(iter.next().unwrap(), [20]);
     expect(iter.next().isNone(), true);
@@ -374,19 +374,19 @@ main() {
 
   test("splitn", () {
     var list = [10, 40, 33, 20];
-    var iter = Slice(list, 0, 4).splitn(2, (num) => num % 3 == 0).iterator;
+    var iter = Slice(list, 0, 4).splitn(2, (num) => num % 3 == 0);
     expect(iter.next().unwrap(), [10, 40]);
     expect(iter.next().unwrap(), [20]);
     expect(iter.next().isNone(), true);
 
-    iter = Slice(list, 0, 4).splitn(1, (num) => num % 3 == 0).iterator;
+    iter = Slice(list, 0, 4).splitn(1, (num) => num % 3 == 0);
     expect(iter.next().unwrap(), [10, 40, 33, 20]);
 
-    iter = Slice(list, 0, 4).splitn(2, (num) => num % 5 == 0).iterator;
+    iter = Slice(list, 0, 4).splitn(2, (num) => num % 5 == 0);
     expect(iter.next().unwrap(), []);
     expect(iter.next().unwrap(), [40, 33, 20]);
 
-    iter = Slice(list, 0, 4).splitn(5, (num) => num % 5 == 0).iterator;
+    iter = Slice(list, 0, 4).splitn(5, (num) => num % 5 == 0);
     expect(iter.next().unwrap(), []);
     expect(iter.next().unwrap(), []);
     expect(iter.next().unwrap(), [33]);
@@ -394,7 +394,7 @@ main() {
     expect(iter.next().isNone(), true);
 
     list = [10, 40, 30, 20, 60, 50];
-    iter = Slice(list, 0, 6).splitn(2, (num) => num % 3 == 0).iterator;
+    iter = Slice(list, 0, 6).splitn(2, (num) => num % 3 == 0);
     expect(iter.next().unwrap(), [10, 40]);
     expect(iter.next().unwrap(), [20, 60, 50]);
   });

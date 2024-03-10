@@ -205,7 +205,7 @@ final class Slice<T> implements Iterable<T> {
 
   /// Returns an iterator over the slice producing non-overlapping runs of elements using the predicate to separate them.
   RIterator<Slice<T>> groupBy(bool Function(T, T) compare) {
-    return RIterator(_groupByHelper(compare));
+    return RIterator(_groupByHelper(compare).iterator);
   }
 
   Iterable<Slice<T>> _groupByHelper(bool Function(T, T) compare) sync* {
@@ -244,7 +244,7 @@ final class Slice<T> implements Iterable<T> {
 
 // is_sorted_by_key: Implemented in extension.
 
-  RIterator<T> iter() => RIterator<T>.fromSlice(this);
+  RIterator<T> iter() => RIterator<T>.fromIterable(this);
 
 // iter_mut: Will not implement, mut the same as iter
 
@@ -296,7 +296,7 @@ final class Slice<T> implements Iterable<T> {
   /// starting at the end of the slice and working backwards.
   /// The matched element is not contained in the subslices.
   RIterator<Slice<T>> rsplit(bool Function(T) pred) {
-    return RIterator(_rsplitHelper(pred));
+    return RIterator(_rsplitHelper(pred).iterator);
   }
 
   Iterable<Slice<T>> _rsplitHelper(bool Function(T) pred) sync* {
@@ -353,7 +353,7 @@ final class Slice<T> implements Iterable<T> {
   /// Returns an iterator over subslices separated by elements that match pred.
   /// The matched element is not contained in the subslices. see [splitInclusive] also.
   RIterator<Slice<T>> split(bool Function(T) pred) {
-    return RIterator(_splitHelper(pred));
+    return RIterator(_splitHelper(pred).iterator);
   }
 
   /// Returns an iterator over subslices separated by elements that match pred.
@@ -403,7 +403,7 @@ final class Slice<T> implements Iterable<T> {
   /// Returns an iterator over subslices separated by elements that match pred.
   /// The matched element is contained in the end of the previous subslice as a terminator. see [split] also.
   RIterator<Slice<T>> splitInclusive(bool Function(T) pred) {
-    return RIterator(_splitInclusiveHelper(pred));
+    return RIterator(_splitInclusiveHelper(pred).iterator);
   }
 
   Iterable<Slice<T>> _splitInclusiveHelper(bool Function(T) pred) sync* {
@@ -457,9 +457,9 @@ final class Slice<T> implements Iterable<T> {
   RIterator<Slice<T>> splitn(int n, bool Function(T) pred) {
     assert(n > 0, "n must be positive");
     if (n < 1) {
-      return RIterator(Iterable.empty());
+      return RIterator(<Slice<T>>[].iterator);
     }
-    return RIterator(_splitnHelper(n, pred));
+    return RIterator(_splitnHelper(n, pred).iterator);
   }
 
   Iterable<Slice<T>> _splitnHelper(int n, bool Function(T) pred) sync* {
@@ -582,7 +582,7 @@ final class Slice<T> implements Iterable<T> {
     assert(size > 0, "Size must be positive");
     assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
     return RIterator(Iterable.generate(
-        _end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)));
+        _end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)).iterator);
   }
 
   T operator [](int index) => _list[index + _start];
@@ -596,7 +596,7 @@ final class Slice<T> implements Iterable<T> {
   bool any(bool Function(T) f) => _list.getRange(_start, _end).any(f);
 
   @override
-  RIterator<U> cast<U>() => RIterator(_list.getRange(_start, _end).cast<U>());
+  RIterator<U> cast<U>() => RIterator(_list.getRange(_start, _end).cast<U>().iterator);
 
   @override
   bool contains(Object? element) => _list.getRange(_start, _end).contains(element);
@@ -609,7 +609,7 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).expand(f));
+      RIterator(_list.getRange(_start, _end).expand(f).iterator);
 
   @override
   T firstWhere(bool Function(T) f, {T Function()? orElse}) =>
@@ -621,7 +621,7 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   RIterator<T> followedBy(Iterable<T> other) =>
-      RIterator(_list.getRange(_start, _end).followedBy(other));
+      RIterator(_list.getRange(_start, _end).followedBy(other).iterator);
 
   @override
   void forEach(void Function(T) f) => _list.getRange(_start, _end).forEach(f);
@@ -637,7 +637,7 @@ final class Slice<T> implements Iterable<T> {
   int get length => _end - _start;
 
   @override
-  RIterator<U> map<U>(U Function(T) f) => RIterator(_list.getRange(_start, _end).map(f));
+  RIterator<U> map<U>(U Function(T) f) => RIterator(_list.getRange(_start, _end).map(f).iterator);
 
   @override
   T reduce(T Function(T, T) f) => _list.getRange(_start, _end).reduce(f);
@@ -650,18 +650,18 @@ final class Slice<T> implements Iterable<T> {
       _list.getRange(_start, _end).singleWhere(f, orElse: orElse);
 
   @override
-  RIterator<T> skip(int count) => RIterator(_list.getRange(_start, _end).skip(count));
+  RIterator<T> skip(int count) => RIterator(_list.getRange(_start, _end).skip(count).iterator);
 
   @override
   RIterator<T> skipWhile(bool Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).skipWhile(f));
+      RIterator(_list.getRange(_start, _end).skipWhile(f).iterator);
 
   @override
-  RIterator<T> take(int count) => RIterator(_list.getRange(_start, _end).take(count));
+  RIterator<T> take(int count) => RIterator(_list.getRange(_start, _end).take(count).iterator);
 
   @override
   RIterator<T> takeWhile(bool Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).takeWhile(f));
+      RIterator(_list.getRange(_start, _end).takeWhile(f).iterator);
 
   /// [growable] is ignore, always returns a growable list.
   @override
@@ -671,8 +671,8 @@ final class Slice<T> implements Iterable<T> {
   Set<T> toSet() => _list.getRange(_start, _end).toSet();
 
   @override
-  RIterator<T> where(bool Function(T) f) => RIterator(_list.getRange(_start, _end).where(f));
+  RIterator<T> where(bool Function(T) f) => RIterator(_list.getRange(_start, _end).where(f).iterator);
 
   @override
-  RIterator<U> whereType<U>() => RIterator(_list.getRange(_start, _end).whereType<U>());
+  RIterator<U> whereType<U>() => RIterator(_list.getRange(_start, _end).whereType<U>().iterator);
 }

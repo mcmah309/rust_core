@@ -288,7 +288,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   RIterator<S> iter() {
-    return RIterator([ok]);
+    return RIterator([ok].iterator);
   }
 
   //************************************************************************//
@@ -472,7 +472,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   RIterator<S> iter() {
-    return RIterator(const []);
+    return RIterator(<S>[].iterator);
   }
 
   //************************************************************************//

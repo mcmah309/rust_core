@@ -126,13 +126,13 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // bool every(bool Function(T) f) => list.every(f);
 
-  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator(list.expand(f));
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator(list.expand(f).iterator);
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => list.firstWhere(f, orElse: orElse);
 
   // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => list.fold(initialValue, f);
 
-  RIterator<T> followedBy(Iterable<T> other) => RIterator(list.followedBy(other));
+  RIterator<T> followedBy(Iterable<T> other) => RIterator(list.followedBy(other).iterator);
 
   // void forEach(void Function(T) f) => list.forEach(f);
 
@@ -146,13 +146,13 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // T singleWhere(bool Function(T) f, {T Function()? orElse}) => list.singleWhere(f, orElse: orElse);
 
-  RIterator<T> skip(int count) => RIterator(list.skip(count));
+  RIterator<T> skip(int count) => RIterator(list.skip(count).iterator);
 
-  RIterator<T> skipWhile(bool Function(T) f) => RIterator(list.skipWhile(f));
+  RIterator<T> skipWhile(bool Function(T) f) => RIterator(list.skipWhile(f).iterator);
 
-  RIterator<T> take(int count) => RIterator(list.take(count));
+  RIterator<T> take(int count) => RIterator(list.take(count).iterator);
 
-  RIterator<T> takeWhile(bool Function(T) f) => RIterator(list.takeWhile(f));
+  RIterator<T> takeWhile(bool Function(T) f) => RIterator(list.takeWhile(f).iterator);
 
   // List<T> toList({bool growable = true}) => list.toList(growable: growable);
 
@@ -160,9 +160,9 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // String toString() => list.toString();
 
-  RIterator<T> where(bool Function(T) f) => RIterator(list.where(f));
+  RIterator<T> where(bool Function(T) f) => RIterator(list.where(f).iterator);
 
-  RIterator<U> whereType<U>() => RIterator(list.whereType<U>());
+  RIterator<U> whereType<U>() => RIterator(list.whereType<U>().iterator);
 
   //************************************************************************//
 
