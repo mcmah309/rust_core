@@ -1,10 +1,10 @@
 # Option
 
-Option represents the union of two types `Some` and `None`. An `Option` is an extension type of `null`. Therefore, `Option`
-has the exact same runtime cost of `null`, but with one big advantage, you can chain null specific operations!
+Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
+has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations!
 
 All types in rust_core support nullable and `Option` implementations of classes and methods for ergonomic convenience, but you
-can easily switch between the two with `toOption` and `toNullable` (or you can use `.v` and `Option(nullable)` directly).
+can easily switch between the two with `toOption` and `toNullable` (or you can use `.v` directly).
 
 ### Usage
 The `Option` Type and features work very similar to [Result]. We are able to chain operations in a safe way without
@@ -24,7 +24,7 @@ You can also use Option in pattern matching
 switch(Some(2)){
   case Some(:final v):
     // do somthing
-  case None:
+  default:
     // do something
 }
 ```
@@ -51,7 +51,7 @@ FutureOption<double> earlyReturn() => Option.async(($) async {
 ```
 
 ### To Option or Not To Option
-As mentioned `Option` is an extension type of `null` so they can be used interchangeably with no runtime cost.
+As mentioned `Option<T>` is an extension type of `T?` so they can be used interchangeably with no runtime cost.
 ```dart
 Option<int> intNone() => None;
 Option<int> option = intNone();
@@ -64,9 +64,9 @@ If Dart already supports nullable types, why use an option type? - with null, ch
 Option<String> optionFunc();
 final (x, y) = optionFunc().map((e) => e + " added string").zip(Some(1)).unwrap();
 ```
-As above, it is strongly recommended to use `Option` type as the return type, since it allows chaining operations.
+With `Option` you will also never get another null assertion error again.
+
+As in the previous example, it is strongly recommended to use `Option` type as the return type, since it allows chaining operations.
 But the choice is up to the developer.
 
-[article]: https://www.sandromaglione.com/articles/option_type_and_null_safety_dart
 [Result]: https://github.com/mcmah309/rust_core/tree/master/lib/src/result
-[docs]: https://pub.dev/documentation/rust_core/latest/option/option-library.html
