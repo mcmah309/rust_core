@@ -465,7 +465,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Casts this RIterator<T> to an RIterator<U>.
   @override
-  Cast<T,U> cast<U>() => Cast<T,U>(this);
+  RIterator<U> cast<U>() => RIterator.fromIterable(super.cast<U>());
 
   // bool contains(Object? element) => iterable.contains(element);
 
@@ -475,7 +475,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Expands each element of this RIterator into zero or more elements.
   @override
-  FlatMap<T,U> expand<U>(Iterable<U> Function(T) f) => FlatMap<T,U>(this, (e) => f(e).iterator);
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator.fromIterable(super.expand(f));
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
 
@@ -483,7 +483,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Creates the lazy concatenation of this Iterator and [other]
   @override
-  Chain<T> followedBy(Iterable<T> other) => Chain(this, other.iterator);
+  RIterator<T> followedBy(Iterable<T> other) => RIterator.fromIterable(super.followedBy(other));
 
   // void forEach(void Function(T) f) => iterable.forEach(f);
 
@@ -493,7 +493,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Maps each element of this RIterator to a new RIterator<U> using the function f.
   @override
-  Map<T,U> map<U>(U Function(T) f) => Map<T,U>(this, f);
+  RIterator<U> map<U>(U Function(T) f) => RIterator.fromIterable(super.map(f));
 
   // T reduce(T Function(T, T) f) => iterable.reduce(f);
 
@@ -501,61 +501,19 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Consumes and skips the first [count] elements.
   @override
-  RIterator<T> skip(int count) => RIterator.fromIterable(_skipHelper(count));
-
-  Iterable<T> _skipHelper(int count) sync* {
-    var index = 0;
-    for (final element in this) {
-      if (index >= count) {
-        yield element;
-      }
-      index++;
-    }
-  }
+  RIterator<T> skip(int count) => RIterator.fromIterable(super.skip(count));
 
   /// Consumes and skips elements while [f] is true and returns the rest.
   @override
-  RIterator<T> skipWhile(bool Function(T) f) => RIterator.fromIterable(_skipWhileHelper(f));
-
-  Iterable<T> _skipWhileHelper(bool Function(T) f) sync* {
-    var skipping = true;
-    for (final element in this) {
-      if (skipping) {
-        if (!f(element)) {
-          skipping = false;
-          yield element;
-        }
-      } else {
-        yield element;
-      }
-    }
-  }
+  RIterator<T> skipWhile(bool Function(T) f) => RIterator.fromIterable(super.skipWhile(f));
 
   /// Takes the first [count] elements from the RIterator.
   @override
-  RIterator<T> take(int count) => RIterator.fromIterable(_takeHelper(count));
-
-  Iterable<T> _takeHelper(int count) sync* {
-    var index = 0;
-    while(index < count && moveNext()) {
-      yield current;
-      index++;
-    }
-  }
+  RIterator<T> take(int count) => RIterator.fromIterable(super.take(count));
 
   /// TTakes the first [count] elements from the RIterator while [f] is true.
   @override
-  RIterator<T> takeWhile(bool Function(T) f) => RIterator.fromIterable(_takeWhileHelper(f));
-
-  Iterable<T> _takeWhileHelper(bool Function(T) f) sync* {
-    for (final element in this) {
-      if (f(element)) {
-        yield element;
-      } else {
-        break;
-      }
-    }
-  }
+  RIterator<T> takeWhile(bool Function(T) f) => RIterator.fromIterable(super.takeWhile(f));
 
   // List<T> toList({bool growable = true}) => iterable.toList(growable: growable);
 
@@ -565,27 +523,11 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   /// Creates an RIterator where all the elements satisfy the predicate [f].
   @override
-  RIterator<T> where(bool Function(T) f) => RIterator.fromIterable(_whereHelper(f));
-
-  Iterable<T> _whereHelper(bool Function(T) f) sync* {
-    for (final element in this) {
-      if (f(element)) {
-        yield element;
-      }
-    }
-  }
+  RIterator<T> where(bool Function(T) f) => RIterator.fromIterable(super.where(f));
 
   /// Creates an RIterator where all the elements are of Type U.
   @override
-  RIterator<U> whereType<U>() => RIterator.fromIterable(_whereTypeHelper<U>());
-
-  Iterable<U> _whereTypeHelper<U>() sync* {
-    for (final element in this) {
-      if (element is U) {
-        yield element;
-      }
-    }
-  }
+  RIterator<U> whereType<U>() => RIterator.fromIterable(super.whereType());
 
   //************************************************************************//
 
