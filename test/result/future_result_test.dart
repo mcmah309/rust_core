@@ -5,28 +5,24 @@ import 'package:test/test.dart';
 void main() {
   group('andThen', () {
     test('async ', () async {
-      final result =
-          await Future.value(const Ok(1)).andThen((ok) async => Ok(ok * 2));
+      final result = await Future.value(const Ok(1)).andThen((ok) async => Ok(ok * 2));
       expect(result.unwrapOrNull(), 2);
     });
 
     test('sink', () async {
-      final result =
-          await Future.value(const Ok(1)).andThen((ok) => Ok(ok * 2));
+      final result = await Future.value(const Ok(1)).andThen((ok) => Ok(ok * 2));
       expect(result.unwrapOrNull(), 2);
     });
   });
 
   group('andThenError', () {
     test('async ', () async {
-      final result = await Future.value(Err(2))
-          .andThenErr((error) async => Err(error * 2));
+      final result = await Future.value(Err(2)).andThenErr((error) async => Err(error * 2));
       expect(result.unwrapErr(), 4);
     });
 
     test('sink', () async {
-      final result =
-          await Future.value(Err(2)).andThenErr((error) => Err(error * 2));
+      final result = await Future.value(Err(2)).andThenErr((error) => Err(error * 2));
       expect(result.unwrapErr(), 4);
     });
   });
@@ -147,6 +143,20 @@ void main() {
           },
         ),
       );
+    });
+  });
+
+  group('isOkAnd', () {
+    test('Ok', () {
+      final result = Future.value(const Ok(0));
+      final futureValue = result.isOkAnd((x) => x == 0);
+      expect(futureValue, completion(true));
+    });
+
+    test('Error', () {
+      final result = Future.value(Err(0));
+      final futureValue = result.isOkAnd((x) => x == 0);
+      expect(futureValue, completion(false));
     });
   });
 
