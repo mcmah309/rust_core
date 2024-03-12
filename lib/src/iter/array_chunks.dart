@@ -3,14 +3,14 @@ part of 'iterator.dart';
 /// Returns an iterator over N elements of the iterator at a time.
 /// The chunks do not overlap. If N does not divide the length of the iterator, then the last up to N-1 elements will
 /// be omitted and can be retrieved from the [.intoRemainder()] function of the iterator.
-final class ArrayChunks<T> extends RIterator<Arr<T>> {
+final class ArrayChunksRIterator<T> extends RIterator<Arr<T>> {
   final Iterator<T> _iterator;
   final int _chunkSize;
   late Arr<T> _currentChunk;
   late Arr<T?> _currentChunkBeingBuilt;
   int _count = 0;
 
-  ArrayChunks(this._iterator, this._chunkSize)
+  ArrayChunksRIterator(this._iterator, this._chunkSize)
       : assert(_chunkSize > 0, "Chunk size must be greater than 0"),
         super._late() {
     _wIterator = this;

@@ -55,10 +55,10 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   bool all(bool Function(T) f) => every(f);
 
   @override
-  ArrayChunks<T> arrayChunks(int size) => ArrayChunks(_wIterator, size);
+  ArrayChunksRIterator<T> arrayChunks(int size) => ArrayChunksRIterator(_wIterator, size);
 
   @override
-  RIterator<T> chain(Iterator<T> other) => Chain(this, other);
+  RIterator<T> chain(Iterator<T> other) => ChainRIterator(this, other);
 
   @override
   int cmpBy<U>(Iterator<U> other, int Function(T, U) f) {
@@ -112,7 +112,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   int count() => super.length;
 
   @override
-  Cycle<T> cycle() => Cycle(_wIterator);
+  CycleRIterator<T> cycle() => CycleRIterator(_wIterator);
 
   @override
   RIterator<(int, T)> enumerate() => RIterator.fromIterable(indexed);
@@ -199,7 +199,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f) => FlatMap<T, U>(this, f);
+  FlatMapRIterator<T, U> flatMap<U>(Iterator<U> Function(T) f) => FlatMapRIterator<T, U>(this, f);
 
   @override
   RIterator<T> inspect(void Function(T) f) {
@@ -517,7 +517,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  Peekable<T> peekable() => Peekable(_wIterator);
+  PeekableRIterator<T> peekable() => PeekableRIterator(_wIterator);
 
   @override
   Option<int> position(bool Function(T) f) {
@@ -583,7 +583,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  Zip<T, U> zip<U>(Iterator<U> other) => Zip<T, U>(this, other);
+  ZipRIterator<T, U> zip<U>(Iterator<U> other) => ZipRIterator<T, U>(this, other);
 
   //************************************************************************//
   // Iterable: Overriding iterable methods

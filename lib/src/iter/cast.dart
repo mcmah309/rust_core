@@ -1,9 +1,9 @@
 part of 'iterator.dart';
 
-class Cast<S, T> extends RIterator<T> {
+class CastRIterator<S, T> extends RIterator<T> {
   final Iterator<S> _source;
 
-  Cast(this._source) : super._late() {
+  CastRIterator(this._source) : super._late() {
     _wIterator = this;
   }
 

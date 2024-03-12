@@ -19,7 +19,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Returns an iterator over N elements of the iterator at a time.
   /// The chunks do not overlap. If N does not divide the length of the iterator, then the last up to N-1 elements will
   /// be omitted and can be retrieved from the [.intoRemainder()] function of the iterator.
-  ArrayChunks<T> arrayChunks(int size);
+  ArrayChunksRIterator<T> arrayChunks(int size);
 
 // by_ref: Will not implement, Dart does not have borrowing
 
@@ -50,7 +50,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   int count();
 
   /// Creates an iterator which repeats the elements of the original iterator endlessly.
-  Cycle<T> cycle();
+  CycleRIterator<T> cycle();
 
   /// Creates an iterator which gives the current iteration count as well as the next value.
   RIterator<(int, T)> enumerate();
@@ -75,7 +75,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   Option<U> findMap<U>(Option<U> Function(T) f);
 
   /// Creates an iterator that works like map, but flattens nested structure.
-  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f);
+  FlatMapRIterator<T, U> flatMap<U>(Iterator<U> Function(T) f);
 
 // flatten: Implemented in an extension
 // fold: Implemented by Iterable.fold
@@ -172,7 +172,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   int partitionInPlace(bool Function(T) f);
 
   /// Creates an iterator which can use the "peek" to look at the next element of the iterator without consuming it.
-  Peekable<T> peekable();
+  PeekableRIterator<T> peekable();
 
   /// Searches for an element in an iterator, returning its index.
   Option<int> position(bool Function(T) f);
@@ -212,5 +212,5 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   // Zips this iterator with another and yields pairs of elements.
   // The first element comes from the first iterator, and the second element comes from the second iterator.
   // If either iterator does not have another element, the iterator stops.
-  Zip<T, U> zip<U>(Iterator<U> other);
+  ZipRIterator<T, U> zip<U>(Iterator<U> other);
 }

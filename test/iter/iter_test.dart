@@ -461,7 +461,7 @@ main() {
 
   test("peekable", () {
     var list = [1, 2, 3, 4, 5];
-    Peekable<int> peekable = list.iter().peekable();
+    PeekableRIterator<int> peekable = list.iter().peekable();
     expect(peekable.peek(), Some(1));
     expect(peekable.next(), Some(1));
     expect(peekable.peek(), Some(2));

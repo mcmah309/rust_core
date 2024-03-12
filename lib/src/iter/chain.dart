@@ -1,12 +1,12 @@
 part of 'iterator.dart';
 
 /// Takes two iterators and creates a new iterator over both in sequence.
-final class Chain<T> extends RIterator<T> {
+final class ChainRIterator<T> extends RIterator<T> {
   final Iterator<T> _first;
   final Iterator<T> _second;
   bool isFirst = true;
 
-  Chain(this._first, this._second) : super._late() {
+  ChainRIterator(this._first, this._second) : super._late() {
     _wIterator = this;
   }
 
