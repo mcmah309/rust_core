@@ -1,3 +1,7 @@
+## 0.5.1
+
+ - RIterators
+
 ## 0.5.0
 
  - Breaking: Change `None()` to `None`
