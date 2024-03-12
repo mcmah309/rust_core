@@ -55,7 +55,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   bool all(bool Function(T) f) => every(f);
 
   @override
-  ArrayChunksRIterator<T> arrayChunks(int size) => ArrayChunksRIterator(_wIterator, size);
+  ArrayChunksRIterator<T> arrayChunks(int size) =>
+      ArrayChunksRIterator(_wIterator, size);
 
   @override
   RIterator<T> chain(Iterator<T> other) => ChainRIterator(this, other);
@@ -199,7 +200,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  FlatMapRIterator<T, U> flatMap<U>(Iterator<U> Function(T) f) => FlatMapRIterator<T, U>(this, f);
+  FlatMapRIterator<T, U> flatMap<U>(Iterator<U> Function(T) f) =>
+      FlatMapRIterator<T, U>(this, f);
 
   @override
   RIterator<T> inspect(void Function(T) f) {
@@ -583,7 +585,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  ZipRIterator<T, U> zip<U>(Iterator<U> other) => ZipRIterator<T, U>(this, other);
+  ZipRIterator<T, U> zip<U>(Iterator<U> other) =>
+      ZipRIterator<T, U>(this, other);
 
   //************************************************************************//
   // Iterable: Overriding iterable methods
