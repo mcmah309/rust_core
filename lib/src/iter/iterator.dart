@@ -63,7 +63,6 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   int cmpBy<U>(Iterator<U> other, int Function(T, U) f) {
-    //todo change to iterator
     while (true) {
       if (moveNext()) {
         if (other.moveNext()) {
@@ -140,7 +139,6 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   bool eqBy<U>(Iterator<U> other, bool Function(T, U) f) {
-    //todo change to iterator
     while (true) {
       if (iterator.moveNext()) {
         if (other.moveNext()) {
@@ -161,7 +159,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   RIterator<T> filter(bool Function(T) f) {
-    return RIterator<T>(RIterator.fromIterable(where((element) => f(element))));
+    return RIterator<T>(RIterator.fromIterable(where((f))));
   }
 
   @override
