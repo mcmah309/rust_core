@@ -52,8 +52,14 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
     return then((result) => result.isOk());
   }
 
-  Future<bool> isOkOr(bool Function(S) fn) {
-    return then((result) => result.isOkAnd(fn));
+  Future<bool> isOkAnd(FutureOr<bool> Function(S) fn) {
+    return then((result) {
+      if (result.isOk()) {
+        return fn(result.unwrap());
+      } else {
+        return false;
+      }
+    });
   }
 
   //************************************************************************//
@@ -72,8 +78,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
     return then((result) => result.or(other));
   }
 
-  FutureResult<S, F2> orElse<F2 extends Object>(
-      FutureOr<Result<S, F2>> Function(F) fn) {
+  FutureResult<S, F2> orElse<F2 extends Object>(FutureOr<Result<S, F2>> Function(F) fn) {
     return mapOrElse(
       (error) {
         return fn(error);
@@ -86,9 +91,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
 
   //************************************************************************//
 
-  Future<W> match<W>(
-      {required FutureOr<W> Function(S) ok,
-      required FutureOr<W> Function(F) err}) {
+  Future<W> match<W>({required FutureOr<W> Function(S) ok, required FutureOr<W> Function(F) err}) {
     return then<W>((result) => result.match(ok: ok, err: err));
   }
 
@@ -114,13 +117,11 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
     );
   }
 
-  Future<W> mapOrElse<W>(
-      FutureOr<W> Function(F err) defaultFn, FutureOr<W> Function(S ok) fn) {
+  Future<W> mapOrElse<W>(FutureOr<W> Function(F err) defaultFn, FutureOr<W> Function(S ok) fn) {
     return then<W>((result) => result.mapOrElse(defaultFn, fn));
   }
 
-  FutureResult<S, W> mapErr<W extends Object>(
-      FutureOr<W> Function(F error) fn) {
+  FutureResult<S, W> mapErr<W extends Object>(FutureOr<W> Function(F error) fn) {
     return mapOrElse(
       (error) async {
         return Err(await fn(error));
@@ -135,8 +136,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
     return mapOrElse(Err.new, fn);
   }
 
-  FutureResult<S, W> andThenErr<W extends Object>(
-      FutureOr<Result<S, W>> Function(F error) fn) {
+  FutureResult<S, W> andThenErr<W extends Object>(FutureOr<Result<S, W>> Function(F error) fn) {
     return mapOrElse(fn, Ok.new);
   }
 
