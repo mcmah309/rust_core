@@ -159,7 +159,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   RIterator<T> filter(bool Function(T) f) {
-    return RIterator<T>(RIterator.fromIterable(where((f))));
+    return RIterator.fromIterable(where((f)));
   }
 
   @override
