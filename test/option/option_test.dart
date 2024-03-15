@@ -321,6 +321,16 @@ void main() {
     // z = u;
   });
 
+  test("Option and nullable conversions",(){
+    Option<int> intNone() => None;
+    Option<int> option = intNone();
+    int? nullable = option.v;
+    nullable = option.toNullable(); // or
+    nullable = option as int?; // or
+    option = Option.from(nullable);
+    option = nullable as Option<int>; // or
+  });
+
   group("Option Early Return", () {
     Option<int> int3Some() => Some(3);
     Option<int> intNone() => None;

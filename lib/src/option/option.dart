@@ -66,6 +66,9 @@ extension type const Option<T>._(T? v) {
     }
   }
 
+  /// Converts from `T?` to `Option<T>`.
+  Option.from(T? v) : this._(v);
+
   /// Returns None if the option is None, otherwise returns [other].
   Option<U> and<U extends Object>(Option<U> other) {
     return v == null ? None : other;

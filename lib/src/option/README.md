@@ -57,7 +57,9 @@ Option<int> intNone() => None;
 Option<int> option = intNone();
 int? nullable = option.v;
 nullable = option.toNullable(); // or
-option = toOption(nullable); // or
+nullable = option as int?; // or
+option = Option.from(nullable);
+option = nullable as Option<int>; // or
 ```
 If Dart already supports nullable types, why use an option type? - with null, chaining null specific operations is not possible and the only alternate solution is a bunch of if statements and implicit and explicit type promotion. The `Option` type solves these issues.
 ```dart
