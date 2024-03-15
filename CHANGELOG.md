@@ -1,3 +1,9 @@
+## 0.5.3
+
+ - Stricter `Option` typing
+ - Additional extensions
+ - Fix `Peekable` for nullable types
+
 ## 0.5.2
 
  - FutureResult isOkAnd
