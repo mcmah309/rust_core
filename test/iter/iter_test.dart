@@ -173,9 +173,9 @@ main() {
 
   test("filterMap", () {
     var list = [1, 2, 3, 4, 5];
-    var filtered = list.iter().filterMap((e) {
+    final RIterator<int> filtered = list.iter().filterMap((e) {
       if (e % 2 == 0) {
-        return Some(e * 2);
+        return Some<int>(e * 2);
       }
       return None;
     });
@@ -196,7 +196,7 @@ main() {
 
   test("findMap", () {
     var list = [1, 2, 3, 4, 5];
-    var found = list.iter().findMap((e) {
+    Option<int> found = list.iter().findMap((e) {
       if (e % 2 == 0) {
         return Some(e * 2);
       }
@@ -418,7 +418,7 @@ main() {
 
   test("mapWhile", () {
     var list = [1, 2, 3, 4, 5];
-    var mapped = list.iter().mapWhile((e) {
+    RIterator<int> mapped = list.iter().mapWhile((e) {
       if (e < 4) {
         return Some(e);
       }
@@ -491,11 +491,11 @@ main() {
 
   test("scan", () {
     var list = [1, 2, 3, 4, 5];
-    var scanned = list.iter().scan(0, (acc, e) => Some(acc + e));
+    RIterator<int> scanned = list.iter().scan(0, (acc, e) => Some(acc + e));
     expect(scanned, [1, 3, 6, 10, 15]);
 
     var list2 = [1, 2, 3, 4, 5];
-    var scanned2 = list2.iter().scan(0, (acc, e) {
+    RIterator<int> scanned2 = list2.iter().scan(0, (acc, e) {
       if (e < 4) {
         return Some(acc + e);
       }

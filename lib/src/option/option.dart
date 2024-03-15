@@ -1,4 +1,4 @@
-// ignore_for_file: null_check_on_nullable_type_parameter
+// ignore_for_file: library_private_types_in_public_api
 
 import 'dart:async';
 
@@ -13,8 +13,6 @@ part 'option_extensions.dart';
 
 /// Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
 /// has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations! 
-/// Note: Type parameter `T` can be a `T?` at the language level, for the reason explained below, as a result calling any methods on a `Option<T?>` will not throw
-/// but may not behave as expected.
 // Dev Note: `T` cannot be `T extends Object`. e.g. because then a method on `Vec<T>` would not be able to return an Option<T> 
 // unless it is also `Vec<T extends Object>` and if this was true then a `Vec<Option<T>>` where `T extends Object` would not be possible,
 // because the erasure of `Option<T>` would still be `T?`. Therefore, here T cannot be `T extends Object`
@@ -68,7 +66,9 @@ extension type const Option<T>._(T? v) {
 
   /// Converts from `T?` to `Option<T>`.
   Option.from(T? v) : this._(v);
+}
 
+extension OptionMethodsExtension<T extends Object> on Option<T> {
   /// Returns None if the option is None, otherwise returns [other].
   Option<U> and<U extends Object>(Option<U> other) {
     return v == null ? None : other;
@@ -308,6 +308,9 @@ extension type const Option<T>._(T? v) {
 // Dev Note: This cannot be `T extends Object`, besides the reasons [Option] cannot be as well, Something like Some(Some(...)) would not work.
 extension type const Some<T>._(T v) implements Option<T> {
   const Some(T v) : this._(v);
+}
+
+extension SomeMethodsExtension<T extends Object> on Some<T> {
 
   Option<U> and<U extends Object>(Option<U> other) {
     return other;
@@ -433,7 +436,9 @@ const None = _None();
 /// Represents a value that is absent. The erasure of this is [null].
 extension type const _None._(Null _) implements Option<Infallible> {
   const _None() : this._(null);
+}
 
+extension NoneMethodsExtension on _None {
   _None and<U extends Object>(Option<U> other) {
     return None;
   }
@@ -531,13 +536,13 @@ extension type const _None._(Null _) implements Option<Infallible> {
 
   //************************************************************************//
 
-  Null toNullable() {
+  // ignore: prefer_void_to_null
+  T? toNullable<T>() {
     return null;
   }
 
   //************************************************************************//
 
-  // ignore: library_private_types_in_public_api
   Infallible operator [](_OptionEarlyReturnKey op) {
     throw const _OptionEarlyReturnNotification();
   }

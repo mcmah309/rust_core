@@ -123,7 +123,7 @@ extension IteratorComparableSelf<T extends Comparable<T>> on RIterator<T> {
   }
 }
 
-extension IteratorOptionExtension<T> on RIterator<Option<T>> {
+extension IteratorOptionExtension<T extends Object> on RIterator<Option<T>> {
   /// Creates an iterator which ends after the first None.
   RIterator<T> fuse() {
     return RIterator(_fuseHelper().iterator);

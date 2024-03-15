@@ -3,10 +3,7 @@ part of 'option.dart';
 extension OptionOptionExtension<T> on Option<Option<T>> {
   /// Converts from Option<Option<T>> to Option<T>.
   Option<T> flatten() {
-    if (isSome()) {
-      return unwrap();
-    }
-    return None;
+    return v as Option<T>;
   }
 }
 
@@ -29,7 +26,7 @@ extension OptionRecord2Extension<T, U> on Option<(T, U)> {
   }
 }
 
-extension OptionResultExtension<S, F extends Object> on Option<Result<S, F>> {
+extension OptionResultExtension<S extends Object, F extends Object> on Option<Result<S?, F>> {
   /// Transposes an Option of a Result into a Result of an Option.
   Result<Option<S>, F> transpose() {
     if (isSome()) {
@@ -44,7 +41,7 @@ extension OptionResultExtension<S, F extends Object> on Option<Result<S, F>> {
   }
 }
 
-extension FutureOptionResultExtension<S, F extends Object> on FutureOption<Result<S, F>> {
+extension FutureOptionResultExtension<S extends Object, F extends Object> on FutureOption<Result<S?, F>> {
   /// Transposes an FutureOption of a Result into a Result of an Option.
   Future<Result<Option<S>, F>> transpose() async {
     return then((result) => result.transpose());

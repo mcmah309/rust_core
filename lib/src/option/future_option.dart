@@ -6,7 +6,7 @@ typedef FutureOption<T> = Future<Option<T>>;
 /// {@template futureOption}
 /// [FutureOption] represents an asynchronous [Option]. And as such, inherits all of [Option]'s methods.
 /// {@endtemplate}
-extension FutureOptionExtension<T> on FutureOption<T> {
+extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   Future<Option<U>> and<U extends Object>(Option<U> other) {
     return then((option) => option.and(other));
   }

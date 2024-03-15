@@ -1,9 +1,9 @@
 part of 'option.dart';
 
-extension FutureToOption<T extends Object> on Future<T?> {
+extension FutureToOption<T> on Future<T?> {
   /// Converts a Future<T?> to Future<Option<T>>.
-  Future<Option<T>> toFutureOption() async {
-    return then((value) => Option._(value));
+  Future<Option<T>> toFutureOption() {
+    return this as Future<Option<T>>;
   }
 }
 
@@ -16,9 +16,8 @@ extension OptionToFutureOption<T> on Option<T> {
 
 extension FutureOptionOptionExtension<T> on FutureOption<Option<T>> {
   /// Converts from FutureOption<Option<T>> to FutureOption<T>.
-  Future<Option<T>> flatten() async {
-    var optionOption = await this;
-    return optionOption.isSome() ? optionOption.unwrap() : None;
+  Future<Option<T>> flatten() {
+    return this as Future<Option<T>>;
   }
 }
 

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_types_as_parameter_names
 
+import 'package:rust_core/option.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 

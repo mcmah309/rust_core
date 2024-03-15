@@ -163,11 +163,11 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  RIterator<U> filterMap<U>(Option<U> Function(T) f) {
+  RIterator<U> filterMap<U extends Object>(Option<U> Function(T) f) {
     return RIterator.fromIterable(_filterMapHelper(f));
   }
 
-  Iterable<U> _filterMapHelper<U>(Option<U> Function(T) f) sync* {
+  Iterable<U> _filterMapHelper<U extends Object>(Option<U> Function(T) f) sync* {
     for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
@@ -187,7 +187,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  Option<U> findMap<U>(Option<U> Function(T) f) {
+  Option<U> findMap<U extends Object>(Option<U> Function(T) f) {
     for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
@@ -342,11 +342,11 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  RIterator<U> mapWhile<U>(Option<U> Function(T) f) {
+  RIterator<U> mapWhile<U extends Object>(Option<U> Function(T) f) {
     return RIterator.fromIterable(_mapWhileHelper(f));
   }
 
-  Iterable<U> _mapWhileHelper<U>(Option<U> Function(T) f) sync* {
+  Iterable<U> _mapWhileHelper<U extends Object>(Option<U> Function(T) f) sync* {
     for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
@@ -549,11 +549,11 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  RIterator<U> scan<U>(U initial, Option<U> Function(U, T) f) {
+  RIterator<U> scan<U extends Object>(U initial, Option<U> Function(U, T) f) {
     return RIterator.fromIterable(_scanHelper(initial, f));
   }
 
-  Iterable<U> _scanHelper<U>(U initial, Option<U> Function(U, T) f) sync* {
+  Iterable<U> _scanHelper<U extends Object>(U initial, Option<U> Function(U, T) f) sync* {
     var current = initial;
     for (final element in this) {
       final result = f(current, element);

@@ -66,13 +66,13 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 
   /// Creates an iterator that both filters and maps.
   /// The returned iterator yields only the values for which the supplied closure returns Some(value).
-  RIterator<U> filterMap<U>(Option<U> Function(T) f);
+  RIterator<U> filterMap<U extends Object>(Option<U> Function(T) f);
 
   /// Searches for an element of an iterator that satisfies a predicate.
   Option<T> find(bool Function(T) f);
 
   /// Applies the function to the elements of iterator and returns the first non-none result.
-  Option<U> findMap<U>(Option<U> Function(T) f);
+  Option<U> findMap<U extends Object>(Option<U> Function(T) f);
 
   /// Creates an iterator that works like map, but flattens nested structure.
   FlatMapRIterator<T, U> flatMap<U>(Iterator<U> Function(T) f);
@@ -123,7 +123,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 
   /// Creates an iterator that both yields elements based on a predicate and maps.
   /// It will call this closure on each element of the iterator, and yield elements while it returns Some(_).
-  RIterator<U> mapWhile<U>(Option<U> Function(T) f);
+  RIterator<U> mapWhile<U extends Object>(Option<U> Function(T) f);
 
   /// Calls the given function f for each contiguous window of [size] over self and returns an iterator over the outputs of f
   /// e.g. [1, 2, 3, 4] with size 2 will yield windows of [1, 2], [2, 3], [3, 4]
@@ -190,7 +190,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// An iterator which, like fold, holds internal state, but unlike fold, produces a new iterator.
   /// On iteration, the closure will be applied to each element of the iterator and the return value from the closure.
   /// The closure can return Some(value) to yield value, or None to end the iteration.
-  RIterator<U> scan<U>(U initial, Option<U> Function(U, T) f);
+  RIterator<U> scan<U extends Object>(U initial, Option<U> Function(U, T) f);
 
 // size_hint: Will not implement, not possible in Dart, would likely be implemented by any downstreams but do not to expect to have any.
 // skip: Implemented by Iterable.skip

@@ -12,6 +12,10 @@ void main() {
 
     Option<Result<int, String>> none = None;
     expect(none.transpose(), Ok(None));
+
+    Option<Result<int?, String>> someOkNull = Some(Ok(null));
+    Result<Option<int>,String> res = someOkNull.transpose();
+    expect(res, Ok(None));
   });
 
   test("FutureOptionResultExtension transpose", () async {
@@ -23,5 +27,9 @@ void main() {
 
     FutureOption<Result<int, String>> noneOption = Future.value(None);
     expect(await noneOption.transpose(), Ok(None));
+
+    FutureOption<Result<int?, String>> someOkNullOption = Future.value(Some(Ok(null)));
+    Result<Option<int>,String> res = await someOkNullOption.transpose();
+    expect(res, Ok(None));
   });
 }

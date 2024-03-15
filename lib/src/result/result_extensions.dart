@@ -38,20 +38,21 @@ extension ResultNullExtension<S, F extends Object> on Result<S?, F> {
   }
 }
 
-extension FutureResultNullExtension<S, F extends Object>
-    on FutureResult<S?, F> {
+extension FutureResultNullExtension<S extends Object, F extends Object>
+    on Future<Result<S?, F>> {
   Future<Result<S, F>?> transpose() {
     return then((result) => result.transposeOut());
   }
 }
 
-extension ResultOptionExtension<S, F extends Object> on Result<Option<S>, F> {
+extension ResultOptionExtension<S extends Object, F extends Object> on Result<Option<S?>, F> {
   /// Transposes a Result of an Option into an Option of a Result.
   Option<Result<S, F>> transpose() {
     if (isOk()) {
       final val = unwrap();
-      if (val.isSome()) {
-        return Some(Ok(val.unwrap()));
+      if (val.v != null) {
+        // ignore: null_check_on_nullable_type_parameter
+        return Some(Ok(val.v!));
       }
       return None;
     } else {
@@ -60,8 +61,8 @@ extension ResultOptionExtension<S, F extends Object> on Result<Option<S>, F> {
   }
 }
 
-extension FutureResultOptionExtension<S, F extends Object>
-    on FutureResult<Option<S>, F> {
+extension FutureResultOptionExtension<S extends Object, F extends Object>
+    on Future<Result<Option<S?>, F>> {
   /// Transposes a FutureResult of an Option into an Option of a Result.
   Future<Option<Result<S, F>>> transpose() async {
     return then((result) => result.transpose());
@@ -80,23 +81,6 @@ extension NullResultExtension<S, F extends Object> on Result<S, F>? {
       }
     }
     return Ok(null);
-  }
-}
-
-extension NullFutureResultExtension<S, F extends Object>
-    on FutureResult<S, F>? {
-  /// Transposes a nullable [FutureResult] into a non-nullable [FutureResult].
-  Future<Result<S?, F>> transpose() {
-    if (this == null) {
-      return Future.value(Ok(null));
-    }
-    return this!.then((result) {
-      if (result.isOk()) {
-        return Ok(result.unwrap());
-      } else {
-        return Err(result.unwrapErr());
-      }
-    });
   }
 }
 
