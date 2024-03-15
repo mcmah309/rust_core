@@ -1,3 +1,7 @@
+## 0.5.2
+
+ - FutureResult isOkAnd
+
 ## 0.5.1
 
  - RIterators
