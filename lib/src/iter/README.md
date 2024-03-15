@@ -5,8 +5,8 @@ the Dart implementation of the Rust iterator is `RIterator`. `RIterator`
 makes working with collections of `rust_core` types and regular Dart types a breeze. e.g.
 
 ```dart
-    var list = [1, 2, 3, 4, 5];
-    var filtered = list.iter().filterMap((e) {
+    List<int> list = [1, 2, 3, 4, 5];
+    RIterator<int> filtered = list.iter().filterMap((e) {
       if (e % 2 == 0) {
         return Some(e * 2);
       }
@@ -17,9 +17,9 @@ makes working with collections of `rust_core` types and regular Dart types a bre
 
 `RIterator` can be iterated like an `Iterable` and is consumed like an `Iterator`.
 ```dart
-    final list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    final rIterator = list.iter();
-    final collect = [];
+    List<int> list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    RIterator<int> rIterator = list.iter();
+    List<int> collect = [];
     for (final e in rIterator.take(5).map((e) => e * e)) {
       if (e.isEven) {
         collect.add(e);
