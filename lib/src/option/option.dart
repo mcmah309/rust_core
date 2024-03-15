@@ -9,6 +9,12 @@ part 'future_option_extensions.dart';
 part 'future_option.dart';
 part 'option_extensions.dart';
 
+/// Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
+/// has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations! Type parameter
+/// `T` can be a `T?` at the language level, for the reason explained below, but it should never be so.
+// Dev Note: `T` cannot be `T extends Object`. e.g. because then a method on `Vec<T>` would not be able to return an Option<T> 
+// unless it is also `Vec<T extends Object>` and if this is true then a `Vec<Option<T>>` where `T extends Object` would not be possible,
+// because the erasure of `Option<T>` would still be `T?`. Therefore, here T cannot be `T extends Object`
 extension type const Option<T>._(T? v) {
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
   /// "Early Return Operator". Here "$" is used as the "Early Return Key". when "$" is used on a type [_None],
@@ -58,13 +64,13 @@ extension type const Option<T>._(T? v) {
   }
 
   /// Returns None if the option is None, otherwise returns [other].
-  Option<U> and<U>(Option<U> other) {
+  Option<U> and<U extends Object>(Option<U> other) {
     return v == null ? None : other;
   }
 
   ///Returns None if the option is None, otherwise calls f with the wrapped value and returns the result. Some
   ///languages call this operation flatmap.
-  Option<U> andThen<U>(Option<U> Function(T) f) {
+  Option<U> andThen<U extends Object>(Option<U> Function(T) f) {
     return v == null ? None : f(v as T);
   }
 
@@ -137,7 +143,7 @@ extension type const Option<T>._(T? v) {
 
   /// Maps an this Option<T> to Option<U> by applying a function to a contained value (if Some) or returns None (if
   /// None).
-  Option<U> map<U>(U Function(T) f) {
+  Option<U> map<U extends Object>(U Function(T) f) {
     if (v == null) {
       return None;
     } else {
@@ -209,11 +215,7 @@ extension type const Option<T>._(T? v) {
 
   /// Returns the contained Some value, consuming the self value.
   T unwrap() {
-    if (v == null) {
-      throw Panic(reason: "called `unwrap` a None type");
-    } else {
-      return v!;
-    }
+    return v!;
   }
 
   /// Returns the contained Some value or a provided default.
@@ -252,7 +254,7 @@ extension type const Option<T>._(T? v) {
   }
 
   /// Zips self with another Option.
-  Option<(T, U)> zip<U>(Option<U> other) {
+  Option<(T, U)> zip<U extends Object>(Option<U> other) {
     if (v == null) {
       return None;
     } else {
@@ -264,7 +266,7 @@ extension type const Option<T>._(T? v) {
   }
 
   /// Zips self and another Option with function f
-  Option<R> zipWith<U, R>(Option<U> other, R Function(T, U) f) {
+  Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T, U) f) {
     if (v == null) {
       return None;
     } else {
@@ -299,11 +301,11 @@ extension type const Option<T>._(T? v) {
 extension type const Some<T>._(T v) implements Option<T> {
   const Some(T v) : this._(v);
 
-  Option<U> and<U>(Option<U> other) {
+  Option<U> and<U extends Object>(Option<U> other) {
     return other;
   }
 
-  Option<U> andThen<U>(Option<U> Function(T self) f) {
+  Option<U> andThen<U extends Object>(Option<U> Function(T self) f) {
     return f(v);
   }
 
@@ -343,7 +345,7 @@ extension type const Some<T>._(T v) implements Option<T> {
     return RIterator([v].iterator);
   }
 
-  Some<U> map<U>(U Function(T self) f) {
+  Some<U> map<U extends Object>(U Function(T self) f) {
     return Some(f(v));
   }
 
@@ -394,14 +396,14 @@ extension type const Some<T>._(T v) implements Option<T> {
     return Some(v);
   }
 
-  Option<(T, U)> zip<U>(Option<U> other) {
+  Option<(T, U)> zip<U extends Object>(Option<U> other) {
     if (other.isSome()) {
       return Some((v, other.unwrap()));
     }
     return None;
   }
 
-  Option<R> zipWith<U, R>(Option<U> other, R Function(T p1, U p2) f) {
+  Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T p1, U p2) f) {
     if (other.isSome()) {
       return Some(f(v, other.unwrap()));
     }
@@ -422,11 +424,11 @@ const None = _None();
 extension type const _None._(Null _) implements Option<Infallible> {
   const _None() : this._(null);
 
-  _None and<U>(Option<U> other) {
+  _None and<U extends Object>(Option<U> other) {
     return None;
   }
 
-  _None andThen<U>(Option<U> Function(void self) f) {
+  _None andThen<U extends Object>(Option<U> Function(void self) f) {
     return None;
   }
 
@@ -462,7 +464,7 @@ extension type const _None._(Null _) implements Option<Infallible> {
     return RIterator((const <_None>[]).iterator);
   }
 
-  _None map<U>(U Function(void self) f) {
+  _None map<U extends Object>(U Function(void self) f) {
     return None;
   }
 
@@ -482,11 +484,11 @@ extension type const _None._(Null _) implements Option<Infallible> {
     return Err(errFn());
   }
 
-  Option<T> or<T>(Option<T> other) {
+  Option<T> or<T extends Object>(Option<T> other) {
     return other;
   }
 
-  Option<T> orElse<T>(Option<T> Function() f) {
+  Option<T> orElse<T extends Object>(Option<T> Function() f) {
     return f();
   }
 
@@ -502,18 +504,18 @@ extension type const _None._(Null _) implements Option<Infallible> {
     return f();
   }
 
-  Option<T> xor<T>(Option<T> other) {
+  Option<T> xor<T extends Object>(Option<T> other) {
     if (other.isSome()) {
       return other;
     }
     return None;
   }
 
-  _None zip<U>(Option<U> other) {
+  _None zip<U extends Object>(Option<U> other) {
     return None;
   }
 
-  _None zipWith<U, R>(Option<U> other, R Function(void p1, U p2) f) {
+  _None zipWith<U extends Object, R extends Object>(Option<U> other, R Function(void p1, U p2) f) {
     return None;
   }
 

@@ -7,11 +7,11 @@ typedef FutureOption<T> = Future<Option<T>>;
 /// [FutureOption] represents an asynchronous [Option]. And as such, inherits all of [Option]'s methods.
 /// {@endtemplate}
 extension FutureOptionExtension<T> on FutureOption<T> {
-  Future<Option<U>> and<U>(Option<U> other) {
+  Future<Option<U>> and<U extends Object>(Option<U> other) {
     return then((option) => option.and(other));
   }
 
-  Future<Option<U>> andThen<U>(FutureOr<Option<U>> Function(T) f) {
+  Future<Option<U>> andThen<U extends Object>(FutureOr<Option<U>> Function(T) f) {
     return then(
         (option) => option.isSome() ? f(option.v as T) : Future.value(None));
   }
@@ -45,7 +45,7 @@ extension FutureOptionExtension<T> on FutureOption<T> {
     return then((option) => option.iter());
   }
 
-  Future<Option<U>> map<U>(U Function(T) f) {
+  Future<Option<U>> map<U extends Object>(U Function(T) f) {
     return then((option) => option.map(f));
   }
 
@@ -90,11 +90,11 @@ extension FutureOptionExtension<T> on FutureOption<T> {
     return then((option) => option.xor(other));
   }
 
-  Future<Option<(T, U)>> zip<U>(Option<U> other) {
+  Future<Option<(T, U)>> zip<U extends Object>(Option<U> other) {
     return then((option) => option.zip(other));
   }
 
-  Future<Option<R>> zipWith<U, R>(Option<U> other, R Function(T, U) f) {
+  Future<Option<R>> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T, U) f) {
     return then((option) => option.zipWith(other, f));
   }
 
