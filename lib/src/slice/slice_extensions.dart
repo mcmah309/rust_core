@@ -116,10 +116,6 @@ void _swap<T extends Comparable<T>>(List<T> list, int i, int j) {
 
 //************************************************************************//
 
-void quickSortBy<T>(Slice<T> slice, int Function(T a, T b) compare) {
-  _quickSortBy(slice, 0, slice._end - 1, compare);
-}
-
 void _quickSortBy<T>(
     Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
   if (low < high) {
