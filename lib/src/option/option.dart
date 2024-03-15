@@ -1,3 +1,5 @@
+// ignore_for_file: null_check_on_nullable_type_parameter
+
 import 'dart:async';
 
 import 'package:rust_core/result.dart';
@@ -10,10 +12,11 @@ part 'future_option.dart';
 part 'option_extensions.dart';
 
 /// Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
-/// has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations! Type parameter
-/// `T` can be a `T?` at the language level, for the reason explained below, but it should never be so.
+/// has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations! 
+/// Note: Type parameter `T` can be a `T?` at the language level, for the reason explained below, as a result calling any methods on a `Option<T?>` will not throw
+/// but may not behave as expected.
 // Dev Note: `T` cannot be `T extends Object`. e.g. because then a method on `Vec<T>` would not be able to return an Option<T> 
-// unless it is also `Vec<T extends Object>` and if this is true then a `Vec<Option<T>>` where `T extends Object` would not be possible,
+// unless it is also `Vec<T extends Object>` and if this was true then a `Vec<Option<T>>` where `T extends Object` would not be possible,
 // because the erasure of `Option<T>` would still be `T?`. Therefore, here T cannot be `T extends Object`
 extension type const Option<T>._(T? v) {
   /// Creates a context for early return, similar to "Do notation". Works like the Rust "?" operator, which is a
@@ -71,7 +74,7 @@ extension type const Option<T>._(T? v) {
   ///Returns None if the option is None, otherwise calls f with the wrapped value and returns the result. Some
   ///languages call this operation flatmap.
   Option<U> andThen<U extends Object>(Option<U> Function(T) f) {
-    return v == null ? None : f(v as T);
+    return v == null ? None : f(v!);
   }
 
   // copy: Does not make sense to add here since this is an extension type
@@ -88,8 +91,8 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return None;
     } else {
-      if (predicate(v as T)) {
-        return Some(v as T);
+      if (predicate(v!)) {
+        return Some(v!);
       }
       return None;
     }
@@ -108,7 +111,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return this;
     } else {
-      f(v as T);
+      f(v!);
       return this;
     }
   }
@@ -128,7 +131,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return false;
     } else {
-      return f(v as T);
+      return f(v!);
     }
   }
 
@@ -137,7 +140,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return RIterator(<T>[].iterator);
     } else {
-      return RIterator([v as T].iterator);
+      return RIterator([v!].iterator);
     }
   }
 
@@ -147,7 +150,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return None;
     } else {
-      return Some(f(v as T));
+      return Some(f(v!));
     }
   }
 
@@ -156,7 +159,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return defaultValue;
     } else {
-      return f(v as T);
+      return f(v!);
     }
   }
 
@@ -165,7 +168,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return defaultFn();
     } else {
-      return f(v as T);
+      return f(v!);
     }
   }
 
@@ -174,7 +177,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return Err(err);
     } else {
-      return Ok(v as T);
+      return Ok(v!);
     }
   }
 
@@ -183,7 +186,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return Err(errFn());
     } else {
-      return Ok(v as T);
+      return Ok(v!);
     }
   }
 
@@ -192,7 +195,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return other;
     } else {
-      return Some(v as T);
+      return Some(v!);
     }
   }
 
@@ -201,7 +204,7 @@ extension type const Option<T>._(T? v) {
     if (v == null) {
       return f();
     } else {
-      return Some(v as T);
+      return Some(v!);
     }
   }
 
@@ -215,7 +218,7 @@ extension type const Option<T>._(T? v) {
 
   /// Returns the contained Some value, consuming the self value.
   T unwrap() {
-    return v!;
+    return v as T;
   }
 
   /// Returns the contained Some value or a provided default.
@@ -249,7 +252,7 @@ extension type const Option<T>._(T? v) {
       if (other.isSome()) {
         return None;
       }
-      return Some(v as T);
+      return Some(v!);
     }
   }
 
@@ -271,7 +274,7 @@ extension type const Option<T>._(T? v) {
       return None;
     } else {
       if (other.isSome()) {
-        return Some(f(v as T, other.unwrap()));
+        return Some(f(v!, other.unwrap()));
       }
       return None;
     }
@@ -298,6 +301,8 @@ extension type const Option<T>._(T? v) {
   }
 }
 
+/// Represents a value that is present. The erasure of this is [T].
+// Dev Note: This cannot be `T extends Object`, besides the reasons [Option] cannot be as well, Something like Some(Some(...)) would not work.
 extension type const Some<T>._(T v) implements Option<T> {
   const Some(T v) : this._(v);
 
@@ -418,9 +423,11 @@ extension type const Some<T>._(T v) implements Option<T> {
   }
 }
 
+/// Represents a value that is absent. The erasure of this is [null].
 // ignore: constant_identifier_names
 const None = _None();
 
+/// Represents a value that is absent. The erasure of this is [null].
 extension type const _None._(Null _) implements Option<Infallible> {
   const _None() : this._(null);
 

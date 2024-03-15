@@ -33,26 +33,3 @@ extension FutureOptionRecord2Extension<T, U> on FutureOption<(T, U)> {
     return (_None(), _None());
   }
 }
-
-extension OptionResultExtension<S, F extends Object> on Option<Result<S, F>> {
-  /// Transposes an Option of a Result into a Result of an Option.
-  Result<Option<S>, F> transpose() {
-    if (isSome()) {
-      final val = unwrap();
-      if (val.isOk()) {
-        return Ok(Some(val.unwrap()));
-      } else {
-        return Err(val.unwrapErr());
-      }
-    }
-    return Ok(None);
-  }
-}
-
-extension FutureOptionResultExtension<S, F extends Object>
-    on FutureOption<Result<S, F>> {
-  /// Transposes an FutureOption of a Result into a Result of an Option.
-  Future<Result<Option<S>, F>> transpose() async {
-    return then((result) => result.transpose());
-  }
-}

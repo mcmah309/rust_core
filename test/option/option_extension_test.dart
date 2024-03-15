@@ -16,6 +16,9 @@ void main() {
     Option<Option<Option<int>>> someSomeSome6 = Some(Some(Some(6)));
     expect(someSomeSome6.flatten(), Some(Some(6)));
     expect(someSomeSome6.flatten().flatten(), Some(6));
+
+    Option<int?> someNull = Some(null);
+    expect(someNull.flatten(), None);
   });
 
   test("unzip", () {

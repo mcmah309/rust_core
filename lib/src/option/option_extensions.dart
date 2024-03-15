@@ -1,19 +1,19 @@
 part of 'option.dart';
 
-extension NullableTExtension<T extends Object> on T? {
-  /// Returns [_None] if this is null and Some(this) if this not null.
-  Option<T> toOption() {
-    return Option._(this);
-  }
-}
-
 extension OptionOptionExtension<T> on Option<Option<T>> {
   /// Converts from Option<Option<T>> to Option<T>.
   Option<T> flatten() {
     if (isSome()) {
       return unwrap();
     }
-    return const _None();
+    return None;
+  }
+}
+
+extension OptionNullableExtension<T extends Object> on Option<T?> {
+  /// Converts from Option<T?> to Option<T>.
+  Option<T> flatten() {
+    return Option._(v);
   }
 }
 
@@ -25,7 +25,29 @@ extension OptionRecord2Extension<T, U> on Option<(T, U)> {
       final (one, two) = unwrap();
       return (Some(one), Some(two));
     }
-    return (const _None(), const _None());
+    return (None, None);
+  }
+}
+
+extension OptionResultExtension<S, F extends Object> on Option<Result<S, F>> {
+  /// Transposes an Option of a Result into a Result of an Option.
+  Result<Option<S>, F> transpose() {
+    if (isSome()) {
+      final val = unwrap();
+      if (val.isOk()) {
+        return Ok(Option._(val.unwrap()));
+      } else {
+        return Err(val.unwrapErr());
+      }
+    }
+    return Ok(None);
+  }
+}
+
+extension FutureOptionResultExtension<S, F extends Object> on FutureOption<Result<S, F>> {
+  /// Transposes an FutureOption of a Result into a Result of an Option.
+  Future<Result<Option<S>, F>> transpose() async {
+    return then((result) => result.transpose());
   }
 }
 

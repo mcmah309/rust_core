@@ -1,5 +1,6 @@
 import 'package:rust_core/panic.dart';
 import 'package:rust_core/result.dart';
+import 'package:rust_core/option.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -287,6 +288,20 @@ void main() {
       final result = Err(0);
       final value = result.unwrapOrNull();
       expect(value, null);
+    });
+  });
+
+  group('unwrapOrOption', (){
+    test('Ok', () {
+      final result = Ok(0);
+      final value = result.unwrapOrOption();
+      expect(value, Some(0));
+    });
+
+    test('Err', () {
+      final result = Err(0);
+      final value = result.unwrapOrOption();
+      expect(value, None);
     });
   });
 
