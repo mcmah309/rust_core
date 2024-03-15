@@ -164,6 +164,20 @@ void main() {
     });
   });
 
+  group("isErrAnd", () {
+    test('Ok', () {
+      final result = Future.value(const Ok(0));
+      final futureValue = result.isErrAnd((x) => x == 0);
+      expect(futureValue, completion(false));
+    });
+
+    test('Error', () {
+      final result = Future.value(Err(0));
+      final futureValue = result.isErrAnd((x) => x == 0);
+      expect(futureValue, completion(true));
+    });
+  });
+
   //************************************************************************//
 
   test('transpose Future Result Null', () async {

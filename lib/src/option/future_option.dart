@@ -13,7 +13,7 @@ extension FutureOptionExtension<T> on FutureOption<T> {
 
   Future<Option<U>> andThen<U>(FutureOr<Option<U>> Function(T) f) {
     return then(
-        (option) => option.isSome() ? f(option.unwrap()) : Future.value(None));
+        (option) => option.isSome() ? f(option.v as T) : Future.value(None));
   }
 
   Future<T> expect(String msg) {
@@ -22,7 +22,7 @@ extension FutureOptionExtension<T> on FutureOption<T> {
 
   Future<Option<T>> filter(FutureOr<bool> Function(T) predicate) {
     return then((option) async =>
-        option.isSome() && (await predicate(option.unwrap())) ? option : None);
+        option.isSome() && (await predicate(option.v as T)) ? option : None);
   }
 
   Future<Option<T>> inspect(FutureOr<void> Function(T) f) {
@@ -38,7 +38,7 @@ extension FutureOptionExtension<T> on FutureOption<T> {
   }
 
   Future<bool> isSomeAnd(FutureOr<bool> Function(T) f) {
-    return then((option) async => option.isSome() && await f(option.unwrap()));
+    return then((option) async => option.isSome() && await f(option.v as T));
   }
 
   Future<RIterator<T>> iter() {
@@ -51,11 +51,11 @@ extension FutureOptionExtension<T> on FutureOption<T> {
 
   Future<U> mapOr<U>(U defaultValue, U Function(T) f) {
     return then(
-        (option) => option.isSome() ? f(option.unwrap()) : defaultValue);
+        (option) => option.isSome() ? f(option as T) : defaultValue);
   }
 
   Future<U> mapOrElse<U>(U Function() defaultFn, U Function(T) f) {
-    return then((option) => option.isSome() ? f(option.unwrap()) : defaultFn());
+    return then((option) => option.isSome() ? f(option as T) : defaultFn());
   }
 
   Future<Result<T, E>> okOr<E extends Object>(E err) {

@@ -38,14 +38,28 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
     return then((result) => result.unwrapErr());
   }
 
+  Future<S> expect(String message) {
+    return then((result) => result.expect(message));
+  }
+
+  Future<F> expectErr(String message) {
+    return then((result) => result.expectErr(message));
+  }
+
   //************************************************************************//
 
   Future<bool> isErr() {
     return then((result) => result.isErr());
   }
 
-  Future<bool> isErrOr(bool Function(F) fn) {
-    return then((result) => result.isErrAnd(fn));
+  Future<bool> isErrAnd(FutureOr<bool> Function(F) fn) {
+    return then((result) {
+      if (result.isErr()) {
+        return fn(result.unwrapErr());
+      } else {
+        return false;
+      }
+    });
   }
 
   Future<bool> isOk() {
@@ -84,9 +98,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
       (error) {
         return fn(error);
       },
-      (ok) {
-        return Ok(ok);
-      },
+      Ok.new,
     );
   }
 
@@ -100,9 +112,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
 
   FutureResult<W, F> map<W>(FutureOr<W> Function(S ok) fn) {
     return mapOrElse(
-      (error) {
-        return Err(error);
-      },
+      Err.new,
       (ok) async {
         return Ok(await fn(ok));
       },
@@ -131,9 +141,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
       (error) async {
         return Err(await fn(error));
       },
-      (ok) {
-        return Ok(ok);
-      },
+      Ok.new,
     );
   }
 
@@ -158,6 +166,10 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
 
   FutureResult<S, F> copy() {
     return then((result) => result.copy());
+  }
+
+  FutureResult<S2, F> intoUnchecked<S2>() {
+    return then((value) => value.intoUnchecked<S2>());
   }
 
   //************************************************************************//
