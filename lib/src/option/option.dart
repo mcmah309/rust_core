@@ -12,8 +12,8 @@ part 'future_option.dart';
 part 'option_extensions.dart';
 
 /// Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
-/// has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations! 
-// Dev Note: `T` cannot be `T extends Object`. e.g. because then a method on `Vec<T>` would not be able to return an Option<T> 
+/// has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations!
+// Dev Note: `T` cannot be `T extends Object`. e.g. because then a method on `Vec<T>` would not be able to return an Option<T>
 // unless it is also `Vec<T extends Object>` and if this was true then a `Vec<Option<T>>` where `T extends Object` would not be possible,
 // because the erasure of `Option<T>` would still be `T?`. Therefore, here T cannot be `T extends Object`
 extension type const Option<T>._(T? v) {
@@ -31,7 +31,6 @@ extension type const Option<T>._(T? v) {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
-  // ignore: library_private_types_in_public_api
   factory Option(_OptionEarlyReturnFunction<T> fn) {
     try {
       return fn(const _OptionEarlyReturnKey._());
@@ -55,7 +54,6 @@ extension type const Option<T>._(T? v) {
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
   static Future<Option<T>> async<T>(
-      // ignore: library_private_types_in_public_api
       _OptionAsyncEarlyReturnFunction<T> fn) async {
     try {
       return await fn(const _OptionEarlyReturnKey._());
@@ -272,7 +270,8 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Zips self and another Option with function f
-  Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T, U) f) {
+  Option<R> zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(T, U) f) {
     if (v == null) {
       return None;
     } else {
@@ -293,9 +292,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   //************************************************************************//
 
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
-  T operator [](
-      _OptionEarlyReturnKey op) // ignore: library_private_types_in_public_api
-  {
+  T operator [](_OptionEarlyReturnKey op) {
     if (v == null) {
       throw const _OptionEarlyReturnNotification();
     } else {
@@ -311,7 +308,6 @@ extension type const Some<T>._(T v) implements Option<T> {
 }
 
 extension SomeMethodsExtension<T extends Object> on Some<T> {
-
   Option<U> and<U extends Object>(Option<U> other) {
     return other;
   }
@@ -414,7 +410,8 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
     return None;
   }
 
-  Option<R> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T p1, U p2) f) {
+  Option<R> zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(T p1, U p2) f) {
     if (other.isSome()) {
       return Some(f(v, other.unwrap()));
     }
@@ -423,7 +420,6 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
 
   //************************************************************************//
 
-  // ignore: library_private_types_in_public_api
   T operator [](_OptionEarlyReturnKey op) {
     return v;
   }
@@ -530,7 +526,8 @@ extension NoneMethodsExtension on _None {
     return None;
   }
 
-  _None zipWith<U extends Object, R extends Object>(Option<U> other, R Function(void p1, U p2) f) {
+  _None zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(void p1, U p2) f) {
     return None;
   }
 

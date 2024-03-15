@@ -26,7 +26,8 @@ extension OptionRecord2Extension<T, U> on Option<(T, U)> {
   }
 }
 
-extension OptionResultExtension<S extends Object, F extends Object> on Option<Result<S?, F>> {
+extension OptionResultExtension<S extends Object, F extends Object>
+    on Option<Result<S?, F>> {
   /// Transposes an Option of a Result into a Result of an Option.
   Result<Option<S>, F> transpose() {
     if (isSome()) {
@@ -41,7 +42,8 @@ extension OptionResultExtension<S extends Object, F extends Object> on Option<Re
   }
 }
 
-extension FutureOptionResultExtension<S extends Object, F extends Object> on FutureOption<Result<S?, F>> {
+extension FutureOptionResultExtension<S extends Object, F extends Object>
+    on FutureOption<Result<S?, F>> {
   /// Transposes an FutureOption of a Result into a Result of an Option.
   Future<Result<Option<S>, F>> transpose() async {
     return then((result) => result.transpose());

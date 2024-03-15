@@ -11,7 +11,8 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
     return then((option) => option.and(other));
   }
 
-  Future<Option<U>> andThen<U extends Object>(FutureOr<Option<U>> Function(T) f) {
+  Future<Option<U>> andThen<U extends Object>(
+      FutureOr<Option<U>> Function(T) f) {
     return then(
         (option) => option.isSome() ? f(option.v as T) : Future.value(None));
   }
@@ -50,8 +51,7 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   }
 
   Future<U> mapOr<U>(U defaultValue, U Function(T) f) {
-    return then(
-        (option) => option.isSome() ? f(option as T) : defaultValue);
+    return then((option) => option.isSome() ? f(option as T) : defaultValue);
   }
 
   Future<U> mapOrElse<U>(U Function() defaultFn, U Function(T) f) {
@@ -94,7 +94,8 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
     return then((option) => option.zip(other));
   }
 
-  Future<Option<R>> zipWith<U extends Object, R extends Object>(Option<U> other, R Function(T, U) f) {
+  Future<Option<R>> zipWith<U extends Object, R extends Object>(
+      Option<U> other, R Function(T, U) f) {
     return then((option) => option.zipWith(other, f));
   }
 

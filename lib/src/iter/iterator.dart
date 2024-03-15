@@ -167,7 +167,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
     return RIterator.fromIterable(_filterMapHelper(f));
   }
 
-  Iterable<U> _filterMapHelper<U extends Object>(Option<U> Function(T) f) sync* {
+  Iterable<U> _filterMapHelper<U extends Object>(
+      Option<U> Function(T) f) sync* {
     for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
@@ -553,7 +554,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
     return RIterator.fromIterable(_scanHelper(initial, f));
   }
 
-  Iterable<U> _scanHelper<U extends Object>(U initial, Option<U> Function(U, T) f) sync* {
+  Iterable<U> _scanHelper<U extends Object>(
+      U initial, Option<U> Function(U, T) f) sync* {
     var current = initial;
     for (final element in this) {
       final result = f(current, element);

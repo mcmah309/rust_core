@@ -13,7 +13,7 @@ final class PeekableRIterator<T> extends RIterator<T> {
 
   /// Returns the next element of the iterator without consuming it.
   Option<T> peek() {
-    if(_hasPeaked) {
+    if (_hasPeaked) {
       return Some(_peeked);
     }
     if (_iterator.moveNext()) {

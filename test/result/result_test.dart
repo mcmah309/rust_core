@@ -291,7 +291,7 @@ void main() {
     });
   });
 
-  group('unwrapOrOption', (){
+  group('unwrapOrOption', () {
     test('Ok', () {
       final result = Ok(0);
       final value = result.unwrapOrOption();

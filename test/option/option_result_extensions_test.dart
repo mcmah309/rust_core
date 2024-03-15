@@ -14,7 +14,7 @@ void main() {
     expect(none.transpose(), Ok(None));
 
     Option<Result<int?, String>> someOkNull = Some(Ok(null));
-    Result<Option<int>,String> res = someOkNull.transpose();
+    Result<Option<int>, String> res = someOkNull.transpose();
     expect(res, Ok(None));
   });
 
@@ -22,14 +22,16 @@ void main() {
     FutureOption<Result<int, String>> someOkOption = Future.value(Some(Ok(5)));
     expect(await someOkOption.transpose(), Ok(Some(5)));
 
-    FutureOption<Result<int, String>> someErrOption = Future.value(Some(Err("Error")));
+    FutureOption<Result<int, String>> someErrOption =
+        Future.value(Some(Err("Error")));
     expect(await someErrOption.transpose(), Err("Error"));
 
     FutureOption<Result<int, String>> noneOption = Future.value(None);
     expect(await noneOption.transpose(), Ok(None));
 
-    FutureOption<Result<int?, String>> someOkNullOption = Future.value(Some(Ok(null)));
-    Result<Option<int>,String> res = await someOkNullOption.transpose();
+    FutureOption<Result<int?, String>> someOkNullOption =
+        Future.value(Some(Ok(null)));
+    Result<Option<int>, String> res = await someOkNullOption.transpose();
     expect(res, Ok(None));
   });
 }

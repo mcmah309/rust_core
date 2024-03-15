@@ -45,7 +45,8 @@ extension FutureResultNullExtension<S extends Object, F extends Object>
   }
 }
 
-extension ResultOptionExtension<S extends Object, F extends Object> on Result<Option<S?>, F> {
+extension ResultOptionExtension<S extends Object, F extends Object>
+    on Result<Option<S?>, F> {
   /// Transposes a Result of an Option into an Option of a Result.
   Option<Result<S, F>> transpose() {
     if (isOk()) {

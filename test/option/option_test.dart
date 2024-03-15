@@ -321,7 +321,7 @@ void main() {
     // z = u;
   });
 
-  test("Option and nullable conversions",(){
+  test("Option and nullable conversions", () {
     Option<int> intNone() => None;
     Option<int> option = intNone();
     int? nullable = option.v;
