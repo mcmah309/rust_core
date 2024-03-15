@@ -5,7 +5,7 @@ import 'package:rust_core/prelude.dart';
 void main() {
   usingTheEarlyReturnKeyExample();
   usingRegularPatternMatchingExample();
-  usingFunctionChaingExample();
+  usingFunctionChainingExample();
   iteratorExample();
   sliceExample();
 
@@ -28,7 +28,7 @@ Result<int, String> usingRegularPatternMatchingExample() {
   }
 }
 
-Result<int, String> usingFunctionChaingExample() =>
+Result<int, String> usingFunctionChainingExample() =>
     willAlwaysReturnErr().map((e) => e.toInt());
 
 void iteratorExample() {
