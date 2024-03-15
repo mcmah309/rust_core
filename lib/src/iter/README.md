@@ -28,9 +28,9 @@ makes working with collections of `rust_core` types and regular Dart types a bre
     expect(collect, [4, 16]);
     Option<int> next = rIterator.next();
     expect(next, Some(6));
-    collect.add(next);
+    collect.add(next.unwrap());
     next = rIterator.next();
-    collect.add(next);
+    collect.add(next.unwrap());
     expect(next, Some(7));
     while(rIterator.moveNext()){
       collect.add(rIterator.current * rIterator.current);
