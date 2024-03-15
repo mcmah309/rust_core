@@ -11,8 +11,8 @@ part 'future_option_extensions.dart';
 part 'future_option.dart';
 part 'option_extensions.dart';
 
-/// Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
-/// has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations!
+/// Option represents the union of two types - `Some<T>` and `None`. As an extension type of `T?`, `Option<T>`
+/// has the same runtime cost of `T?` with the advantage of being able to chain null specific operations.
 // Dev Note: `T` cannot be `T extends Object`. e.g. because then a method on `Vec<T>` would not be able to return an Option<T>
 // unless it is also `Vec<T extends Object>` and if this was true then a `Vec<Option<T>>` where `T extends Object` would not be possible,
 // because the erasure of `Option<T>` would still be `T?`. Therefore, here T cannot be `T extends Object`
