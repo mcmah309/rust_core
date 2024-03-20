@@ -211,7 +211,7 @@ final class Slice<T> implements Iterable<T> {
 
 // get_unchecked_mut: Will not implement, mut the same as get_unchecked
 
-  /// Returns an iterator over the slice producing non-overlapping runs of elements using the predicate to separate them.
+  /// Returns an %iterator over the slice producing non-overlapping runs of elements using the predicate to separate them.
   RIterator<Slice<T>> groupBy(bool Function(T, T) compare) {
     return RIterator(_groupByHelper(compare).iterator);
   }
@@ -250,7 +250,15 @@ final class Slice<T> implements Iterable<T> {
     return true;
   }
 
-// is_sorted_by_key: Implemented in extension.
+  /// Checks if the elements of this slice are sorted using the given key extraction function.
+  bool isSortedByKey<K extends Comparable<K>>(K Function(T) key) {
+    for (int i = _start; i < _end - 1; i++) {
+      if (key(_list[i]).compareTo(key(_list[i + 1])) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   RIterator<T> iter() => RIterator<T>.fromIterable(this);
 
@@ -359,8 +367,16 @@ final class Slice<T> implements Iterable<T> {
 // sort_floats: Implmented by sort_unstable
 // sort_floats: Implmented by sort_unstable
 // sort_unstable: Implemented in extension
-// sort_unstable_by: Implmented in extension
-// sort_unstable_by_key: Implmented in extension
+
+  /// Sorts the slice with a comparator function, but might not preserve the order of equal elements.
+  void sortUnstableBy(int Function(T a, T b) compare) {
+    _quickSortBy(this, _start, _end - 1, compare);
+  }
+
+  /// Sorts the slice with a key extraction function, but might not preserve the order of equal elements.
+  void sortUnstableByKey<K extends Comparable<K>>(K Function(T a) key) {
+    _quickSortBy(this, _start, _end - 1, (a, b) => key(a).compareTo(key(b)));
+  }
 
   /// Returns an iterator over subslices separated by elements that match pred.
   /// The matched element is not contained in the subslices. see [splitInclusive] also.

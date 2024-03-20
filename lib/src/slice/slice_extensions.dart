@@ -9,36 +9,16 @@ extension SliceOnListExtension<T> on List<T> {
   }
 }
 
-extension SliceOnSliceIntExtension<T> on Slice<num> {
+extension SliceOnSliceIntExtension<T extends num> on Slice<T> {
   /// Sorts the slice, but might not preserve the order of equal elements.
   void sortUnstable() {
     _quickSort<num>(this, _start, _end - 1);
   }
 
-  /// Sorts the slice with a comparator function, but might not preserve the order of equal elements.
-  void sortUnstableBy(int Function(num a, num b) compare) {
-    _quickSortBy<num>(this, _start, _end - 1, compare);
-  }
-
-  /// Sorts the slice with a key extraction function, but might not preserve the order of equal elements.
-  void sortUnstableByKey<K extends Comparable<K>>(K Function(num a) key) {
-    _quickSortBy(this, _start, _end - 1, (a, b) => key(a).compareTo(key(b)));
-  }
-
   /// Checks if the elements of this slice are sorted. That is, for each element a and its following element b, a <= b must hold.
   bool isSorted() {
     for (int i = _start; i < _end - 1; i++) {
-      if (_list[i] > _list[i + 1]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /// Checks if the elements of this slice are sorted using the given key extraction function.
-  bool isSortedByKey<K extends Comparable<K>>(K Function(num) key) {
-    for (int i = _start; i < _end - 1; i++) {
-      if (key(_list[i]).compareTo(key(_list[i + 1])) > 0) {
+      if (_list[i].compareTo(_list[i + 1]) > 0) {
         return false;
       }
     }
@@ -52,30 +32,10 @@ extension SliceOnComparableSliceExtension<T extends Comparable<T>> on Slice<T> {
     _quickSort(this, _start, _end - 1);
   }
 
-  /// Sorts the slice with a comparator function, but might not preserve the order of equal elements.
-  void sortUnstableBy(int Function(T a, T b) compare) {
-    _quickSortBy(this, _start, _end - 1, compare);
-  }
-
-  /// Sorts the slice with a key extraction function, but might not preserve the order of equal elements.
-  void sortUnstableByKey<K extends Comparable<K>>(K Function(T a) key) {
-    _quickSortBy(this, _start, _end - 1, (a, b) => key(a).compareTo(key(b)));
-  }
-
   /// Checks if the elements of this slice are sorted. That is, for each element a and its following element b, a <= b must hold.
   bool isSorted() {
     for (int i = _start; i < _end - 1; i++) {
       if (_list[i].compareTo(_list[i + 1]) > 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /// Checks if the elements of this slice are sorted using the given key extraction function.
-  bool isSortedByKey<K extends Comparable<K>>(K Function(T) key) {
-    for (int i = _start; i < _end - 1; i++) {
-      if (key(_list[i]).compareTo(key(_list[i + 1])) > 0) {
         return false;
       }
     }

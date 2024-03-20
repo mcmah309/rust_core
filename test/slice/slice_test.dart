@@ -89,6 +89,20 @@ main() {
     expect(iter.next().isNone(), true);
   });
 
+  test("isSorted", (){
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    expect(slice.isSorted(), true);
+
+    list = [1, 2, 3, 4, 5, 3];
+    slice = Slice(list, 0, 6);
+    expect(slice.isSorted(), false);
+
+    list = [1, 2, 3, 4, 5, 3];
+    slice = Slice(list, 0, 5);
+    expect(slice.isSorted(), true);
+  });
+
   test("isSortedBy", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
@@ -104,7 +118,7 @@ main() {
   });
 
   test("isSortedByKey", () {
-    var list = [1, 2, 3, 4, 5];
+    var list = <num>[1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.isSortedByKey((num) => num), true);
 
@@ -279,7 +293,7 @@ main() {
   });
 
   test("sortUnstableByKey", () {
-    var list = [5, 4, 3, 2, 1];
+    var list = <num>[5, 4, 3, 2, 1];
     var slice = Slice(list, 0, 5);
     slice.sortUnstableByKey((num) => num);
     expect(list, [1, 2, 3, 4, 5]);
@@ -291,7 +305,7 @@ main() {
 
     var doubleList = [5.0, 4.0, 3.0, 2.0, 1.0];
     var doubleSlice = Slice(doubleList, 0, 5);
-    doubleSlice.sortUnstableByKey((num) => num);
+    doubleSlice.sortUnstableByKey<num>((num) => num);
 
     var stringList = ["b", "a", "d", "c", "e"];
     var stringSlice = Slice(stringList, 0, 5);
