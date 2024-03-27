@@ -933,4 +933,26 @@ main() {
     expect(chained, [3, 4, 5, 6, 7, 8, 9, 10]);
     expect(cloned, [2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
+
+  test("cycle with clone",(){
+    var list = [1, 2, 3, 4, 5];
+    var iter = list.iter();
+    var cycled = iter.cycle();
+    cycled.next();
+    var cloned = cycled.clone();
+    cycled.next();
+    expect(cycled.take(8), [3, 4, 5, 1, 2, 3, 4, 5]);
+    expect(cloned.take(9), [2, 3, 4, 5, 1, 2, 3, 4, 5]);
+  });
+
+  test("flatmap with clone",(){
+    var list = [1, 2, 3, 4, 5];
+    var iter = list.iter();
+    var flatMapped = iter.flatMap((e) => [e, e].iterator);
+    flatMapped.next();
+    var cloned = flatMapped.clone();
+    flatMapped.next();
+    expect(flatMapped, [2, 2, 3, 3, 4, 4, 5, 5]);
+    expect(cloned, [1, 2, 2, 3, 3, 4, 4, 5, 5]);
+  });
 }

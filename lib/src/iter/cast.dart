@@ -14,7 +14,7 @@ class CastRIterator<S, T> extends RIterator<T> {
   
   @override
   CastRIterator<S, T> clone() {
-    final temp = CloneRIterator._sub(_source);
+    final temp = CloneRIterator._trackable(_source);
     _source = temp;
     return CastRIterator(CloneRIterator._clone(temp).iterator);
   }

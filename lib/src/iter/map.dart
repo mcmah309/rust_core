@@ -21,4 +21,10 @@ class MapRIterator<S, T> extends RIterator<T> {
 
   @override
   T get current => _current as T;
+  
+  // @override
+  // RIterator clone() {
+  //   // TODO: implement clone
+  //   throw UnimplementedError();
+  // }
 }

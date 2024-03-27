@@ -27,8 +27,8 @@ final class ChainRIterator<T> extends RIterator<T> {
   
   @override
   ChainRIterator<T> clone() {
-    final newFirst = CloneRIterator._sub(_first);
-    final newSecond = CloneRIterator._sub(_second);
+    final newFirst = CloneRIterator._trackable(_first);
+    final newSecond = CloneRIterator._trackable(_second);
     _first = newFirst;
     _second = newSecond;
     return ChainRIterator(CloneRIterator._clone(newFirst), CloneRIterator._clone(newSecond))..isFirst = isFirst;

@@ -24,7 +24,7 @@ final class CloneRIterator<T> extends RIterator<T> {
     rIterator._wIterator = _iterator;
   }
 
-  /// Clones the iterator. Creates a seperate [CloneRIterator] which will not affect the original.
+  /// Clone of the iterator. Creates a seperate [CloneRIterator] which will not affect the original.
   CloneRIterator._clone(CloneRIterator<T> iterator)
       : _iterator = iterator._iterator,
         _trackedValues = iterator._trackedValues,
@@ -34,7 +34,7 @@ final class CloneRIterator<T> extends RIterator<T> {
   }
 
   /// To be used by subclasses to wrap their own iterators.
-  CloneRIterator._sub(Iterator<T> iterator)
+  CloneRIterator._trackable(Iterator<T> iterator)
       : _trackedValues = [],
         super._late() {
     _wIterator = this;
