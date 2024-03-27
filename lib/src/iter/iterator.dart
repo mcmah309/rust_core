@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:rust_core/iter.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/array.dart';
@@ -94,9 +93,6 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   RIterator<T> clone(){
-    if(this is CloneRIterator<T>){
-      return CloneRIterator._clone(this as CloneRIterator<T>);
-    }
     return CloneRIterator<T>._original(this);
   }
 
