@@ -877,4 +877,39 @@ main() {
     expect(peekable.next(), Some(1));
     expect(cloned2.next(), Some(2));
   });
+
+  test("array chunks with clone",(){
+    var list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var iter = list.iter();
+    var chunks = iter.arrayChunks(3);
+    var cloned = chunks.clone();
+    var collect = [];
+    for (final chunk in chunks) {
+      collect.add(chunk);
+    }
+    expect(collect, [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9]
+    ]);
+    expect(cloned.next(), [1,2,3]);
+
+    list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    iter = list.iter();
+    chunks = iter.arrayChunks(3);
+    collect = [];
+    for (final chunk in chunks) {
+      collect.add(chunk);
+    }
+    expect(collect, [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
+    cloned = chunks.clone();
+    expect(chunks.intoRemainder(), [10]);
+    expect(chunks.collectList(), []);
+    expect(cloned.intoRemainder(), [10]);
+    expect(cloned.collectList(), []);
+  });
 }
