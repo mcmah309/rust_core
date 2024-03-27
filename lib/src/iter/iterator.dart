@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
@@ -66,7 +67,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   ArrayChunksRIterator<T> arrayChunks(int size) =>
-      ArrayChunksRIterator(_wIterator, size);
+      ArrayChunksRIterator(this, size);
 
   @override
   RIterator<T> chain(Iterator<T> other) => ChainRIterator(this, other);
@@ -93,9 +94,9 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  CloneRIterator<T> clone(){
-    if(_wIterator is CloneRIterator<T>){
-      return CloneRIterator._clone(_wIterator as CloneRIterator<T>);
+  RIterator<T> clone(){
+    if(this is CloneRIterator<T>){
+      return CloneRIterator._clone(this as CloneRIterator<T>);
     }
     return CloneRIterator<T>._original(this);
   }
@@ -130,7 +131,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   int count() => super.length;
 
   @override
-  CycleRIterator<T> cycle() => CycleRIterator(_wIterator);
+  CycleRIterator<T> cycle() => CycleRIterator(this);
 
   @override
   RIterator<(int, T)> enumerate() => RIterator.fromIterable(indexed);
@@ -536,7 +537,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  PeekableRIterator<T> peekable() => PeekableRIterator(_wIterator);
+  PeekableRIterator<T> peekable() => PeekableRIterator(this);
 
   @override
   Option<int> position(bool Function(T) f) {

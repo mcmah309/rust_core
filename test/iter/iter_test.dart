@@ -122,10 +122,11 @@ main() {
     iter2 = iter1.clone();
     iter2.moveNext();
     var iter3 = iter2.clone();
+    iter3.moveNext();
     var iter4 = iter1.clone();
     expect(iter1.collectList(), [2, 3, 4, 5]);
     expect(iter2.collectList(), [3, 4, 5]);
-    expect(iter3.collectList(), [3, 4, 5]);
+    expect(iter3.collectList(), [4, 5]);
     expect(iter4.collectList(), [2, 3, 4, 5]);
   });
 
@@ -846,7 +847,34 @@ main() {
   });
 
   test("peek with clone", (){
+    final list = [1, 2, 3, 4, 5];
+    final iter = list.iter();
+    var peekable = iter.peekable();
+    final cloned = peekable.clone();
+    // print("1");
+    expect(peekable.peek(), Some(1));
+    // print("2");
+    expect(peekable.peek(), Some(1));
+    // print("3");
+    expect(cloned.next(), Some(1));
+    // print("4");
+    expect(peekable.peek(), Some(1)); // cloned should not effect the peek
+    // print("5");
+    expect(cloned.next(), Some(2));
+    expect(peekable.next(), Some(1));
+    expect(cloned.next(), Some(3));
+    expect(peekable.peek(), Some(2));
 
-
+    // peek before clone
+    peekable = list.iter().peekable();
+    peekable.peek();
+    final cloned2 = peekable.clone();
+    expect(cloned2.peek(), Some(1)); // the peeking should not effect the clone
+    expect(cloned2.next(), Some(1));
+    expect(peekable.peek(), Some(1));
+    expect(cloned2.peek(), Some(2));
+    // print("here");
+    expect(peekable.next(), Some(1));
+    expect(cloned2.next(), Some(2));
   });
 }
