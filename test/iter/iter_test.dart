@@ -99,6 +99,36 @@ main() {
     expect(chained3, [6, 7, 8, 9, 10]);
   });
 
+  test("clone", (){
+    var list = [1, 2, 3, 4, 5];
+    var cloned = list.iter().clone();
+    expect(cloned.collectList(), [1, 2, 3, 4, 5]);
+
+    var iter1 = list.iter();
+    iter1.moveNext();
+    var iter2 = iter1.clone();
+    expect(iter1.collectList(), [2, 3, 4, 5]);
+    expect(iter2.collectList(), [2, 3, 4, 5]);
+
+    iter1 = list.iter();
+    iter1.moveNext();
+    iter2 = iter1.clone();
+    iter1.moveNext();
+    expect(iter1.collectList(), [3, 4, 5]);
+    expect(iter2.collectList(), [2, 3, 4, 5]);
+
+    iter1 = list.iter();
+    iter1.moveNext();
+    iter2 = iter1.clone();
+    iter2.moveNext();
+    var iter3 = iter2.clone();
+    var iter4 = iter1.clone();
+    expect(iter1.collectList(), [2, 3, 4, 5]);
+    expect(iter2.collectList(), [3, 4, 5]);
+    expect(iter3.collectList(), [3, 4, 5]);
+    expect(iter4.collectList(), [2, 3, 4, 5]);
+  });
+
   test("cycle", () {
     var list = [1, 2, 3, 4, 5];
     var cycled = list.iter().cycle().take(10);
@@ -778,5 +808,39 @@ main() {
     }
     expect(collect, [4, 16, 6, 7, 64, 81]);
     expect(rIterator, []);
+  });
+
+  test("clone with peek", (){
+    final list = [1, 2, 3, 4, 5];
+    final iter = list.iter().peekable();
+    final cloned = iter.clone().peekable();
+    expect(iter.peek(), Some(1));
+    expect(cloned.peek(), Some(1));
+    expect(iter.next(), Some(1));
+    expect(cloned.next(), Some(1));
+    expect(iter.peek(), Some(2));
+    expect(cloned.peek(), Some(2));
+    expect(iter.next(), Some(2));
+    expect(cloned.next(), Some(2));
+
+    expect(iter.peek(), Some(3));
+    expect(iter.next(), Some(3));
+    expect(iter.peek(), Some(4));
+    expect(iter.next(), Some(4));
+
+    expect(cloned.peek(), Some(3));
+    expect(cloned.next(), Some(3));
+    expect(cloned.peek(), Some(4));
+    expect(cloned.next(), Some(4));
+
+    expect(cloned.peek(), Some(5));
+    expect(cloned.next(), Some(5));
+    expect(cloned.peek(), None);
+    expect(cloned.next(), None);
+
+    expect(iter.peek(), Some(5));
+    expect(iter.next(), Some(5));
+    expect(iter.peek(), None);
+    expect(iter.next(), None);
   });
 }

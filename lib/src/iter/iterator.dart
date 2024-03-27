@@ -1,9 +1,11 @@
+import 'package:rust_core/iter.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/array.dart';
 
 part 'array_chunks.dart';
 part 'cast.dart';
+part 'clone.dart';
 part 'chain.dart';
 part 'peekable.dart';
 part 'iterator_extensions.dart';
@@ -32,6 +34,14 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   Iterator<T> get iterator => _wIterator;
+
+  @override
+  operator ==(Object other) {
+    return other is RIterator<T> && other._wIterator == _wIterator;
+  }
+
+  @override
+  int get hashCode => _wIterator.hashCode;
 
   @override
   Option<T> next() {
@@ -80,6 +90,14 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
         return 0;
       }
     }
+  }
+
+  @override
+  CloneRIterator<T> clone(){
+    if(_wIterator is CloneRIterator<T>){
+      return CloneRIterator._clone(_wIterator as CloneRIterator<T>);
+    }
+    return CloneRIterator<T>._original(this);
   }
 
   @override

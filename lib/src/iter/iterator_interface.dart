@@ -27,6 +27,11 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   RIterator<T> chain(Iterator<T> other);
 
 // cloned: Will not implement, Dart objects are not clonable
+
+  /// An iterator which is a "clone" of the original iterator. Iterating through the original or the clone will not affect the other.
+  /// Do not modify the original collection the original [Iterable] is based on while iterating. See [CloneRIterator] for more information.
+  CloneRIterator<T> clone();
+
 // cmp: Implemented in an extension
 
   /// Lexicographically compares the elements of this Iterator with those of another with respect to the specified comparison function.
