@@ -2,8 +2,8 @@ part of 'iterator.dart';
 
 /// Takes two iterators and creates a new iterator over both in sequence.
 final class ChainRIterator<T> extends RIterator<T> {
-  final Iterator<T> _first;
-  final Iterator<T> _second;
+  Iterator<T> _first;
+  Iterator<T> _second;
   bool isFirst = true;
 
   ChainRIterator(this._first, this._second) : super._late() {
@@ -24,4 +24,13 @@ final class ChainRIterator<T> extends RIterator<T> {
 
   @override
   T get current => isFirst ? _first.current : _second.current;
+  
+  @override
+  ChainRIterator<T> clone() {
+    final newFirst = CloneRIterator._sub(_first);
+    final newSecond = CloneRIterator._sub(_second);
+    _first = newFirst;
+    _second = newSecond;
+    return ChainRIterator(CloneRIterator._clone(newFirst), CloneRIterator._clone(newSecond))..isFirst = isFirst;
+  }
 }

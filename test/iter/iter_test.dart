@@ -912,4 +912,25 @@ main() {
     expect(cloned.intoRemainder(), [10]);
     expect(cloned.collectList(), []);
   });
+
+  test("cast with clone", (){
+    var list = [1, 2, 3, 4, 5];
+    var iter = list.iter();
+    var casted = iter.cast<num>();
+    var cloned = casted.clone();
+    casted.next();
+    expect(casted, [2.0, 3.0, 4.0, 5.0]);
+    expect(cloned, [1.0, 2.0, 3.0, 4.0, 5.0]);
+  });
+
+  test("chain with clone", (){
+    var list = [1, 2, 3, 4, 5];
+    var iter = list.iter();
+    var chained = iter.chain([6, 7, 8, 9, 10].iterator);
+    chained.next();
+    var cloned = chained.clone();
+    chained.next();
+    expect(chained, [3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(cloned, [2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  });
 }

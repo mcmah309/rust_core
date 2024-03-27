@@ -70,7 +70,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
       ArrayChunksRIterator(this, size);
 
   @override
-  RIterator<T> chain(Iterator<T> other) => ChainRIterator(this, other);
+  ChainRIterator<T> chain(Iterator<T> other) => ChainRIterator(this, other);
 
   @override
   int cmpBy<U>(Iterator<U> other, int Function(T, U) f) {

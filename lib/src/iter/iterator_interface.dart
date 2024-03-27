@@ -24,7 +24,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 // by_ref: Will not implement, Dart does not have borrowing
 
   /// Takes two iterators and creates a new iterator over both in sequence.
-  RIterator<T> chain(Iterator<T> other);
+  ChainRIterator<T> chain(Iterator<T> other);
 
 // cloned: Will not implement, Dart objects are not clonable
 
