@@ -11,7 +11,6 @@ part 'chain.dart';
 part 'peekable.dart';
 part 'iterator_extensions.dart';
 part 'iterator_interface.dart';
-part 'map.dart';
 part 'cycle.dart';
 part 'flat_map.dart';
 part 'zip.dart';

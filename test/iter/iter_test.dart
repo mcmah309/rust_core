@@ -99,7 +99,7 @@ main() {
     expect(chained3, [6, 7, 8, 9, 10]);
   });
 
-  test("clone", (){
+  test("clone", () {
     var list = [1, 2, 3, 4, 5];
     var cloned = list.iter().clone();
     expect(cloned.collectList(), [1, 2, 3, 4, 5]);
@@ -154,14 +154,10 @@ main() {
     var list3 = [1, 2, 3, 4, 6];
     var list4 = [1, 2, 3, 4];
     var list5 = [1, 2, 3, 4, 5, 6];
-    expect(
-        list.iter().cmpBy(list2.iter(), (int a, int b) => a.compareTo(b)), 0);
-    expect(
-        list.iter().cmpBy(list3.iter(), (int a, int b) => a.compareTo(b)), -1);
-    expect(
-        list.iter().cmpBy(list4.iter(), (int a, int b) => a.compareTo(b)), 1);
-    expect(
-        list.iter().cmpBy(list5.iter(), (int a, int b) => a.compareTo(b)), -1);
+    expect(list.iter().cmpBy(list2.iter(), (int a, int b) => a.compareTo(b)), 0);
+    expect(list.iter().cmpBy(list3.iter(), (int a, int b) => a.compareTo(b)), -1);
+    expect(list.iter().cmpBy(list4.iter(), (int a, int b) => a.compareTo(b)), 1);
+    expect(list.iter().cmpBy(list5.iter(), (int a, int b) => a.compareTo(b)), -1);
   });
 
   test("eq", () {
@@ -182,18 +178,10 @@ main() {
     var list3 = [1, 2, 3, 4, 6];
     var list4 = [1, 2, 3, 4];
     var list5 = [1, 2, 3, 4, 5, 6];
-    expect(
-        list.iter().eqBy(list2.iter(), (int a, int b) => a.compareTo(b) == 0),
-        true);
-    expect(
-        list.iter().eqBy(list3.iter(), (int a, int b) => a.compareTo(b) == 0),
-        false);
-    expect(
-        list.iter().eqBy(list4.iter(), (int a, int b) => a.compareTo(b) == 0),
-        false);
-    expect(
-        list.iter().eqBy(list5.iter(), (int a, int b) => a.compareTo(b) == 0),
-        false);
+    expect(list.iter().eqBy(list2.iter(), (int a, int b) => a.compareTo(b) == 0), true);
+    expect(list.iter().eqBy(list3.iter(), (int a, int b) => a.compareTo(b) == 0), false);
+    expect(list.iter().eqBy(list4.iter(), (int a, int b) => a.compareTo(b) == 0), false);
+    expect(list.iter().eqBy(list5.iter(), (int a, int b) => a.compareTo(b) == 0), false);
   });
 
   test("filter", () {
@@ -460,15 +448,12 @@ main() {
 
   test("mapWindows", () {
     var list = [1, 2, 3, 4];
-    var mapped =
-        list.iter().mapWindows(2, (window) => window[0] + window[1]).toList();
+    var mapped = list.iter().mapWindows(2, (window) => window[0] + window[1]).toList();
     expect(mapped, [3, 5, 7]);
 
     var list2 = [1, 2, 3, 4, 5];
-    var mapped2 = list2
-        .iter()
-        .mapWindows(3, (window) => window[0] + window[1] + window[2])
-        .toList();
+    var mapped2 =
+        list2.iter().mapWindows(3, (window) => window[0] + window[1] + window[2]).toList();
     expect(mapped2, [6, 9, 12]);
   });
 
@@ -602,13 +587,7 @@ main() {
     final folded = list.iter().tryFold(0, (acc, e) => acc + e);
     expect(folded, Ok(15));
 
-    final list2 = <Result<int, String>>[
-      Ok(1),
-      Ok(2),
-      Ok(3),
-      Err("error"),
-      Ok(5)
-    ];
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Err("error"), Ok(5)];
     final folded2 = list2.iter().tryFold(0, (acc, e) => acc + e);
     expect(folded2, Err("error"));
   });
@@ -638,13 +617,7 @@ main() {
     expect(forEach, Ok<(), String>(()));
     expect(collect, [1, 2, 3, 4, 5]);
 
-    final list2 = <Result<int, String>>[
-      Ok(1),
-      Ok(2),
-      Err("error"),
-      Ok(4),
-      Ok(5)
-    ];
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Err("error"), Ok(4), Ok(5)];
     final collect2 = <int>[];
     final forEach2 = list2.iter().tryForEach((e) {
       collect2.add(e);
@@ -681,13 +654,7 @@ main() {
     final reduced = list.iter().tryReduce((acc, e) => acc + e);
     expect(reduced, Ok(15));
 
-    final list2 = <Result<int, String>>[
-      Ok(1),
-      Ok(2),
-      Ok(3),
-      Err("error"),
-      Ok(5)
-    ];
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Err("error"), Ok(5)];
     final reduced2 = list2.iter().tryReduce((acc, e) => acc + e);
     expect(reduced2, Err("error"));
   });
@@ -811,7 +778,7 @@ main() {
     expect(rIterator, []);
   });
 
-  test("clone with peek", (){
+  test("clone with peek", () {
     final list = [1, 2, 3, 4, 5];
     var iter = list.iter();
     final cloned = iter.clone().peekable();
@@ -846,7 +813,7 @@ main() {
     expect(peekable.next(), None);
   });
 
-  test("peek with clone", (){
+  test("peek with clone", () {
     final list = [1, 2, 3, 4, 5];
     final iter = list.iter();
     var peekable = iter.peekable();
@@ -878,7 +845,7 @@ main() {
     expect(cloned2.next(), Some(2));
   });
 
-  test("array chunks with clone",(){
+  test("array chunks with clone", () {
     var list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     var iter = list.iter();
     var chunks = iter.arrayChunks(3);
@@ -892,7 +859,7 @@ main() {
       [4, 5, 6],
       [7, 8, 9]
     ]);
-    expect(cloned.next(), [1,2,3]);
+    expect(cloned.next(), [1, 2, 3]);
 
     list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     iter = list.iter();
@@ -913,7 +880,7 @@ main() {
     expect(cloned.collectList(), []);
   });
 
-  test("cast with clone", (){
+  test("cast with clone", () {
     var list = [1, 2, 3, 4, 5];
     var iter = list.iter();
     var casted = iter.cast<num>();
@@ -923,7 +890,7 @@ main() {
     expect(cloned, [1.0, 2.0, 3.0, 4.0, 5.0]);
   });
 
-  test("chain with clone", (){
+  test("chain with clone", () {
     var list = [1, 2, 3, 4, 5];
     var iter = list.iter();
     var chained = iter.chain([6, 7, 8, 9, 10].iterator);
@@ -934,7 +901,7 @@ main() {
     expect(cloned, [2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
-  test("cycle with clone",(){
+  test("cycle with clone", () {
     var list = [1, 2, 3, 4, 5];
     var iter = list.iter();
     var cycled = iter.cycle();
@@ -945,7 +912,7 @@ main() {
     expect(cloned.take(9), [2, 3, 4, 5, 1, 2, 3, 4, 5]);
   });
 
-  test("flatmap with clone",(){
+  test("flatmap with clone", () {
     var list = [1, 2, 3, 4, 5];
     var iter = list.iter();
     var flatMapped = iter.flatMap((e) => [e, e].iterator);
@@ -954,5 +921,35 @@ main() {
     flatMapped.next();
     expect(flatMapped, [2, 2, 3, 3, 4, 4, 5, 5]);
     expect(cloned, [1, 2, 2, 3, 3, 4, 4, 5, 5]);
+  });
+
+  test("map with clone", () {
+    var list = [1, 2, 3, 4, 5];
+    var iter = list.iter();
+    var mapped = iter.map((e) => e * e);
+    mapped.next();
+    var cloned = mapped.clone();
+    mapped.next();
+    expect(mapped, [9, 16, 25]);
+    expect(cloned, [4, 9, 16, 25]);
+  });
+
+  test("zip with clone",(){
+    var list = [1, 2, 3, 4, 5];
+    var zipped = list.iter().zip([6, 7, 8, 9, 10].iterator);
+    zipped.next();
+    var cloned = zipped.clone();
+    zipped.next();
+    expect(zipped, [
+      (3, 8),
+      (4, 9),
+      (5, 10),
+    ]);
+    expect(cloned, [
+      (2, 7),
+      (3, 8),
+      (4, 9),
+      (5, 10),
+    ]);
   });
 }
