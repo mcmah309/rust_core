@@ -39,6 +39,45 @@ makes working with collections of `rust_core` types and regular Dart types a bre
     expect(rIterator,[]);
 ```
 
+## Additional Examples
+```dart
+    /// Extract strings that are 3 long inside brackets '{' '}' and are not apart of other strings
+    String string = "jfsdjf{abcdefgh}sda;fj";
+    RIterator<String> strings = string.runes
+        .iter()
+        .skipWhile((e) => e != "{".codeUnitAt(0))
+        .skip(1)
+        .arrayChunks(3)
+        .takeWhile((e) => e[2] != "}".codeUnitAt(0))
+        .map((e) => String.fromCharCodes(e));
+    expect(strings, ["abc", "def"]);
+```
+```dart
+    /// Get the index of every "!" in a string not followed by a "?"
+    List<int> answer = [];
+    String string = "kl!sd!?!";
+    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+        .iter()
+        .map((e) => String.fromCharCode(e))
+        .mapWindows(2, (e) => e)
+        .enumerate()
+        .peekable();
+    out:
+    do {
+      switch (iter.next()) {
+        case Some(v: (int index, ["!", "?"])):
+          break;
+        case Some(v: (int index, ["!", _])):
+          answer.add(index);
+        case Some(v: (int index, [_, "!"])) when iter.peek().isNone():
+          answer.add(index + 1);
+        case None:
+          break out;
+      }
+    } while (true);
+    expect(answer, [2, 7]);
+```
+
 ## Misc
 ### Clone
 

@@ -3,6 +3,7 @@ import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/array.dart';
 
 main() {
   test("advanceBy", () {
@@ -934,7 +935,7 @@ main() {
     expect(cloned, [4, 9, 16, 25]);
   });
 
-  test("zip with clone",(){
+  test("zip with clone", () {
     var list = [1, 2, 3, 4, 5];
     var zipped = list.iter().zip([6, 7, 8, 9, 10].iterator);
     zipped.next();
@@ -951,5 +952,95 @@ main() {
       (4, 9),
       (5, 10),
     ]);
+  });
+
+  test("Use case example 1", () {
+    /// Extract continuous strings that are 3 long inside brackets '{' '}'
+    String string = "jfsdjf{abcdefgh}sda;fj";
+    RIterator<String> strings = string.runes
+        .iter()
+        .skipWhile((e) => e != "{".codeUnitAt(0))
+        .skip(1)
+        .mapWindows(3, (e) => e)
+        .takeWhile((e) => e[2] != "}".codeUnitAt(0))
+        .map((e) => String.fromCharCodes(e));
+    expect(strings, ["abc", "bcd", "cde", "def", "efg", "fgh"]);
+  });
+
+  test("Use case example 2", () {
+    /// Get the index of every "!" in a string not followed by a "?"
+    List<int> answer = [];
+    String string = "kl!sd!?!";
+    PeekableRIterator<(int, int)> iter = string.runes.iter().enumerate().peekable();
+    while (iter.moveNext()) {
+      if (iter.current.$2 == "!".codeUnitAt(0) &&
+          (iter.peek().isNone() || iter.peek().isSomeAnd((e) => e.$2 != "?".codeUnitAt(0)))) {
+        answer.add(iter.current.$1);
+      }
+    }
+    expect(answer, [2, 7]);
+  });
+
+  test("Use case example 3", () {
+    /// Get the index of every "!" in a string not followed by a "?"
+    List<int> answer = [];
+    String string = "kl!sd!?!";
+    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+        .iter()
+        .map((e) => String.fromCharCode(e))
+        .mapWindows(2, (e) => e)
+        .enumerate()
+        .peekable();
+    while (iter.moveNext()) {
+      switch (iter.current) {
+        case (int index, ["!", "?"]):
+          break;
+        case (int index, ["!", var _]):
+          answer.add(index);
+      }
+      if (iter.peek().isNone() && iter.current.$2[1] == "!") {
+        answer.add(iter.current.$1 + 1);
+      }
+    }
+    expect(answer, [2, 7]);
+  });
+
+  test("Use case example 4", () {
+    /// Get the index of every "!" in a string not followed by a "?"
+    List<int> answer = [];
+    String string = "kl!sd!?!";
+    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+        .iter()
+        .map((e) => String.fromCharCode(e))
+        .mapWindows(2, (e) => e)
+        .enumerate()
+        .peekable();
+    out:
+    do {
+      switch (iter.next()) {
+        case Some(v: (int index, ["!", "?"])):
+          break;
+        case Some(v: (int index, ["!", _])):
+          answer.add(index);
+        case Some(v: (int index, [_, "!"])) when iter.peek().isNone():
+          answer.add(index + 1);
+        case None:
+          break out;
+      }
+    } while (true);
+    expect(answer, [2, 7]);
+  });
+
+  test("Use case example 5", () {
+    /// Extract strings that are 3 long inside brackets '{' '}' and are not apart of other strings
+    String string = "jfsdjf{abcdefgh}sda;fj";
+    RIterator<String> strings = string.runes
+        .iter()
+        .skipWhile((e) => e != "{".codeUnitAt(0))
+        .skip(1)
+        .arrayChunks(3)
+        .takeWhile((e) => e[2] != "}".codeUnitAt(0))
+        .map((e) => String.fromCharCodes(e));
+    expect(strings, ["abc", "def"]);
   });
 }
