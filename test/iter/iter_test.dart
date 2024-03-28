@@ -954,6 +954,8 @@ main() {
     ]);
   });
 
+  //************************************************************************//
+
   test("Use case example 1", () {
     /// Extract continuous strings that are 3 long inside brackets '{' '}'
     String string = "jfsdjf{abcdefgh}sda;fj";
@@ -1070,6 +1072,30 @@ main() {
           break out;
       }
     } while (true);
+    expect(answer, [2, 7]);
+  });
+
+  test("Use case example 6", () {
+    /// Get the index of every "!" in a string not followed by a "?"
+    String string = "kl!sd!?!";
+    PeekableRIterator<(int index, Arr<String> window)> iter = string.runes
+        .iter()
+        .map((e) => String.fromCharCode(e))
+        .mapWindows(2, (e) => e)
+        .enumerate()
+        .peekable();
+    List<int> answer = [];
+    while (iter.moveNext()) {
+      final (int index, Arr<String> window) = iter.current;
+      switch (window) {
+        case ["!", "?"]:
+          break;
+        case ["!", _]:
+          answer.add(iter.current.$1);
+        case [_, "!"] when iter.peek().isNone():
+          answer.add(index + 1);
+      }
+    }
     expect(answer, [2, 7]);
   });
 }

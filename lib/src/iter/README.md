@@ -42,7 +42,9 @@ makes working with collections of `rust_core` types and regular Dart types a bre
 ## Dart vs Rust Example
 Goal: Get the index of every "!" in a string not followed by a "?"
 ```dart
-    List<int> answer = [];
+import 'package:rust_core/prelude';
+
+void main() {
     String string = "kl!sd!?!";
     PeekableRIterator<(int, Arr<String>)> iter = string.runes
         .iter()
@@ -50,23 +52,20 @@ Goal: Get the index of every "!" in a string not followed by a "?"
         .mapWindows(2, (e) => e)
         .enumerate()
         .peekable();
-    out:
-    do {
-      switch (iter.next()) {
-        case Some(v: (int index, var l)):
-          switch (l) {
-            case ["!", "?"]:
-              break;
-            case ["!", _]:
-              answer.add(index);
-            case [_, "!"] when iter.peek().isNone():
-              answer.add(index + 1);
-          }
-        case None:
-          break out;
+    List<int> answer = [];
+    while (iter.moveNext()) {
+      final (int index, Arr<String> window) = iter.current;
+      switch (window) {
+        case ["!", "?"]:
+          break;
+        case ["!", _]:
+          answer.add(iter.current.$1);
+        case [_, "!"] when iter.peek().isNone():
+          answer.add(index + 1);
       }
-    } while (true);
+    }
     expect(answer, [2, 7]);
+}
 ```
 Rust equivlent
 ```rust
