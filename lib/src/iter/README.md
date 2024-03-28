@@ -39,6 +39,61 @@ makes working with collections of `rust_core` types and regular Dart types a bre
     expect(rIterator,[]);
 ```
 
+## Dart vs Rust Example
+Goal: Get the index of every "!" in a string not followed by a "?"
+```dart
+    List<int> answer = [];
+    String string = "kl!sd!?!";
+    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+        .iter()
+        .map((e) => String.fromCharCode(e))
+        .mapWindows(2, (e) => e)
+        .enumerate()
+        .peekable();
+    out:
+    do {
+      switch (iter.next()) {
+        case Some(v: (int index, var l)):
+          switch (l) {
+            case ["!", "?"]:
+              break;
+            case ["!", _]:
+              answer.add(index);
+            case [_, "!"] when iter.peek().isNone():
+              answer.add(index + 1);
+          }
+        case None:
+          break out;
+      }
+    } while (true);
+    expect(answer, [2, 7]);
+```
+Rust equivlent
+```rust
+use std::iter::Peekable;
+
+fn main() {
+    let mut answer: Vec<usize> = Vec::new();
+    let string = "kl!sd!?!";
+    let chars: Vec<char> = string
+      .chars()
+      .collect();
+    let mut iter: Peekable<_> = chars
+      .windows(2)
+      .enumerate()
+      .peekable();
+
+    while let Some((index, window)) = iter.next() {
+        match window {
+            ['!', '?'] => continue, 
+            ['!', _] => answer.push(index),
+            [_, '!'] if iter.peek().is_none() => answer.push(index + 1),
+            _ => continue,
+        }
+    }
+    assert_eq!(answer, [2, 7]);
+}
+```
 ## Additional Examples
 ```dart
     /// Extract strings that are 3 long inside brackets '{' '}' and are not apart of other strings
@@ -51,31 +106,6 @@ makes working with collections of `rust_core` types and regular Dart types a bre
         .takeWhile((e) => e[2] != "}".codeUnitAt(0))
         .map((e) => String.fromCharCodes(e));
     expect(strings, ["abc", "def"]);
-```
-```dart
-    /// Get the index of every "!" in a string not followed by a "?"
-    List<int> answer = [];
-    String string = "kl!sd!?!";
-    PeekableRIterator<(int, Arr<String>)> iter = string.runes
-        .iter()
-        .map((e) => String.fromCharCode(e))
-        .mapWindows(2, (e) => e)
-        .enumerate()
-        .peekable();
-    out:
-    do {
-      switch (iter.next()) {
-        case Some(v: (int index, ["!", "?"])):
-          break;
-        case Some(v: (int index, ["!", _])):
-          answer.add(index);
-        case Some(v: (int index, [_, "!"])) when iter.peek().isNone():
-          answer.add(index + 1);
-        case None:
-          break out;
-      }
-    } while (true);
-    expect(answer, [2, 7]);
 ```
 
 ## Misc

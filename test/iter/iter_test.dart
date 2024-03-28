@@ -1043,4 +1043,33 @@ main() {
         .map((e) => String.fromCharCodes(e));
     expect(strings, ["abc", "def"]);
   });
+
+  test("Use case example 6", () {
+    /// Get the index of every "!" in a string not followed by a "?"
+    List<int> answer = [];
+    String string = "kl!sd!?!";
+    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+        .iter()
+        .map((e) => String.fromCharCode(e))
+        .mapWindows(2, (e) => e)
+        .enumerate()
+        .peekable();
+    out:
+    do {
+      switch (iter.next()) {
+        case Some(v: (int index, var l)):
+          switch (l) {
+            case ["!", "?"]:
+              break;
+            case ["!", _]:
+              answer.add(index);
+            case [_, "!"] when iter.peek().isNone():
+              answer.add(index + 1);
+          }
+        case None:
+          break out;
+      }
+    } while (true);
+    expect(answer, [2, 7]);
+  });
 }
