@@ -11,9 +11,6 @@ part 'future_result.dart';
 /// [Result] class representing the type union between [Ok] and [Err].
 ///
 /// [S] is the ok type (aka success) and [F] is an error (aka failure).
-/// Aims to implements at minimum, through methods or extensions, the Rust Result specification here: https://doc
-/// .rust-lang
-/// .org/std/result/enum.Result.html
 /// {@endtemplate}
 sealed class Result<S, F extends Object> {
   /// Creates a context for early return, similar to "Do notation".

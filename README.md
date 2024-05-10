@@ -14,7 +14,7 @@ Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a 
 ## Highlights
 ### Libraries
 
-| [Array] | [Cell] | [Iter] | [Option] | [Panic] | [Result] | [Slice] | [Typedefs] |
+| [Array] | [Cell] | [Iter] | [Mpsc] | [Option] | [Panic] | [Result] | [Slice] | [Sync] | [Typedefs] |
 
 🔥 **Extensive Extensions:** Dozens of additional extensions with hundreds of methods tailored for Dart. These 
 extensions are designed for maximum composability, addressing specific scenarios.
@@ -42,6 +42,8 @@ it's also available for `T?`.
 [Iter]: https://github.com/mcmah309/rust_core/tree/master/lib/src/iter
 [Array]: https://github.com/mcmah309/rust_core/tree/master/lib/src/array
 [Slice]: https://github.com/mcmah309/rust_core/tree/master/lib/src/slice
+[Sync]: https://github.com/mcmah309/rust_core/tree/master/lib/src/sync
+[Mpsc]: https://github.com/mcmah309/rust_core/tree/master/lib/src/mpsc
 
 
 [anyhow]: https://pub.dev/packages/anyhow
