@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
-import 'dart:async';
 
-/// Creates a new mpsc channel, returning the [Sender] and [Reciever]. Each item [T] will only be seen once.
+/// Creates a new mpsc channel, returning the [Sender] and [Reciever]. Each item [T] sent by the [Sender]
+/// will only be seen once by the [Reciever]. If the [Sender] calls [close] while the [Reciever]s buffer
+/// is not empty, the [Reciever] will yield the remaining items in the buffer until empty.
 (Sender<T>, Reciever<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();
@@ -16,6 +17,8 @@ typedef Sender<T> = StreamSink<T>;
 
 extension SenderExtension<T> on Sender<T> {
   void send(T t) => add(t);
+
+  void sendError(Object t) => addError(t);
 }
 
 /// The recieving-half of [channel]. [Reciever]s do not close if the [Sender] sends an error.
@@ -52,9 +55,9 @@ class Reciever<T> {
 
   /// Attempts to wait for a value on this receiver, returning [Err] of:
   /// 
-  /// [DisconnectedError] if the [Sender] called [close].
+  /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
   /// 
-  /// [OtherError] if the [Sender] called [addError].
+  /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
   Future<Result<T, RecvError>> recv() async {
     try {
       return await _next();
@@ -65,11 +68,11 @@ class Reciever<T> {
 
   /// Attempts to wait for a value on this receiver with a time limit, returning [Err] of:
   /// 
-  /// [DisconnectedError] if the [Sender] called [close].
+  /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
   /// 
-  /// [OtherError] if the [Sender] called [addError].
+  /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
   /// 
-  /// [TimeoutError] if the time limit is reached before the [Sender] sent any data.
+  /// [TimeoutError] if the time limit is reached before the [Sender] sent any more data.
   Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit) async {
     try {
       return await _next().timeout(timeLimit).mapErr((error) => error as RecvTimeoutError);
@@ -80,7 +83,7 @@ class Reciever<T> {
     }
   }
 
-  /// Returns an [RIterator] of the pending values.
+  /// Returns an [RIterator] that drains the current buffer.
   RIterator<T> iter() {
     return RIterator.fromIterable(_iter());
   }
@@ -96,14 +99,19 @@ class Reciever<T> {
     }
   }
 
-  /// Returns a [Stream] of values.
+  /// Returns a [Stream] of values ending once [DisconnectedError] is yielded.
   Stream<T> stream() async* {
     while (true) {
       final rec = await recv();
       switch (rec) {
         case Ok(:final ok):
           yield ok;
-        case Err():
+        case Err(:final err):
+          switch(err){
+            case DisconnectedError():
+              break;
+            default:
+          }
       }
     }
   }
