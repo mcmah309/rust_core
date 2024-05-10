@@ -109,7 +109,7 @@ class Reciever<T> {
         case Err(:final err):
           switch(err){
             case DisconnectedError():
-              break;
+              return;
             default:
           }
       }
@@ -148,6 +148,16 @@ class TimeoutError implements RecvTimeoutError {
   String toString() {
     return 'TimeoutError: $timeoutException';
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is TimeoutError;
+  }
+
+  @override
+  int get hashCode {
+    return 0;
+  }
 }
 
 /// An error returned from the [recv] function on a [Receiver] when the [Sender] called [close].
@@ -157,6 +167,16 @@ class DisconnectedError implements RecvTimeoutError, RecvError {
   @override
   String toString() {
     return 'DisconnectedError';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DisconnectedError;
+  }
+
+  @override
+  int get hashCode {
+    return 0;
   }
 }
 
@@ -169,5 +189,15 @@ class OtherError implements RecvTimeoutError, RecvError {
   @override
   String toString() {
     return 'OtherError: $error';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is OtherError;
+  }
+
+  @override
+  int get hashCode {
+    return 0;
   }
 }

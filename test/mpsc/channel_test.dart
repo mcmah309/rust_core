@@ -105,7 +105,55 @@ void main() {
         expect(i, 2);
       }
     }
-    expect(foundError,true);
+    expect(foundError, true);
     expect(results, [1, 2, 3]);
+  });
+
+  test("Receiver iter method", () async {
+    final (tx, rx) = channel<int>();
+    tx.send(1);
+    tx.send(2);
+    tx.send(3);
+    tx.send(4);
+    await Future.delayed(Duration(milliseconds: 100));
+
+    final iterator = rx.iter();
+    List<int> results = [];
+    for (final value in iterator) {
+      results.add(value);
+    }
+    expect(results, [1, 2, 3, 4]);
+    tx.send(5);
+    final value = await rx.recv();
+    expect(value.unwrap(), 5);
+  });
+
+  test("Receiver stream method", () async {
+    final (tx, rx) = channel<int>();
+    tx.send(1);
+    tx.send(2);
+    tx.send(3);
+    await Future.delayed(Duration(milliseconds: 100));
+    tx.send(4);
+    () async {
+      await Future.delayed(Duration(milliseconds: 1000));
+      tx.close();
+    }();
+
+    List<int> results = [];
+    await for (final value in rx.stream()) {
+      results.add(value);
+    }
+    expect(results, [1, 2, 3, 4]);
+    bool threw = false;
+    try {
+      tx.send(5);
+    } catch (e) {
+      threw = true;
+      expect(e, isA<StateError>());
+    }
+    expect(threw, true);
+    final value = await rx.recv();
+    expect(value.unwrapErr(), DisconnectedError());
   });
 }
