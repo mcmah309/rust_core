@@ -1,55 +1,24 @@
 import 'dart:async';
 
+import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 import 'dart:async';
 
-typedef Sender<T> = StreamSink<T>;
-
-extension SenderExtension<T> on Sender<T> {
-  void send(T t) => add(t);
-}
-
-class RecvError {}
-
-sealed class RecvTimeoutError {}
-
-class TimeoutError implements RecvTimeoutError {
-  final TimeoutException timeoutException;
-
-  TimeoutError(this.timeoutException);
-
-  @override
-  String toString() {
-    return 'TimeoutError: $timeoutException';
-  }
-}
-
-class DisconnectedError implements RecvTimeoutError, RecvError {
-  DisconnectedError();
-
-  @override
-  String toString() {
-    return 'DisconnectedError';
-  }
-}
-
-class OtherError implements RecvTimeoutError, RecvError {
-  final Object error;
-
-  OtherError(this.error);
-
-  @override
-  String toString() {
-    return 'OtherError: $error';
-  }
-}
-
+/// Creates a new mpsc channel, returning the [Sender] and [Reciever]. Each item [T] will only be seen once.
 (Sender<T>, Reciever<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();
   return (controller.sink, Reciever(controller.stream));
 }
 
+/// The sending-half of [channel].
+typedef Sender<T> = StreamSink<T>;
+
+extension SenderExtension<T> on Sender<T> {
+  void send(T t) => add(t);
+}
+
+/// The recieving-half of [channel]. [Reciever]s do not close if the [Sender] sends an error.
 class Reciever<T> {
   late final StreamSubscription<T> _streamSubscription;
   final List<Result<T, Object>> _buffer = [];
@@ -81,6 +50,11 @@ class Reciever<T> {
     }, cancelOnError: false);
   }
 
+  /// Attempts to wait for a value on this receiver, returning [Err] of:
+  /// 
+  /// [DisconnectedError] if the [Sender] called [close].
+  /// 
+  /// [OtherError] if the [Sender] called [addError].
   Future<Result<T, RecvError>> recv() async {
     try {
       return await _next();
@@ -89,6 +63,13 @@ class Reciever<T> {
     }
   }
 
+  /// Attempts to wait for a value on this receiver with a time limit, returning [Err] of:
+  /// 
+  /// [DisconnectedError] if the [Sender] called [close].
+  /// 
+  /// [OtherError] if the [Sender] called [addError].
+  /// 
+  /// [TimeoutError] if the time limit is reached before the [Sender] sent any data.
   Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit) async {
     try {
       return await _next().timeout(timeLimit).mapErr((error) => error as RecvTimeoutError);
@@ -99,14 +80,30 @@ class Reciever<T> {
     }
   }
 
-  Stream<T> asStream() async* {
+  /// Returns an [RIterator] of the pending values.
+  RIterator<T> iter() {
+    return RIterator.fromIterable(_iter());
+  }
+
+  Iterable<T> _iter() sync* {
+    while (_buffer.isNotEmpty) {
+      final item = _buffer.removeAt(0);
+      switch (item) {
+        case Ok(:final ok):
+          yield ok;
+        case Err():
+      }
+    }
+  }
+
+  /// Returns a [Stream] of values.
+  Stream<T> stream() async* {
     while (true) {
       final rec = await recv();
       switch (rec) {
         case Ok(:final ok):
           yield ok;
         case Err():
-          break;
       }
     }
   }
@@ -117,10 +114,52 @@ class Reciever<T> {
       if (_isClosed) {
         return Err(DisconnectedError());
       }
-      if(_buffer.isNotEmpty){
+      if (_buffer.isNotEmpty) {
         return _buffer.removeAt(0).mapErr((error) => OtherError(error));
       }
       _waker = Completer();
     }
+  }
+}
+
+//************************************************************************//
+
+/// An error returned from the [recv] function on a [Receiver].
+class RecvError {}
+
+/// An error returned from the [recvTimeout] function on a [Receiver].
+sealed class RecvTimeoutError {}
+
+/// An error returned from the [recvTimeout] function on a [Receiver] when the time limit is reached before the [Sender] sends any data.
+class TimeoutError implements RecvTimeoutError {
+  final TimeoutException timeoutException;
+
+  TimeoutError(this.timeoutException);
+
+  @override
+  String toString() {
+    return 'TimeoutError: $timeoutException';
+  }
+}
+
+/// An error returned from the [recv] function on a [Receiver] when the [Sender] called [close].
+class DisconnectedError implements RecvTimeoutError, RecvError {
+  DisconnectedError();
+
+  @override
+  String toString() {
+    return 'DisconnectedError';
+  }
+}
+
+/// An error returned from the [recv] function on a [Receiver] when the [Sender] called [addError].
+class OtherError implements RecvTimeoutError, RecvError {
+  final Object error;
+
+  OtherError(this.error);
+
+  @override
+  String toString() {
+    return 'OtherError: $error';
   }
 }
