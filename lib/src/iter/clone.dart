@@ -56,7 +56,7 @@ final class CloneRIterator<T> extends RIterator<T> {
     // print("clone current");
     return _trackedValues[index];
   }
-  
+
   @override
   CloneRIterator<T> clone() {
     return CloneRIterator._clone(this);

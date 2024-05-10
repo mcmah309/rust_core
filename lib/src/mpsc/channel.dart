@@ -54,9 +54,9 @@ class Reciever<T> {
   }
 
   /// Attempts to wait for a value on this receiver, returning [Err] of:
-  /// 
+  ///
   /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
-  /// 
+  ///
   /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
   Future<Result<T, RecvError>> recv() async {
     try {
@@ -67,15 +67,17 @@ class Reciever<T> {
   }
 
   /// Attempts to wait for a value on this receiver with a time limit, returning [Err] of:
-  /// 
+  ///
   /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
-  /// 
+  ///
   /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
-  /// 
+  ///
   /// [TimeoutError] if the time limit is reached before the [Sender] sent any more data.
   Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit) async {
     try {
-      return await _next().timeout(timeLimit).mapErr((error) => error as RecvTimeoutError);
+      return await _next()
+          .timeout(timeLimit)
+          .mapErr((error) => error as RecvTimeoutError);
     } on TimeoutException catch (timeoutException) {
       return Err(TimeoutError(timeoutException));
     } catch (error) {
@@ -107,7 +109,7 @@ class Reciever<T> {
         case Ok(:final ok):
           yield ok;
         case Err(:final err):
-          switch(err){
+          switch (err) {
             case DisconnectedError():
               return;
             default:

@@ -11,7 +11,7 @@ class CastRIterator<S, T> extends RIterator<T> {
   bool moveNext() => _source.moveNext();
   @override
   T get current => _source.current as T;
-  
+
   @override
   CastRIterator<S, T> clone() {
     final temp = CloneRIterator._trackable(_source);

@@ -34,7 +34,7 @@ final class PeekableRIterator<T> extends RIterator<T> {
       _current = _peeked;
       return true;
     }
-    if(_iterator.moveNext()){
+    if (_iterator.moveNext()) {
       _current = _iterator.current;
       return true;
     }
@@ -48,8 +48,9 @@ final class PeekableRIterator<T> extends RIterator<T> {
   PeekableRIterator<T> clone() {
     final temp = CloneRIterator._trackable(_iterator);
     _iterator = temp;
-    if(_hasPeaked){
-      return PeekableRIterator(_PrefixedIterator(_peeked, CloneRIterator._clone(temp)));
+    if (_hasPeaked) {
+      return PeekableRIterator(
+          _PrefixedIterator(_peeked, CloneRIterator._clone(temp)));
     }
     return PeekableRIterator(CloneRIterator._clone(temp));
   }

@@ -24,13 +24,15 @@ final class ChainRIterator<T> extends RIterator<T> {
 
   @override
   T get current => isFirst ? _first.current : _second.current;
-  
+
   @override
   ChainRIterator<T> clone() {
     final newFirst = CloneRIterator._trackable(_first);
     final newSecond = CloneRIterator._trackable(_second);
     _first = newFirst;
     _second = newSecond;
-    return ChainRIterator(CloneRIterator._clone(newFirst), CloneRIterator._clone(newSecond))..isFirst = isFirst;
+    return ChainRIterator(
+        CloneRIterator._clone(newFirst), CloneRIterator._clone(newSecond))
+      ..isFirst = isFirst;
   }
 }

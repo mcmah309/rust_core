@@ -57,8 +57,8 @@ final class ArrayChunksRIterator<T> extends RIterator<Arr<T>> {
     final temp = CloneRIterator._trackable(_iterator);
     _iterator = temp;
     return ArrayChunksRIterator(CloneRIterator._clone(temp), _chunkSize)
-        .._currentChunkBeingBuilt = _currentChunkBeingBuilt?.toArr()
-        .._count = _count
-        .._currentChunk = _currentChunk?.toArr();
+      .._currentChunkBeingBuilt = _currentChunkBeingBuilt?.toArr()
+      .._count = _count
+      .._currentChunk = _currentChunk?.toArr();
   }
 }

@@ -89,7 +89,7 @@ main() {
     expect(iter.next().isNone(), true);
   });
 
-  test("isSorted", (){
+  test("isSorted", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.isSorted(), true);

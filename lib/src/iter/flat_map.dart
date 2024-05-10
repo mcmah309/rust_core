@@ -20,22 +20,23 @@ final class FlatMapRIterator<S, T> extends RIterator<T> {
     }
     if (_iterator.moveNext()) {
       _currentExpansion = _f(_iterator.current);
-      if(_currentExpansion!.moveNext()) {
+      if (_currentExpansion!.moveNext()) {
         return true;
       }
       return false;
     }
     return false;
   }
-  
+
   @override
-  FlatMapRIterator<S,T> clone() {
+  FlatMapRIterator<S, T> clone() {
     final temp = CloneRIterator._trackable(_iterator);
     _iterator = temp;
     if (_currentExpansion != null) {
       final newCurrentExpansion = CloneRIterator._trackable(_currentExpansion!);
       _currentExpansion = newCurrentExpansion;
-      return FlatMapRIterator(CloneRIterator._clone(temp).iterator, _f).._currentExpansion = CloneRIterator._clone(newCurrentExpansion);
+      return FlatMapRIterator(CloneRIterator._clone(temp).iterator, _f)
+        .._currentExpansion = CloneRIterator._clone(newCurrentExpansion);
     }
     return FlatMapRIterator(CloneRIterator._clone(temp), _f);
   }

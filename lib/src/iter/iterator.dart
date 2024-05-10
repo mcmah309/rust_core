@@ -92,7 +92,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  RIterator<T> clone(){
+  RIterator<T> clone() {
     return CloneRIterator<T>._original(this);
   }
 

@@ -21,13 +21,15 @@ final class ZipRIterator<T, U> extends RIterator<(T, U)> {
 
   @override
   (T, U) get current => _current;
-  
+
   @override
-  ZipRIterator<T,U> clone() {
+  ZipRIterator<T, U> clone() {
     final newT = CloneRIterator._trackable(_iteratorT);
     final newU = CloneRIterator._trackable(_iteratorU);
     _iteratorT = newT;
     _iteratorU = newU;
-    return ZipRIterator(CloneRIterator._clone(newT).iterator, CloneRIterator._clone(newU).iterator).._current = _current;
+    return ZipRIterator(CloneRIterator._clone(newT).iterator,
+        CloneRIterator._clone(newU).iterator)
+      .._current = _current;
   }
 }
