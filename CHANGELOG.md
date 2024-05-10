@@ -1,3 +1,9 @@
+## 0.5.4
+
+ - Add `clone` to `iter` classes
+ - Add `mspc` library with `channel`
+ - Add `sync` library with `Mutex` and `RwLock`
+
 ## 0.5.3
 
  - Stricter `Option` typing
