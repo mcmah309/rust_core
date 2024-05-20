@@ -23,7 +23,7 @@ part 'rw_lock.dart';
 ///
 ///     m = Mutex();
 ///
-///     await m.acquire();
+///     await m.lock();
 ///     try {
 ///       // critical section
 ///     }

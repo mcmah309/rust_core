@@ -73,7 +73,7 @@ final class Slice<T> implements Iterable<T> {
 
 // align_to: Will not implement, not possible in Dart
 // align_to_mut: Will not implement, not possible in Dart
-// array_chunks: Will not implement, not possible in Dart, would need an allocation for the Dart Array version. Uses `windows` instead.
+// array_chunks: Will not implement, covered by iter's array chunks
 // array_chunks_mut: Will not implement, covered by array_chunks
 // array_windows: Will not implement, not possible in Dart, would need an allocation for the Dart Array version. Uses `windows` instead.
 // as_ascii: Will not implement, not possible in Dart
@@ -95,10 +95,10 @@ final class Slice<T> implements Iterable<T> {
 // binary_search: //todo
 // binary_search_by: //todo
 // binary_search_by_key: //todo
-// chunks: //todo
-// chunks_exact: //todo
-// chunks_exact_mut: Will not implement, covered by chunks_exact
-// chunks_mut: Will not implement, covered by chunks
+// chunks: Will not implement, covered by array_chunks
+// chunks_exact: Will not implement, covered by array_chunks
+// chunks_exact_mut: Will not implement, covered by array_chunks
+// chunks_mut: Will not implement, covered by array_chunks
 // clone_from_slice: Will not implement, not possible in Dart
 
 // contains: Implemented by Iterable.contains
