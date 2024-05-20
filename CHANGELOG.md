@@ -1,3 +1,7 @@
+## 0.5.5
+
+ - Remove `meta` dependency
+
 ## 0.5.4
 
  - Add `clone` to `iter` classes

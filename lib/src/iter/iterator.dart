@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/array.dart';
