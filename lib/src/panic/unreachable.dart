@@ -7,7 +7,7 @@ import 'package:rust_core/panic.dart';
 ///  - Iterators that dynamically terminate.
 /// [Unreachable] is just a shorthand for [Panic] with a fixed, specific message.
 class Unreachable extends Panic {
-  Unreachable([String msg = "This code should be unreachable."]): super(msg);
+  Unreachable([String msg = "This code should be unreachable."]) : super(msg);
 }
 
 /// Shorthand for

@@ -82,7 +82,9 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
 
   /// Returns the contained Some value if [Some], otherwise throws a [Panic].
   T expect(String msg) {
-    return v == null ? throw Panic("Called `expect` on a value that was `None`. $msg") : v!;
+    return v == null
+        ? throw Panic("Called `expect` on a value that was `None`. $msg")
+        : v!;
   }
 
   /// Returns None if the option is None, otherwise calls predicate with the wrapped value and returns
