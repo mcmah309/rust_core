@@ -1,3 +1,7 @@
+# 0.5.6
+ 
+ - Add `Unreachable`
+
 ## 0.5.5
 
  - Remove `meta` dependency
