@@ -13,3 +13,11 @@ class Panic extends Error {
     return "Panic: $msg";
   }
 }
+
+/// Shorthand for
+/// ```dart
+/// throw Panic(...)
+/// ```
+Never panic([String? msg]) {
+  throw Panic(msg);
+}
