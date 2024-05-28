@@ -252,9 +252,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   F unwrapErr() {
-    throw Panic(
-        onValue: this,
-        reason: "called `unwrapErr` on a value that was not an Err");
+    throw Panic("Called `unwrapErr` on an `$runtimeType` of `$ok`.");
   }
 
   @override
@@ -264,7 +262,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   F expectErr(String message) {
-    throw Panic(onValue: this, reason: message);
+    throw Panic("Called `expectErr` on an `$runtimeType` of `$ok`. $message");
   }
 
   //************************************************************************//
@@ -418,8 +416,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   S unwrap() {
-    throw Panic(
-        onValue: this, reason: "called `unwrap` on a value that was not an Ok");
+    throw Panic("Called `unwrap` on an `$runtimeType` of `$err`.");
   }
 
   @override
@@ -443,7 +440,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   S expect(String message) {
-    throw Panic(onValue: this, reason: message);
+    throw Panic("Called `expect` on an `$runtimeType` of `$err`. $message");
   }
 
   @override

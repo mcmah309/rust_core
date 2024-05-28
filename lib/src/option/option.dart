@@ -82,7 +82,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
 
   /// Returns the contained Some value if [Some], otherwise throws a [Panic].
   T expect(String msg) {
-    return v == null ? throw Panic(onValue: this, reason: msg) : v!;
+    return v == null ? throw Panic("Called `expect` on a value that was `None`. $msg") : v!;
   }
 
   /// Returns None if the option is None, otherwise calls predicate with the wrapped value and returns
@@ -448,7 +448,7 @@ extension NoneMethodsExtension on _None {
   }
 
   Infallible expect(String msg) {
-    throw Panic(onValue: this, reason: msg);
+    throw Panic("Called `expect` on a value that was `None`. $msg");
   }
 
   _None filter(bool Function(void self) predicate) {
@@ -504,7 +504,7 @@ extension NoneMethodsExtension on _None {
   }
 
   Infallible unwrap() {
-    throw Panic(reason: "called `unwrap` a None type");
+    throw Panic("Called `unwrap` on a value that was `None`.");
   }
 
   T unwrapOr<T>(T defaultValue) {

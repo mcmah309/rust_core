@@ -1,28 +1,15 @@
-/// As with [Error], [Panic] represents a state that should never happen and thus should never be caught.
+/// As with [Error], [Panic] represents a state that should never happen and thus is not expected to be catch.
+/// This is closely tied to the `unwrap` method of both [Option] and [Result] types.
 class Panic extends Error {
-  /// A value that is related to the panic
-  final Object? onValue;
+  final String? msg;
 
-  /// The situation that led to the panic
-  final String? reason;
-
-  Panic({this.onValue, this.reason});
+  Panic([this.msg]);
 
   @override
   String toString() {
-    final panicAsString = StringBuffer("Panic:");
-    if (reason != null) {
-      panicAsString.write(" \"");
-      panicAsString.write(reason);
-      panicAsString.write("\"");
+    if (msg == null) {
+      return "Panic: Undefined state.";
     }
-    if (onValue != null) {
-      panicAsString
-          .write(" on an ${onValue.runtimeType} with value:\n$onValue");
-    }
-    if (reason == null && onValue == null) {
-      panicAsString.write(" Undefined state");
-    }
-    return panicAsString.toString();
+    return "Panic: $msg";
   }
 }
