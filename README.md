@@ -5,49 +5,19 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/dart.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
 
-`rust_core` is an implementation of Rust's Core Library in Dart.
+[rust_core](https://github.com/mcmah309/rust_core) is an implementation of Rust's Core Library in Dart, bringing the power of Rust to Dart!
 
-The goal is to bring Rust's features and ergonomics to Dart. This also provides a seamless developer experience for any developer using both languages.
+[Rust Core Book 📖](mcmah309.github.io/rust_core)
 
-Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a smooth idiomatic language-compatible integration with predictable control flow.
-
-## Highlights
-### Libraries
-
-| [Array] | [Cell] | [Iter] | [Mpsc] | [Option] | [Panic] | [Result] | [Slice] | [Sync] | [Typedefs] |
-
-🔥 **Extensive Extensions:** Dozens of additional extensions with hundreds of methods tailored for Dart. These 
-extensions are designed for maximum composability, addressing specific scenarios.
-
-🚀 **Dart Friendly:** Developed with ergonomics in mind. e.g. Dual Support for `Option` and Nullable Types. If a method or extension exists for `Option<T>`,
-it's also available for `T?`.
-
-🧪 **Robust Testing:** Every feature tested. Over 500 meaningful tests. Reliability and performance in every feature.
-
-### Official Packages Based Off rust_core
-| Library | Description |
-| ------- | ----------- |
-| [anyhow] | Idiomatic error handling capabilities to make your code safer, more maintainable, and errors easier to debug. |
-| [rewind] | A logging utility that allows you completely customize what is captured and how your logs look at each logging level.  |
-| [rust_std] | Implementation of Rust's standard library in Dart. |
-| [tapper] | Extension methods on all types that allow transparent, temporary, inspection/mutation (tapping), transformation (piping), or type conversion. |
-| [thiserror] | A library for concisely defining error types (error enums / sealed classes) and their String representation. |
+If you are a Rust developer coming to Dart or vice versa, check out these links:
+- [New To Dart](./new_to_dart.md)
+- [New To Rust](./new_to_rust.md)
 
 
-[Cell]: https://github.com/mcmah309/rust_core/tree/master/lib/src/cell
-[Option]: https://github.com/mcmah309/rust_core/tree/master/lib/src/option
-[Panic]: https://github.com/mcmah309/rust_core/tree/master/lib/src/panic
-[Result]: https://github.com/mcmah309/rust_core/tree/master/lib/src/result
-[Typedefs]: https://github.com/mcmah309/rust_core/tree/master/lib/src/typedefs
-[Iter]: https://github.com/mcmah309/rust_core/tree/master/lib/src/iter
-[Array]: https://github.com/mcmah309/rust_core/tree/master/lib/src/array
-[Slice]: https://github.com/mcmah309/rust_core/tree/master/lib/src/slice
-[Sync]: https://github.com/mcmah309/rust_core/tree/master/lib/src/sync
-[Mpsc]: https://github.com/mcmah309/rust_core/tree/master/lib/src/mpsc
+# Project Goals
 
+rust_core's primary goal is to bring Rust's features and ergonomics to Dart.
 
-[anyhow]: https://pub.dev/packages/anyhow
-[thiserror]: https://pub.dev/packages/thiserror
-[rewind]: https://pub.dev/packages/rewind
-[rust_std]: https://pub.dev/packages/rust_std
-[tapper]: https://pub.dev/packages/tapper
+To accomplish this, Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a smooth idiomatic language-compatible integration. As a result, a seamless developer experience is created for any developer using both languages, while adding powerful tools to the toolbox of any Dart developer.
+
+True to the Rust philosophy, rust_core strives to bring reliability and performance in every feature. Every feature is robustly tested. Over 500 meaningful test suites and counting.

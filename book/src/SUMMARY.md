@@ -1,6 +1,6 @@
 # Introduction
 
-- [Why Bring Rust Core To Dart](./introduction/why_bring_rust_core_to_dart.md)
+- [Introduction](./introduction/introduction.md)
 - [Demo](./introduction/demo.md)
 - [New To Rust](./introduction/new_to_rust.md)
 - [New To Dart](./introduction/new_to_dart.md)
