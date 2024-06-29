@@ -74,11 +74,10 @@ finalResult.match(
 See the [docs] for all methods and extensions.
 
 ## Adding Predictable Control Flow To Legacy Dart Code
-At times, you may need to integrate with legacy code that may throw or code outside your project. To handle, you 
-can just wrap in a helper function like `executeProtected`
+At times, you may need to integrate with legacy code that may throw or code outside your project. To handle these situations you can just wrap the code in a helper function like `guard`
 ```dart
 void main() {
-  Result<int,Object> result = executeProtected(functionWillThrow).mapErr((e) => "$e and caught");
+  Result<int,Object> result = guard(functionWillThrow).mapErr((e) => "$e but was guarded");
   print(result);
 }
 
@@ -88,7 +87,7 @@ int functionWillThrow() {
 ```
 Output:
 ```text
-this message was thrown and caught
+this message was thrown but was guarded
 ```
 
 ## Dart Equivalent To The Rust "?" Early Return Operator
