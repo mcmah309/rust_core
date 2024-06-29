@@ -1,0 +1,6 @@
+[book]
+authors = ["mcmah309"]
+language = "en"
+multilingual = false
+src = "src"
+title = "rust_core"
