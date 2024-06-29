@@ -72,4 +72,5 @@ comparing Rust, Dart, and Dart with rust_core:
 | `Path`            | - | `Path`*  | Type for file system path manipulation.
 | `[T]`             | - | `Slice<T>`                    | View into an array or list.                                  |
 | `Cell<T>`             | - | `Cell<T>`                    | wrappers of values                                  |
-*: Implemented through additional packages found [here](../misc/packages_built_on_rust_core.md)
+
+> *: Implemented through additional packages found [here](../misc/packages_built_on_rust_core.md)

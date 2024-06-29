@@ -5,7 +5,7 @@
 To better understand the motivation around the `Result` type refer to this [article].
 
 ## Example
-By using the `Result` type, there is no web of `try`/`catch` statements maintain and hidden control flow bugs, all control flow is defined.
+By using the `Result` type, there is no web of `try`/`catch` statements to maintain and hidden control flow bugs, all control flow is defined.
 ```dart
 import 'package:rust_core/result.dart';
 
@@ -78,7 +78,7 @@ At times, you may need to integrate with legacy code that may throw or code outs
 can just wrap in a helper function like `executeProtected`
 ```dart
 void main() {
-  Result<int,Object> result = executeProtected(functionWillThrow);
+  Result<int,Object> result = executeProtected(functionWillThrow).mapErr((e) => "$e and caught");
   print(result);
 }
 
@@ -88,7 +88,7 @@ int functionWillThrow() {
 ```
 Output:
 ```text
-this message was thrown
+this message was thrown and caught
 ```
 
 ## Dart Equivalent To The Rust "?" Early Return Operator
