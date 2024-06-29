@@ -3,7 +3,7 @@
 Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
 has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations!
 
-All types in rust_core support nullable and `Option` implementations of classes and methods for ergonomic convenience, but you
+rust_core support nullable and `Option` implementations of classes and methods for ergonomic convenience where possible, but you
 can easily switch between the two with `toOption` and `toNullable` (or you can use `.v` directly).
 
 ### Usage
@@ -23,7 +23,7 @@ You can also use Option in pattern matching
 ```dart
 switch(Some(2)){
   case Some(:final v):
-    // do somthing
+    // do something
   default:
     // do something
 }
@@ -31,7 +31,7 @@ switch(Some(2)){
 
 ### Early Return Key Notation
 Option also supports "Early Return Key Notation" (ERKN), which is a derivative of "Do Notation". It allows a 
-function to return early if the value is `None`, and otherwise safely access the inner value directly without needing to unwrap or typecheck.
+function to return early if the value is `None`, and otherwise safely access the inner value directly without needing to unwrap or type check.
 ```dart
 Option<int> intNone() => None;
 Option<double> earlyReturn(int val) => Option(($) { // Early Return Key

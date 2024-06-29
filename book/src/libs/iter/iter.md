@@ -45,14 +45,13 @@ Goal: Get the index of every "!" in a string not followed by a "?"
 import 'package:rust_core/prelude';
 
 void main() {
+    List<int> answer = [];
     String string = "kl!sd!?!";
-    PeekableRIterator<(int, Arr<String>)> iter = string.runes
-        .iter()
-        .map((e) => String.fromCharCode(e))
-        .mapWindows(2, (e) => e)
+    Peekable<(int, Arr<String>)> iter = string
+        .chars()
+        .windows(2)
         .enumerate()
         .peekable();
-    List<int> answer = [];
     while (iter.moveNext()) {
       final (int index, Arr<String> window) = iter.current;
       switch (window) {
@@ -67,7 +66,7 @@ void main() {
     expect(answer, [2, 7]);
 }
 ```
-Rust equivlent
+Rust equivalent
 ```rust
 use std::iter::Peekable;
 
@@ -126,4 +125,4 @@ This means the iterator can be cloned without cloning the underlying data.
     expect(iter3.collectList(), [4, 5]);
     expect(iter4.collectList(), [2, 3, 4, 5]);
 ```
-This for allows for situtations where you want to work ahead and not lose your iterator position, or pass the `RIterator` to another function without needing to call e.g. `collectList()`, `collectArr()`, etc.
+This for allows for situations where you want to work ahead and not lose your iterator position, or pass the `RIterator` to another function without needing to call e.g. `collectList()`, `collectArr()`, etc.

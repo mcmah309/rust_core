@@ -23,6 +23,7 @@ expect(newCell, 22);
 expect(cell, 12);
 expect(antherCell, 10);
 ```
+The base type for all `Cell`s is `ConstCell`.
 
 ## OnceCell
 A cell which can be written to only once. Similar to `late final <variable>`, but will never throw an error.
@@ -34,6 +35,7 @@ expect(result, const Ok(()));
 result = cell.set(20);
 expect(result, const Err(20));
 ```
+The base type for all `OnceCell`s is `NullableOnceCell`.
 
 ## LazyCell
 A value which is initialized on the first access.
@@ -51,26 +53,6 @@ final secondCall = lazyCell();
 expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```
-
-## Misc
-
-### Const and Nullability
-Most of the time you will not need to know or care about this, and working
-with the regular cell types is usually preferred, but
-all Cells have `const`, `nullable` and `non-nullable` implementations. These were added for efficiency and to give 
-more control to developers. e.g. Non-Nullable `OnceCell` and `LazyCell` (which is the default) doesn't need an 
-additional `bool` to keep track if the value is set.
-
-The base type for all `Cell`s is `ConstCell`.
-
-The base type for all `OnceCell`s is `NullableOnceCell`.
-
 The base type for all `LazyCell`s is `NullableLazyCell`.
 
-`OnceCell` and `LazyCell` have special `constNullable` and `constNonNullable` implementations. These
-allow for runtime mutability of the inner value. That opens up a lot of possibilities. e.g. 
-You can wrap non-const types. Allowing them to be used for something like `@Default(...)`
-with the [freezed] package.
-
-[freezed]:https://pub.dev/packages/freezed
 [pub]:https://pub.dev/documentation/rust_core/latest/cell/cell-library.html

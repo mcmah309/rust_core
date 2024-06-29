@@ -3,16 +3,11 @@
 [![Pub Version](https://img.shields.io/pub/v/rust_core.svg)](https://pub.dev/packages/rust_core)
 [![Dart Package Docs](https://img.shields.io/badge/documentation-pub.dev-blue.svg)](https://pub.dev/documentation/rust_core/latest/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/dart.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
+[![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/test.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
 
 [rust_core](https://github.com/mcmah309/rust_core) is an implementation of Rust's Core Library in Dart, bringing the power of Rust to Dart!
 
 [Rust Core Book 📖](mcmah309.github.io/rust_core)
-
-If you are a Rust developer coming to Dart or vice versa, check out these links:
-- [New To Dart](./new_to_dart.md)
-- [New To Rust](./new_to_rust.md)
-
 
 # Project Goals
 

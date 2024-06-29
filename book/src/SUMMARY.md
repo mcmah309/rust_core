@@ -14,6 +14,7 @@
 - [option](./libs/option/option.md)
 - [panic](./libs/panic/panic.md)
 - [result](./libs/result/result.md)
+    - [Tips and Best Practices](./libs/result/tips_and_best_practices.md)
 - [slice](./libs/slice/slice.md)
 - [sync](./libs/sync/sync.md)
 - [typedefs](./libs/typedefs/typedefs.md)
