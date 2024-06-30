@@ -5,7 +5,7 @@ import 'package:rust_core/result.dart';
 
 /// Creates a new channel, returning the [Sender] and [Receiver]. Each item [T] sent by the [Sender]
 /// will only be seen once by the [Receiver]. If the [Sender] calls [close] while the [Receiver]s buffer
-/// is not empty, the [Receiver] will yield the remaining items in the buffer until empty.
+/// is not empty, the [Receiver] will still yield the remaining items in the buffer until empty.
 (Sender<T>, Receiver<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();

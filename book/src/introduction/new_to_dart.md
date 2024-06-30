@@ -2,7 +2,7 @@
 
 Welcome to Dart!
 
-Dart is a great language choice for fast cross platform development (especially in the ui) and scripting.
+Dart is a great language choice for fast cross platform development and scripting.
 
 rust_core is great start to learn the Dart semantics as you will feel like you are writing native rust. Just look at this Rust code:
 > Goal: Get the index of every "!" in a string not followed by a "?"
@@ -72,3 +72,5 @@ rust_core will introduce you to a few new types you may find useful as a Dart de
 | `Cell<T>`             | - | `Cell<T>`                    | wrappers of values                                  |
 
 > *: Implemented through additional packages found [here](../misc/packages_built_on_rust_core.md)
+
+To learn more about the Dart programming language, checkout [dart.dev](https://dart.dev/language)!

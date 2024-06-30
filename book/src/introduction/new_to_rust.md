@@ -74,3 +74,5 @@ comparing Rust, Dart, and Dart with rust_core:
 | `Cell<T>`             | - | `Cell<T>`                    | wrappers of values                                  |
 
 > *: Implemented through additional packages found [here](../misc/packages_built_on_rust_core.md)
+
+To learn more about the Rust programming language, checkout the [Rust Book](https://doc.rust-lang.org/book/ch00-00-introduction.html)!
