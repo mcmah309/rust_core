@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
+import 'package:rust_core/sync.dart';
 
 part 'isolate_channel.dart';
 
