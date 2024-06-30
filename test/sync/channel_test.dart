@@ -1,8 +1,8 @@
-import 'package:rust_core/mpsc.dart';
+import 'package:rust_core/sync.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test("Single sender single reciever", () async {
+  test("Single sender single receiver", () async {
     List<int> results1 = [];
     List<int> results2 = [];
     final (tx, rx) = channel<int>();
@@ -32,7 +32,7 @@ void main() {
     expect(results2, [2, 4, 6]);
   });
 
-  test("Single sender multiple reciever", () async {
+  test("Single sender multiple receiver", () async {
     List<int> results1 = [];
     List<int> results2 = [];
     final (tx, rx) = channel<int>();
