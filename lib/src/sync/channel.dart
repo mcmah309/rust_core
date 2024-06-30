@@ -1,28 +1,69 @@
 import 'dart:async';
+import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 
-/// Creates a new channel, returning the [Sender] and [Receiver]. Each item [T] sent by the [Sender]
-/// will only be seen once by the [Receiver]. If the [Sender] calls [close] while the [Receiver]s buffer
-/// is not empty, the [Receiver] will still yield the remaining items in the buffer until empty.
-(Sender<T>, Receiver<T>) channel<T>() {
+part 'isolate_channel.dart';
+
+/// Creates a new channel, returning the [Sender] and [LocalReceiver]. Each item [T] sent by the [Sender]
+/// will only be seen once by the [LocalReceiver]. If the [Sender] calls [close] while the [LocalReceiver]s buffer
+/// is not empty, the [LocalReceiver] will still yield the remaining items in the buffer until empty.
+(Sender<T>, LocalReceiver<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();
-  return (controller.sink, Receiver(controller.stream));
+  return (LocalSender._(controller.sink), LocalReceiver._(controller.stream));
 }
 
 /// The sending-half of [channel].
-typedef Sender<T> = StreamSink<T>;
+abstract class Sender<T> {
 
-extension SenderExtension<T> on Sender<T> {
-  void send(T t) => add(t);
-
-  void sendError(Object t) => addError(t);
+  void send(T data);
 }
 
 /// The receiving-half of [channel]. [Receiver]s do not close if the [Sender] sends an error.
-class Receiver<T> {
+abstract class Receiver<T> {
+
+  bool get isClosed;
+
+  /// Attempts to wait for a value on this receiver, returning [Err] of:
+  ///
+  /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
+  ///
+  /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
+  Future<Result<T, RecvError>> recv();
+
+  /// Attempts to wait for a value on this receiver with a time limit, returning [Err] of:
+  ///
+  /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
+  ///
+  /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
+  ///
+  /// [TimeoutError] if the time limit is reached before the [Sender] sent any more data.
+  Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit);
+
+  /// Returns an [RIterator] that drains the current buffer.
+  RIterator<T> iter();
+
+  /// Returns a [Stream] of values ending once [DisconnectedError] is yielded.
+  Stream<T> stream();
+}
+
+//************************************************************************//
+
+/// [Sender] for a single isolate.
+class LocalSender<T> implements Sender<T> {
+  final StreamSink<T> sink;
+
+  LocalSender._(this.sink);
+
+  @override
+  void send(T data) => sink.add(data);
+}
+
+/// [Receiver] for a single isolate.
+class LocalReceiver<T> {
   late final StreamSubscription<T> _streamSubscription;
   final List<Result<T, Object>> _buffer = [];
   bool _isClosed = false;
@@ -30,7 +71,7 @@ class Receiver<T> {
 
   bool get isClosed => _isClosed;
 
-  Receiver(Stream<T> stream) {
+  LocalReceiver._(Stream<T> stream) {
     _streamSubscription = stream.listen((data) {
       assert(!_isClosed);
       _buffer.add(Ok(data));
@@ -134,13 +175,13 @@ class Receiver<T> {
 
 //************************************************************************//
 
-/// An error returned from the [recv] function on a [Receiver].
+/// An error returned from the [recv] function on a [LocalReceiver].
 class RecvError {}
 
-/// An error returned from the [recvTimeout] function on a [Receiver].
+/// An error returned from the [recvTimeout] function on a [LocalReceiver].
 sealed class RecvTimeoutError {}
 
-/// An error returned from the [recvTimeout] function on a [Receiver] when the time limit is reached before the [Sender] sends any data.
+/// An error returned from the [recvTimeout] function on a [LocalReceiver] when the time limit is reached before the [Sender] sends any data.
 class TimeoutError implements RecvTimeoutError {
   final TimeoutException timeoutException;
 
@@ -162,7 +203,7 @@ class TimeoutError implements RecvTimeoutError {
   }
 }
 
-/// An error returned from the [recv] function on a [Receiver] when the [Sender] called [close].
+/// An error returned from the [recv] function on a [LocalReceiver] when the [Sender] called [close].
 class DisconnectedError implements RecvTimeoutError, RecvError {
   DisconnectedError();
 
@@ -182,7 +223,7 @@ class DisconnectedError implements RecvTimeoutError, RecvError {
   }
 }
 
-/// An error returned from the [recv] function on a [Receiver] when the [Sender] called [addError].
+/// An error returned from the [recv] function on a [LocalReceiver] when the [Sender] called [addError].
 class OtherError implements RecvTimeoutError, RecvError {
   final Object error;
 

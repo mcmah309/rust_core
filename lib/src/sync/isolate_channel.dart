@@ -1,70 +1,23 @@
-import 'dart:async';
-import 'dart:isolate';
-import 'dart:typed_data';
+part of 'channel.dart';
 
-import 'package:rust_core/src/result/result.dart';
-import 'package:rust_core/src/sync/channel.dart';
-
-void main() async {
-  final (tx, rx) = await isolateChannel<String>(const StringCodec(), (tx2, rx2) async {
-    print(await rx2.recv());
-  });
-  tx.send("hello1");
-  // Isolate.spawn((message) => print("isolate"), null);
-  print("done");
-}
-
-// void x() async {
-//   final (rx, tx) = channel<String>();
-//   final rPort = RawReceivePort((data) => print("hello"));
-//   final sPort = rPort.sendPort;
-//   ReceivePort.fromRawReceivePort(rPort);
-//   sPort.send("");
-//   await Future.delayed(Duration(seconds: 1));
-//   rPort.close();
-// }
-
-abstract class SendCodec<T> {
-  const SendCodec();
-
-  T decode(ByteBuffer buffer);
-
-  ByteBuffer encode(T instance);
-}
-
-class StringCodec implements SendCodec<String> {
-  const StringCodec();
-
-  @override
-  String decode(ByteBuffer buffer) {
-    return String.fromCharCodes(buffer.asUint8List());
-  }
-
-  @override
-  ByteBuffer encode(String data) {
-    return Uint8List.fromList(data.codeUnits).buffer;
-  }
-}
-
-class IsolateSender<T> {
+class IsolateSender<T> extends Sender<T> {
   final SendPort _sPort;
   final SendCodec<T> _codec;
 
   IsolateSender._(this._codec, this._sPort);
 
+  @override
   void send(T data) {
     _sPort.send(_codec.encode(data));
   }
 }
 
-class IsolateReceiver<T> extends Receiver<T> {
-  final ReceivePort _rPort;
-
-  IsolateReceiver._(SendCodec<T> codec, this._rPort)
-      : super(_rPort
+class IsolateReceiver<T> extends LocalReceiver<T> {
+  IsolateReceiver._(SendCodec<T> codec, ReceivePort rPort)
+      : super._(rPort
             .map((data) {
               if (data is _CloseSignal) {
-                _rPort.close();
+                rPort.close();
                 return null;
               } else {
                 return codec.decode(data as ByteBuffer);
@@ -104,7 +57,7 @@ Future<(IsolateSender<T> tx1, IsolateReceiver<T> rx1)> isolateChannel<T>(SendCod
     rethrow;
   }
 
-  // Workaround for not being able to pass Completers since 'dart:async` is now unsendable.
+  // Work-around for not being able to pass Completers since 'dart:async` is now unsendable.
   // Should only be called zero to two times.
   while (sendToIsolate == null) {
     await Future.delayed(Duration.zero);
@@ -118,4 +71,45 @@ Future<(IsolateSender<T> tx1, IsolateReceiver<T> rx1)> isolateChannel<T>(SendCod
 
 class _CloseSignal {
   const _CloseSignal();
+}
+
+//************************************************************************//
+
+/// The codec use to encode and decode data send over the channel.
+abstract class SendCodec<T> {
+  const SendCodec();
+
+  T decode(ByteBuffer buffer);
+
+  ByteBuffer encode(T instance);
+}
+
+class StringCodec implements SendCodec<String> {
+  const StringCodec();
+
+  @override
+  String decode(ByteBuffer buffer) {
+    return String.fromCharCodes(buffer.asUint8List());
+  }
+
+  @override
+  ByteBuffer encode(String data) {
+    return Uint8List.fromList(data.codeUnits).buffer;
+  }
+}
+
+class IntCodec implements SendCodec<int> {
+  const IntCodec();
+
+  @override
+  int decode(ByteBuffer buffer) {
+    return buffer.asByteData().getInt64(0, Endian.big);
+  }
+
+  @override
+  ByteBuffer encode(int data) {
+    final bytes = ByteData(8);
+    bytes.setInt64(0, data, Endian.big);
+    return bytes.buffer;
+  }
 }

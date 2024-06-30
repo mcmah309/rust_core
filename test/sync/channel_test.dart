@@ -90,7 +90,7 @@ void main() {
     final (tx, rx) = channel<int>();
     tx.send(1);
     tx.send(2);
-    tx.addError(Exception("Test error"));
+    (tx as LocalSender<int>).sink.addError(Exception("Test error"));
     tx.send(3);
     await Future.delayed(Duration(milliseconds: 100));
     bool foundError = false;
@@ -137,7 +137,7 @@ void main() {
     tx.send(4);
     () async {
       await Future.delayed(Duration(milliseconds: 1000));
-      tx.close();
+      (tx as LocalSender<int>).sink.close();
     }();
 
     List<int> results = [];
