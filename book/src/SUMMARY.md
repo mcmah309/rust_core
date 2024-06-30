@@ -15,7 +15,7 @@
     - [Tips and Best Practices](./libs/result/tips_and_best_practices.md)
 - [slice](./libs/slice/slice.md)
 - [sync](./libs/sync/sync.md)
-    - [channel](./libs/sync/channel.md)
+    - [Channels](./libs/sync/channels.md)
     - [RwLock](./libs/sync/rwlock.md)
     - [Mutex](./libs/sync/mutex.md)
 
