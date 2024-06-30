@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 
-/// Creates a new mpsc channel, returning the [Sender] and [Reciever]. Each item [T] sent by the [Sender]
-/// will only be seen once by the [Reciever]. If the [Sender] calls [close] while the [Reciever]s buffer
-/// is not empty, the [Reciever] will yield the remaining items in the buffer until empty.
-(Sender<T>, Reciever<T>) channel<T>() {
+/// Creates a new channel, returning the [Sender] and [Receiver]. Each item [T] sent by the [Sender]
+/// will only be seen once by the [Receiver]. If the [Sender] calls [close] while the [Receiver]s buffer
+/// is not empty, the [Receiver] will yield the remaining items in the buffer until empty.
+(Sender<T>, Receiver<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();
-  return (controller.sink, Reciever(controller.stream));
+  return (controller.sink, Receiver(controller.stream));
 }
 
 /// The sending-half of [channel].
@@ -21,8 +21,8 @@ extension SenderExtension<T> on Sender<T> {
   void sendError(Object t) => addError(t);
 }
 
-/// The recieving-half of [channel]. [Reciever]s do not close if the [Sender] sends an error.
-class Reciever<T> {
+/// The receiving-half of [channel]. [Receiver]s do not close if the [Sender] sends an error.
+class Receiver<T> {
   late final StreamSubscription<T> _streamSubscription;
   final List<Result<T, Object>> _buffer = [];
   bool _isClosed = false;
@@ -30,7 +30,7 @@ class Reciever<T> {
 
   bool get isClosed => _isClosed;
 
-  Reciever(Stream<T> stream) {
+  Receiver(Stream<T> stream) {
     _streamSubscription = stream.listen((data) {
       assert(!_isClosed);
       _buffer.add(Ok(data));
