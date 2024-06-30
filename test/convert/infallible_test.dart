@@ -1,5 +1,5 @@
 import 'package:rust_core/result.dart';
-import 'package:rust_core/typedefs.dart';
+import 'package:rust_core/convert.dart';
 import 'package:test/test.dart';
 
 void main() {

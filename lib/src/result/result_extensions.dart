@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:rust_core/result.dart';
-import 'package:rust_core/typedefs.dart';
+import 'package:rust_core/convert.dart';
 import 'package:rust_core/option.dart';
 
 extension FlattenExtension<S, F extends Object> on Result<Result<S, F>, F> {

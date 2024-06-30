@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:rust_core/result.dart';
 import 'package:rust_core/panic.dart';
-import 'package:rust_core/typedefs.dart';
+import 'package:rust_core/convert.dart';
 import 'package:rust_core/iter.dart';
 
 part 'future_option_extensions.dart';

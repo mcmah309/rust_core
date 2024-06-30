@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:rust_core/typedefs.dart';
+import 'package:rust_core/convert.dart';
 import 'package:rust_core/panic.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/iter.dart';
@@ -610,8 +610,3 @@ typedef _ResultEarlyReturnFunction<S, F extends Object> = Result<S, F> Function(
 
 typedef _AsyncResultEarlyReturnFunction<S, F extends Object>
     = Future<Result<S, F>> Function(_ResultEarlyReturnKey<F>);
-
-//************************************************************************//
-
-const okay = Ok(unit);
-const error = Err(unit);
