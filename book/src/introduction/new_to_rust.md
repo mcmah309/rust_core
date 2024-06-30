@@ -8,7 +8,7 @@ and want to improve your Rust while writing Dart, for whatever the reason, rust_
 Rust has a solid reputation for writing safe, maintainable, and performant code. rust_core is great start to learn and improve your rust semantics/knowledge. You will write Dart and learn Rust along the way. Just look at this Dart code:
 > Goal: Get the index of every "!" in a string not followed by a "?"
 ```dart
-import 'package:rust_core/prelude';
+import 'package:rust_core/rust_core.dart';
 
 void main() {
     List<int> answer = [];

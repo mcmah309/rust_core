@@ -33,7 +33,7 @@ fn main() {
 ```
 Dart equivalent with rust_core:
 ```dart
-import 'package:rust_core/prelude';
+import 'package:rust_core/rust_core.dart';
 
 void main() {
     List<int> answer = [];

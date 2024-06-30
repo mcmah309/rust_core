@@ -42,7 +42,7 @@ makes working with collections of `rust_core` types and regular Dart types a bre
 ## Dart vs Rust Example
 Goal: Get the index of every "!" in a string not followed by a "?"
 ```dart
-import 'package:rust_core/prelude';
+import 'package:rust_core/rust_core.dart';
 
 void main() {
     List<int> answer = [];

@@ -1,4 +1,4 @@
-# 0.5.6
+## 0.5.6
  
  - Add `Unreachable`
 
