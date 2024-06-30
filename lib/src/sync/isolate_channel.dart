@@ -2,33 +2,41 @@ part of 'channel.dart';
 
 class IsolateSender<T> extends Sender<T> {
   final SendPort _sPort;
-  final SendCodec<T> _codec;
+  final SendCodec<T>? _codec;
 
   IsolateSender._(this._codec, this._sPort);
 
   @override
   void send(T data) {
-    _sPort.send(_codec.encode(data));
+    if (_codec == null) {
+      _sPort.send(data);
+    } else {
+      _sPort.send(_codec.encode(data));
+    }
   }
 }
 
 class IsolateReceiver<T> extends LocalReceiver<T> {
-  IsolateReceiver._(SendCodec<T> codec, ReceivePort rPort)
+  IsolateReceiver._(SendCodec<T>? codec, ReceivePort rPort)
       : super._(rPort
             .map((data) {
               if (data is _CloseSignal) {
                 rPort.close();
                 return null;
-              } else {
+              } else if (codec != null) {
                 return codec.decode(data as ByteBuffer);
+              } else {
+                return data as T;
               }
             })
             .where((event) => event != null)
             .cast<T>());
 }
 
-Future<(IsolateSender<T> tx1, IsolateReceiver<T> rx1)> isolateChannel<T>(SendCodec<T> codec,
-    FutureOr<void> Function(IsolateSender<T> tx2, IsolateReceiver<T> rx2) func) async {
+Future<(IsolateSender<T> tx1, IsolateReceiver<U> rx1)> isolateChannel<T, U>(
+    FutureOr<void> Function(IsolateSender<U> tx2, IsolateReceiver<T> rx2) func,
+    {SendCodec<T>? toIsolateCodec,
+    SendCodec<U>? fromIsolateCodec}) async {
   final receiveFromIsolate = RawReceivePort();
   SendPort? sendToIsolate;
   receiveFromIsolate.handler = (sendPort) {
@@ -38,8 +46,8 @@ Future<(IsolateSender<T> tx1, IsolateReceiver<T> rx1)> isolateChannel<T>(SendCod
     final receiveFromMain = ReceivePort();
     sendToMain.send(receiveFromMain.sendPort);
 
-    final isolateReceiver = IsolateReceiver._(codec, receiveFromMain);
-    final isolateSender = IsolateSender._(codec, sendToMain);
+    final isolateReceiver = IsolateReceiver._(toIsolateCodec, receiveFromMain);
+    final isolateSender = IsolateSender._(fromIsolateCodec, sendToMain);
 
     try {
       await func(isolateSender, isolateReceiver);
@@ -58,13 +66,13 @@ Future<(IsolateSender<T> tx1, IsolateReceiver<T> rx1)> isolateChannel<T>(SendCod
   }
 
   // Work-around for not being able to pass Completers since 'dart:async` is now unsendable.
-  // Should only be called zero to two times.
+  // Should only loop zero to two times based on Dart's async scheduler.
   while (sendToIsolate == null) {
     await Future.delayed(Duration.zero);
   }
 
-  final receiver = IsolateReceiver._(codec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
-  final sender = IsolateSender._(codec, sendToIsolate!);
+  final receiver = IsolateReceiver._(fromIsolateCodec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
+  final sender = IsolateSender._(toIsolateCodec, sendToIsolate!);
 
   return (sender, receiver);
 }
