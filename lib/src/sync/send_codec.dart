@@ -74,23 +74,23 @@ class BooleanCodec implements SendCodec<bool> {
 //************************************************************************//
 
 class ListSizedTCodec<T> implements SendCodec<List<T>> {
-  final SendCodec<T> _codec;
-  final int _bytesPerT;
+  final SendCodec<T> _tCodec;
+  final int tSizeInBytes;
 
-  const ListSizedTCodec(this._codec, this._bytesPerT) : assert(_bytesPerT > 0);
+  const ListSizedTCodec(this._tCodec, this.tSizeInBytes) : assert(tSizeInBytes > 0);
 
   @override
   List<T> decode(ByteBuffer buffer) {
     final byteData = buffer.asByteData();
     final length = byteData.getInt64(0, Endian.big);
-    assert(byteData.lengthInBytes == 8 + length * _bytesPerT);
+    assert(byteData.lengthInBytes == 8 + length * tSizeInBytes);
     final list = List<T?>.filled(length, null);
     for (int i = 0; i < length; i++) {
-      final elementBytes = ByteData(_bytesPerT);
-      for (int j = 0; j < _bytesPerT; j++) {
-        elementBytes.setUint8(j, byteData.getUint8(8 + j + i * _bytesPerT));
+      final elementBytes = ByteData(tSizeInBytes);
+      for (int j = 0; j < tSizeInBytes; j++) {
+        elementBytes.setUint8(j, byteData.getUint8(8 + j + i * tSizeInBytes));
       }
-      list[i] = _codec.decode(elementBytes.buffer);
+      list[i] = _tCodec.decode(elementBytes.buffer);
     }
     return list.cast<T>();
   }
@@ -98,13 +98,13 @@ class ListSizedTCodec<T> implements SendCodec<List<T>> {
   @override
   ByteBuffer encode(List<T> data) {
     final length = data.length;
-    final bytes = ByteData(8 + length * _bytesPerT);
+    final bytes = ByteData(8 + length * tSizeInBytes);
     bytes.setInt64(0, length, Endian.big);
     for (int i = 0; i < data.length; i++) {
-      final elementBytes = _codec.encode(data[i]).asByteData();
-      assert(elementBytes.lengthInBytes == _bytesPerT);
-      for (int j = 0; j < _bytesPerT; j++) {
-        bytes.setUint8(8 + j + i * _bytesPerT, elementBytes.getUint8(j));
+      final elementBytes = _tCodec.encode(data[i]).asByteData();
+      assert(elementBytes.lengthInBytes == tSizeInBytes);
+      for (int j = 0; j < tSizeInBytes; j++) {
+        bytes.setUint8(8 + j + i * tSizeInBytes, elementBytes.getUint8(j));
       }
     }
     return bytes.buffer;

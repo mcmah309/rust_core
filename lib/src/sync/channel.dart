@@ -11,7 +11,7 @@ part 'isolate_channel.dart';
 /// Creates a new channel, returning the [Sender] and [LocalReceiver]. Each item [T] sent by the [Sender]
 /// will only be seen once by the [LocalReceiver]. If the [Sender] calls [close] while the [LocalReceiver]s buffer
 /// is not empty, the [LocalReceiver] will still yield the remaining items in the buffer until empty.
-(Sender<T>, LocalReceiver<T>) channel<T>() {
+(Sender<T>, Receiver<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();
   return (LocalSender._(controller.sink), LocalReceiver._(controller.stream));
@@ -64,12 +64,13 @@ class LocalSender<T> implements Sender<T> {
 }
 
 /// [Receiver] for a single isolate.
-class LocalReceiver<T> {
+class LocalReceiver<T> implements Receiver<T> {
   late final StreamSubscription<T> _streamSubscription;
   final List<Result<T, Object>> _buffer = [];
   bool _isClosed = false;
   Completer _waker = Completer();
 
+  @override
   bool get isClosed => _isClosed;
 
   LocalReceiver._(Stream<T> stream) {
@@ -95,11 +96,7 @@ class LocalReceiver<T> {
     }, cancelOnError: false);
   }
 
-  /// Attempts to wait for a value on this receiver, returning [Err] of:
-  ///
-  /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
-  ///
-  /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
+  @override
   Future<Result<T, RecvError>> recv() async {
     try {
       return await _next();
@@ -108,13 +105,7 @@ class LocalReceiver<T> {
     }
   }
 
-  /// Attempts to wait for a value on this receiver with a time limit, returning [Err] of:
-  ///
-  /// [DisconnectedError] if the [Sender] called [close] and the buffer is empty.
-  ///
-  /// [OtherError] if the item in the buffer is an error, indicated by the sender calling [addError].
-  ///
-  /// [TimeoutError] if the time limit is reached before the [Sender] sent any more data.
+  @override
   Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit) async {
     try {
       return await _next()
@@ -127,7 +118,7 @@ class LocalReceiver<T> {
     }
   }
 
-  /// Returns an [RIterator] that drains the current buffer.
+  @override
   RIterator<T> iter() {
     return RIterator.fromIterable(_iter());
   }
@@ -143,7 +134,7 @@ class LocalReceiver<T> {
     }
   }
 
-  /// Returns a [Stream] of values ending once [DisconnectedError] is yielded.
+  @override
   Stream<T> stream() async* {
     while (true) {
       final rec = await recv();
