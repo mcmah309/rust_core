@@ -7,7 +7,7 @@
 
 [rust_core](https://github.com/mcmah309/rust_core) is an implementation of Rust's Core Library in Dart, bringing the power of Rust to Dart!
 
-[Rust Core Book 📖](mcmah309.github.io/rust_core)
+[Rust Core Book 📖](https://mcmah309.github.io/rust_core)
 
 # Project Goals
 

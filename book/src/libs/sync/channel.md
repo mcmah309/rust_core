@@ -1,6 +1,7 @@
 # channel
 
-`channel` is similar to `StreamController` except it buffers data until read and will never throw.
+`channel` is used for communication between produces and consumers. `channel` is
+similar to `StreamController` except it buffers data until read and will never throw.
 In more detail, `channel` returns a `Sender` and `Receiver`. Each item `T` sent by the `Sender`
 will only be seen once by the `Receiver`. If the `Sender` calls `close` while the `Receiver`'s buffer
 is not empty, the `Receiver` will still yield the remaining items in the buffer until empty.

@@ -81,7 +81,7 @@ class _ReadWriteMutexRequest {
 ///
 /// The current implementation lets locks be acquired in first-in-first-out
 /// order. This ensures there will not be any lock starvation, which can
-/// happen if some locks are prioritised over others.
+/// happen if some locks are prioritized over others.
 class RwLock {
   /// List of requests waiting for a lock on this mutex.
   final _waiting = <_ReadWriteMutexRequest>[];
