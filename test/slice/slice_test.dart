@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_types_as_parameter_names
 
+import 'package:rust_core/array.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 
@@ -75,6 +77,33 @@ main() {
     expect(remainder, []);
     expect(() => slice.asRchunks(0), throwsA(isA<Object>()));
     expect(() => slice.asRchunks(-1), throwsA(isA<Object>()));
+  });
+
+  test('binarySearch and partitionPoint', () {
+    Slice<num> s = [0, 1, 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55].slice();
+    expect(s.binarySearch(13), Ok(9));
+    expect(s.binarySearch(4), Err(7));
+    expect(s.binarySearch(100), Err(13));
+
+    var r = s.binarySearch(1);
+    expect(r, anyOf([Ok(1), Ok(2), Ok(3), Ok(4)]));
+
+    int low = s.partitionPoint((x) => x < 1);
+    expect(low, 1);
+
+    int high = s.partitionPoint((x) => x <= 1);
+    expect(high, 5);
+
+    r = s.binarySearch(1);
+    expect(r is Ok ? range(low, high).contains(r.unwrap()) : false, true);
+
+    expect(s.slice(0, low).every((x) => x < 1), true);
+    expect(s.slice(low, high).every((x) => x == 1), true);
+    expect(s.slice(high).every((x) => x > 1), true);
+
+    expect(s.partitionPoint((x) => x < 11), 9);
+    expect(s.partitionPoint((x) => x <= 11), 9);
+    expect(s.binarySearch(11), Err(9));
   });
 
   test("copyFromSlice", () {

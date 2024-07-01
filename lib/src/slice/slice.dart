@@ -33,7 +33,7 @@ final class SliceIterator<T> implements Iterator<T> {
 
 /// A contiguous sequence of elements in a [List]. Slices are a view into a list without allocating and copying to a new list,
 /// as such, they do not own their own data.
-/// Note: Shrinking the original list can cause the slices range to become invalid, which may cause an exception.
+/// Note: Shrinking the original list can cause the slices range to become invalid, which may cause an exception or unintended behavior.
 final class Slice<T> implements Iterable<T> {
   int _start;
   int _end;
@@ -111,8 +111,9 @@ final class Slice<T> implements Iterable<T> {
 // as_ptr: Will not implement, not possible in Dart
 // as_ptr_range: Will not implement, not possible in Dart
 
-// Splits the slice into a slice of N-element arrays, starting at the end of the slice, and a remainder slice with length strictly less than N
-(Arr<T> remainder, Arr<Arr<T>> chunks) asRchunks(int n) {
+  /// Splits the slice into a slice of N-element arrays, starting at the end of the slice,
+  /// and a remainder slice with length strictly less than N
+  (Arr<T> remainder, Arr<Arr<T>> chunks) asRchunks(int n) {
     // Dev Note: No need to a panic in release mode, `Arr()` already does a check
     assert(n > 0, "'n' must be positive");
     final length = len();
@@ -136,7 +137,7 @@ final class Slice<T> implements Iterable<T> {
 // as_simd: Will not implement, not possible in Dart
 // as_simd_mut: Will not implement, covered by as_simd
 // as_str: Will not implement, not possible in Dart
-// binary_search: //todo;
+// binary_search: implemented in extension
 // binary_search_by: //todo
 // binary_search_by_key: //todo
 // chunks: Will not implement, covered by array_chunks
@@ -328,14 +329,35 @@ final class Slice<T> implements Iterable<T> {
 
   /// Returns the length of the slice.
   @pragma("vm:prefer-inline")
-  int len() =>  _end - _start;
+  int len() => _end - _start;
 
 // make_ascii_lowercase: Will not implement, not possible in Dart
 // make_ascii_uppercase: Will not implement, not possible in Dart
 // partition_dedup: //todo
 // partition_dedup_by: //todo
 // partition_dedup_by_key: //todo
-// partition_point: //todo
+
+  /// Returns the index of the partition point according to the given predicate (the index of the first element of the second partition).
+  /// The slice is assumed to be partitioned according to the given predicate. This means that all elements for which the predicate returns
+  /// true are at the start of the slice and all elements for which the predicate returns false are at the end.
+  /// For example, [7, 15, 3, 5, 4, 12, 6] is partitioned under the predicate x % 2 != 0 (all odd numbers are at the start, all even at the end).
+  /// If this slice is not partitioned, the returned result is unspecified and meaningless, as this method performs a kind of binary search.
+  int partitionPoint(bool Function(T) predicate) {
+    int low = 0;
+    int high = length;
+
+    while (low < high) {
+      int mid = (low + high) >> 1;
+      if (predicate(this[mid])) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+
+    return low;
+  }
+
 // rchunks: //todo
 // rchunks_exact: //todo
 // rchunks_exact_mut: Will not implement, covered by rchunks_exact
@@ -647,12 +669,12 @@ final class Slice<T> implements Iterable<T> {
 // trim_ascii_end: Will not implement, not possible in Dart
 // trim_ascii_start: Will not implement, not possible in Dart
 
-  /// Returns an iterator over all contiguous windows of length size. The windows overlap. 
+  /// Returns an iterator over all contiguous windows of length size. The windows overlap.
   /// If the slice is shorter than size, the iterator returns no values.
   RIterator<Slice<T>> windows(int size) {
     // Dev Note: No need to a panic in release mode, `Iterable.generate` already does a check
     assert(size > 0, "Size must be positive");
-    if(size > _end - _start){
+    if (size > _end - _start) {
       return RIterator.fromIterable(const []);
     }
     return RIterator(Iterable.generate(

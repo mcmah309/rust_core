@@ -45,6 +45,32 @@ extension SliceOnComparableSliceExtension<T extends Comparable<T>> on Slice<T> {
     }
     return true;
   }
+
+  /// Binary searches this slice for a given element. If the slice is not sorted, the returned result is unspecified and meaningless.
+  ///
+  /// If the value is found then [Ok] is returned, containing the index of the matching element.
+  /// If there are multiple matches, then any one of the matches could be returned.
+  /// The index is chosen deterministically, but is subject to change in future versions.
+  /// If the value is not found then [Err] is returned, containing the index where a matching element could be inserted
+  ///  while maintaining sorted order.
+  Result<int, int> binarySearch(T x) {
+    int left = 0;
+    int right = length - 1;
+
+    while (left <= right) {
+      int mid = left + ((right - left) >> 1);
+      if (this[mid] == x) {
+        return Ok(mid);
+      } else if (this[mid].compareTo(x) < 0) {
+        left = mid + 1;
+      } else {
+        right = mid - 1;
+      }
+    }
+
+    // If not found, return the index where it can be inserted to maintain sorted order.
+    return Err(left);
+  }
 }
 
 //************************************************************************//
@@ -80,8 +106,7 @@ void _swap<T extends Comparable<T>>(List<T> list, int i, int j) {
 
 //************************************************************************//
 
-void _quickSortBy<T>(
-    Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
+void _quickSortBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
   if (low < high) {
     int pivotIndex = _partitionBy(slice, low, high, compare);
     _quickSortBy(slice, low, pivotIndex - 1, compare);
@@ -89,8 +114,7 @@ void _quickSortBy<T>(
   }
 }
 
-int _partitionBy<T>(
-    Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
+int _partitionBy<T>(Slice<T> slice, int low, int high, int Function(T a, T b) compare) {
   T pivot = slice._list[high];
   int i = low - 1;
 
