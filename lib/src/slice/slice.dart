@@ -490,8 +490,50 @@ final class Slice<T> implements Iterable<T> {
     }
   }
 
-// rotate_left: //todo
-// rotate_right: //todo
+  /// Rotates the slice in-place such that the first mid elements of the slice move to the end while the 
+  /// last `this.len() - mid` elements move to the front. After calling [rotateLeft], the element previously
+  /// at index mid will become the first element in the slice.
+  void rotateLeft(int mid) {
+    int length = len();
+    if (mid > length) {
+      throw ArgumentError("mid is greater than the length of the list.");
+    }
+    if (mid == length || mid == 0) {
+      return;
+    }
+
+    _reverse(this, 0, mid - 1);
+    _reverse(this, mid, length - 1);
+    _reverse(this, 0, length - 1);
+  }
+
+  /// Rotates the slice in-place such that the first `this.len() - k` elements of the slice move to the
+  /// end while the last k elements move to the front. After calling rotate_right, the element
+  /// previously at index `this.len() - k` will become the first element in the slice.
+  void rotateRight(int k) {
+    int length = len();
+    if (k > length) {
+      throw ArgumentError("mid is greater than the length of the list.");
+    }
+    if (k == length || k == 0) {
+      return;
+    }
+
+    k = length - k; // Adjust mid for right rotation
+    _reverse(this, 0, k - 1);
+    _reverse(this, k, length - 1);
+    _reverse(this, 0, length - 1);
+  }
+
+  void _reverse(Slice<T> list, int start, int end) {
+    while (start < end) {
+      T temp = list.getUnchecked(start);
+      list.setUnchecked(start, list.getUnchecked(end));
+      list.setUnchecked(end, temp);
+      start++;
+      end--;
+    }
+  }
 
   /// Returns an iterator over subslices separated by elements that match pred,
   /// starting at the end of the slice and working backwards.
