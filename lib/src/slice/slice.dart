@@ -196,6 +196,27 @@ final class Slice<T> implements Iterable<T> {
     return Err(left);
   }
 
+  /// Returns an iterator over the slice producing non-overlapping runs of elements
+  /// using the predicate to separate them.
+  /// `[1, 1, 1, 3, 3]` => `[[1, 1, 1], [3, 3]]` for `(a, b) => a == b`
+  /// The predicate is called for every pair of consecutive elements.
+  RIterator<Slice<T>> chunkBy(bool Function(T, T) compare) {
+    return RIterator(_chunkByHelper(compare).iterator);
+  }
+
+  Iterable<Slice<T>> _chunkByHelper(bool Function(T, T) compare) sync* {
+    var start = _start;
+    var end = _start;
+    while (end < _end) {
+      if (!compare(_list[start], _list[end])) {
+        yield Slice(_list, start, end);
+        start = end;
+      }
+      end++;
+    }
+    yield Slice(_list, start, end);
+  }
+
   /// Returns an iterator over [chunkSize] elements of the slice at a time, starting at the beginning of the slice.
   /// The chunks are slices and do not overlap. If [chunkSize] does not divide the length of the slice,
   /// then the last chunk will not have length chunkSize.
@@ -316,7 +337,7 @@ final class Slice<T> implements Iterable<T> {
     return Some(getUnchecked(index));
   }
 
-  /// Returns mutable references to many indices at once.
+  /// Returns many indices at once.
   /// Returns an error if any index is out-of-bounds.
   Result<Arr<T>, GetManyError> getMany(Arr<int> indices) {
     final Arr<T?> array = Arr(null, indices.length);
@@ -349,26 +370,6 @@ final class Slice<T> implements Iterable<T> {
 // get_many_unchecked_mut: Will not implement, covered by get_many_unchecked
 // get_mut: Will not implement, mut the same as get
 // get_unchecked_mut: Will not implement, mut the same as get_unchecked
-
-  /// Returns an %iterator over the slice producing non-overlapping runs of elements using the predicate to separate them.
-  RIterator<Slice<T>> groupBy(bool Function(T, T) compare) {
-    return RIterator(_groupByHelper(compare).iterator);
-  }
-
-  Iterable<Slice<T>> _groupByHelper(bool Function(T, T) compare) sync* {
-    var start = _start;
-    var end = _start;
-    while (end < _end) {
-      if (!compare(_list[start], _list[end])) {
-        yield Slice(_list, start, end);
-        start = end;
-      }
-      end++;
-    }
-    yield Slice(_list, start, end);
-  }
-
-// group_by_mut: Will not implement, covered by group_by
 // is_ascii: Will not implement, not possible in Dart
 
   @override

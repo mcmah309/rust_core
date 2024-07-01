@@ -215,6 +215,16 @@ main() {
     expect(s.binarySearchByKey(11, (x) => x.$2), Err(9));
   });
 
+  test("chunkBy", () {
+    var list = [1, 1, 1, 3, 3, 2, 2, 2];
+    var slice = list.asSlice();
+    var iter = slice.chunkBy((num1, num2) => num1 == num2);
+    expect(iter.next().unwrap(), [1, 1, 1]);
+    expect(iter.next().unwrap(), [3, 3]);
+    expect(iter.next().unwrap(), [2, 2, 2]);
+    expect(iter.next().isNone(), true);
+  });
+
   test("chunks", () {
     var list = [1, 2, 3, 4, 5];
     var slice = list.slice();
@@ -354,16 +364,6 @@ main() {
     expect(slice.getManyUnchecked(Arr.constant(const [0, 1, 2, 3, 4])), [1, 2, 3, 4, 5]);
     expect(slice.getManyUnchecked(Arr.constant(const [1, 3])), [2, 4]);
     expect(slice.getManyUnchecked(Arr.constant(const [])), []);
-  });
-
-  test("groupBy", () {
-    var list = [1, 1, 1, 3, 3, 2, 2, 2];
-    var slice = list.asSlice();
-    var iter = slice.groupBy((num1, num2) => num1 == num2);
-    expect(iter.next().unwrap(), [1, 1, 1]);
-    expect(iter.next().unwrap(), [3, 3]);
-    expect(iter.next().unwrap(), [2, 2, 2]);
-    expect(iter.next().isNone(), true);
   });
 
   test("isSorted", () {
