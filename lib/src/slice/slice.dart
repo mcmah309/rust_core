@@ -398,7 +398,15 @@ final class Slice<T> implements Iterable<T> {
     return Some(_list[_end - 1]);
   }
 
-// last_chunk: //todo
+
+  /// Return an array with the last N items in the slice. If the slice is not at least N in length, this will return None.
+  Option<Arr<T>> lastChunk(int n) {
+    if (n > len()) {
+      return None;
+    }
+    return Some(Arr.generate(n, (index) => _list[_end - n + index]));
+  }
+
 // last_chunk_mut: Will not implement, covered by last_chunk
 // last_mut: Will not implement, covered by last
 

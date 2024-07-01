@@ -367,6 +367,26 @@ main() {
     expect(slice.isSortedByKey((num) => num), true);
   });
 
+  test("lastChunk", (){
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    expect(slice.lastChunk(2), Some([4, 5]));
+
+    slice = Slice(list, 1, 4);
+    expect(slice.lastChunk(2), Some([3, 4]));
+
+    slice = Slice(list, 0, 5);
+    expect(slice.lastChunk(5), Some([1, 2, 3, 4, 5]));
+
+    slice = Slice(list, 1, 4);
+    expect(slice.lastChunk(5), None);
+
+    list = [];
+    slice = list.asSlice();
+    expect(slice.lastChunk(1), None);
+    expect(slice.lastChunk(0), Some([]));
+  });
+
   test("reverse", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
