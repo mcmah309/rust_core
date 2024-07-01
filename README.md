@@ -68,7 +68,6 @@ void main() {
 rust_core's primary goal is to bring Rust's features and ergonomics to Dart.
 
 To accomplish this, Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a smooth idiomatic language-compatible integration.
-The result is developers now have access powerful tools previously only available to Rust developers and developer using
-both languages has a seamless experience.
+The result is developers now have access to powerful tools previously only available to Rust developers.
 
 True to the Rust philosophy, rust_core strives to bring reliability and performance in every feature. Every feature is robustly tested. Over 500 meaningful test suites and counting.
