@@ -5,6 +5,40 @@ import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 
 main() {
+  test("asChunks", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = list.slice();
+    var (chunks, remainder) = slice.asChunks(2);
+    expect(chunks, [
+      [1, 2],
+      [3, 4]
+    ]);
+    expect(remainder, [5]);
+    list = [1, 2, 3, 4];
+    slice = list.slice();
+    (chunks, remainder) = slice.asChunks(2);
+    expect(chunks, [
+      [1, 2],
+      [3, 4]
+    ]);
+    expect(remainder, []);
+    list = [];
+    slice = list.slice();
+    (chunks, remainder) = slice.asChunks(2);
+    expect(chunks, []);
+    expect(remainder, []);
+    list = [1];
+    slice = list.slice();
+    (chunks, remainder) = slice.asChunks(2);
+    expect(chunks, []);
+    expect(remainder, [1]);
+    (chunks, remainder) = slice.asChunks(1);
+    expect(chunks, [
+      [1]
+    ]);
+    expect(remainder, []);
+  });
+
   test("copyFromSlice", () {
     var srcList = [1, 2, 3, 4, 5];
     var dstList = [6, 7, 8, 9, 10];
@@ -60,12 +94,9 @@ main() {
     expect(slice.getMany(const [0, 1, 2, 3, 4]).unwrap(), [1, 2, 3, 4, 5]);
     expect(slice.getMany(const [1, 3]).unwrap(), [2, 4]);
     expect(slice.getMany(const []).unwrap(), []);
-    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr(),
-        GetManyErrorTooManyIndices());
-    expect(slice.getMany(const [0, 1, 6]).unwrapErr(),
-        GetManyErrorRequestedIndexOutOfBounds());
-    expect([].asSlice().getMany(const [0]).unwrapErr(),
-        GetManyErrorTooManyIndices());
+    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr(), GetManyErrorTooManyIndices());
+    expect(slice.getMany(const [0, 1, 6]).unwrapErr(), GetManyErrorRequestedIndexOutOfBounds());
+    expect([].asSlice().getMany(const [0]).unwrapErr(), GetManyErrorTooManyIndices());
     expect([].asSlice().getMany(const []).unwrap(), []);
     expect([1].asSlice().getMany(const []).unwrap(), []);
   });
@@ -243,10 +274,8 @@ main() {
     expect(list.asSlice().rsplitOnce((num) => num == 2).unwrap().$2, [4]);
     expect(list.asSlice().rsplitOnce((num) => num == 0).isNone(), true);
     expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$1, []);
-    expect(
-        list.asSlice().rsplitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
-    expect(
-        list.asSlice().rsplitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
+    expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
+    expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
     expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$2, []);
   });
 
@@ -383,10 +412,8 @@ main() {
     expect(list.asSlice().splitOnce((num) => num == 2).unwrap().$2, [3, 2, 4]);
     expect(list.asSlice().splitOnce((num) => num == 0).isNone(), true);
     expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$1, []);
-    expect(
-        list.asSlice().splitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
-    expect(
-        list.asSlice().splitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
+    expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
+    expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
     expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$2, []);
   });
 
@@ -460,9 +487,7 @@ main() {
     expect(slice.stripPrefix([1, 2, 4].asSlice()).isNone(), true);
     expect(slice.stripPrefix([1, 3].asSlice()).isNone(), true);
     expect(slice.stripPrefix([2].asSlice()).isNone(), true);
-    expect(
-        slice.stripPrefix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(),
-        true);
+    expect(slice.stripPrefix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(), true);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
@@ -491,9 +516,7 @@ main() {
     expect(slice.stripSuffix([1, 2, 4].asSlice()).isNone(), true);
     expect(slice.stripSuffix([1, 3].asSlice()).isNone(), true);
     expect(slice.stripSuffix([2].asSlice()).isNone(), true);
-    expect(
-        slice.stripSuffix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(),
-        true);
+    expect(slice.stripSuffix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(), true);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);

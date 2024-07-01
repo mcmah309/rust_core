@@ -17,6 +17,7 @@ final class SliceIterator<T> implements Iterator<T> {
   SliceIterator(this._slice, this._index);
 
   @override
+  @pragma("vm:prefer-inline")
   bool moveNext() {
     if (_index + 1 < _slice._end) {
       _index++;
@@ -26,6 +27,7 @@ final class SliceIterator<T> implements Iterator<T> {
   }
 
   @override
+  @pragma("vm:prefer-inline")
   T get current => _slice._list[_index];
 }
 
@@ -37,14 +39,16 @@ final class Slice<T> implements Iterable<T> {
   int _end;
   final List<T> _list;
 
+  @pragma("vm:prefer-inline")
   Slice(this._list, this._start, this._end)
       : assert(_start >= 0 && _end <= _list.length, "Index out of bounds");
 
+  @pragma("vm:prefer-inline")
   Slice.fromList(List<T> list) : this(list, 0, list.length);
 
-  Slice.fromSlice(Slice<T> slice, [int start = 0, int end = -1])
-      : this(slice._list, slice._start + start,
-            end == -1 ? slice._end : slice._start + end);
+  @pragma("vm:prefer-inline")
+  Slice.fromSlice(Slice<T> slice, [int start = 0, int? end])
+      : this(slice._list, slice._start + start, end == null ? slice._end : slice._start + end);
 
   @override
   bool operator ==(Object other) {
@@ -52,10 +56,7 @@ final class Slice<T> implements Iterable<T> {
             other._start == _start &&
             other._end == _end &&
             other._list == _list) ||
-        (other is List<T> &&
-            other.length == _end &&
-            _start == 0 &&
-            _list == other);
+        (other is List<T> && other.length == _end && _start == 0 && _list == other);
   }
 
   @override
@@ -67,6 +68,7 @@ final class Slice<T> implements Iterable<T> {
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Iterator<T> get iterator => SliceIterator(this, _start - 1);
 
   //************************************************************************//
@@ -79,9 +81,28 @@ final class Slice<T> implements Iterable<T> {
 // as_ascii: Will not implement, not possible in Dart
 // as_ascii_unchecked: Will not implement, not possible in Dart
 // as_bytes: Will not implement, not possible in Dart
-// as_chunks: //todo, use Array
+
+  /// Splits the slice into a slice of N-element arrays, starting at the beginning of the slice, and a remainder slice with length strictly less than N.
+  (Arr<Arr<T>> chunks, Arr<T> remainder) asChunks(int n) {
+    assert(n > 0, "'n' must be positive");
+    final numOfChunks = (_end - _start) ~/ n;
+    final Arr<Arr<T?>> chunks = Arr.generate(numOfChunks, (i) => Arr(null, n));
+    for (var i = 0; i < chunks.len(); i++) {
+      for (var j = 0; j < n; j++) {
+        chunks[i][j] = this[i * n + j];
+      }
+      chunks[i] = chunks[i].cast<T>();
+    }
+    final remainderLength = (_end - _start) % n;
+    var remainder = Arr<T?>(null, remainderLength);
+    for (var i = 0; i < remainderLength; i++) {
+      remainder[i] = this[i + chunks.len() * n];
+    }
+    return (chunks.cast<Arr<T>>(), remainder.cast<T>());
+  }
+
 // as_chunks_mut: Will not implement, covered by as_chunks
-// as_chunks_unchecked: //todo, use Array, see getMany for example
+// as_chunks_unchecked: Will not implement, covered by as_chunks
 // as_chunks_unchecked_mut: Will not implement, covered by as_chunks_unchecked
 // as_mut_ptr: Will not implement, not possible in Dart
 // as_mut_ptr_range: Will not implement, not possible in Dart
@@ -197,8 +218,7 @@ final class Slice<T> implements Iterable<T> {
     assert(isNotEmpty, "Requested indices, but this slice is empty.");
     var array = Arr(this.first, indices.length);
     for (final (int i, int index) in indices.iter().enumerate()) {
-      assert(index >= _start && index < _end,
-          "The requiested index out of bounds");
+      assert(index >= _start && index < _end, "The requiested index out of bounds");
       array[i] = this[index];
     }
     return array;
@@ -333,10 +353,7 @@ final class Slice<T> implements Iterable<T> {
   /// indices from [len - N, len) (excluding the index len itself).
   (Slice<T>, Slice<T>) rsplitAt(int index) {
     assert(index >= 0 && index <= _end - _start, "Index out of bounds");
-    return (
-      Slice(_list, _start, _end - index),
-      Slice(_list, _end - index, _end)
-    );
+    return (Slice(_list, _start, _end - index), Slice(_list, _end - index, _end));
   }
 
 // rsplit_array: Will not implement, would need to allocate another list for the Dart version
@@ -351,8 +368,7 @@ final class Slice<T> implements Iterable<T> {
     var index = _end - 1;
     while (index >= _start) {
       if (pred(_list[index])) {
-        return Some(
-            (Slice(_list, _start, index), Slice(_list, index + 1, _end)));
+        return Some((Slice(_list, _start, index), Slice(_list, index + 1, _end)));
       }
       index--;
     }
@@ -407,10 +423,7 @@ final class Slice<T> implements Iterable<T> {
   /// and the second slice will contain all indices from [N, len) (excluding the index len itself).
   (Slice<T>, Slice<T>) splitAt(int index) {
     assert(index >= 0 && index <= _end - _start, "Index out of bounds");
-    return (
-      Slice(_list, _start, _start + index),
-      Slice(_list, _start + index, _end)
-    );
+    return (Slice(_list, _start, _start + index), Slice(_list, _start + index, _end));
   }
 
 // split_at_mut: Implemented by splitAt
@@ -474,8 +487,7 @@ final class Slice<T> implements Iterable<T> {
     var index = _start;
     while (index < _end) {
       if (pred(_list[index])) {
-        return Some(
-            (Slice(_list, _start, index), Slice(_list, index + 1, _end)));
+        return Some((Slice(_list, _start, index), Slice(_list, index + 1, _end)));
       }
       index++;
     }
@@ -552,8 +564,7 @@ final class Slice<T> implements Iterable<T> {
   /// The length of other must be the same as this.
   /// Will throw if the length of other is not the same as this.
   void swapWithSlice(Slice<T> other) {
-    assert(_end - _start == other._end - other._start,
-        "Slices must be the same length");
+    assert(_end - _start == other._end - other._start, "Slices must be the same length");
     for (var i = 0; i < _end - _start; i++) {
       var temp = _list[i + _start];
       _list[i + _start] = other._list[i + other._start];
@@ -613,15 +624,19 @@ final class Slice<T> implements Iterable<T> {
 
   RIterator<Slice<T>> windows(int size) {
     assert(size > 0, "Size must be positive");
-    assert(size <= _end - _start,
-        "Size must be less than or equal to the length of the slice");
-    return RIterator(Iterable.generate(_end - _start - size + 1,
-        (i) => Slice(_list, _start + i, _start + i + size)).iterator);
+    assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
+    return RIterator(Iterable.generate(
+        _end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)).iterator);
   }
 
   T operator [](int index) => _list[index + _start];
 
   void operator []=(int index, T value) => _list[index + _start] = value;
+
+  @pragma("vm:prefer-inline")
+  Slice<T> slice([int start = 0, int? end]) {
+    return Slice.fromSlice(this, start, end);
+  }
 
   // Iterable: Overriding iterable methods
   //************************************************************************//
@@ -630,12 +645,10 @@ final class Slice<T> implements Iterable<T> {
   bool any(bool Function(T) f) => _list.getRange(_start, _end).any(f);
 
   @override
-  RIterator<U> cast<U>() =>
-      RIterator(_list.getRange(_start, _end).cast<U>().iterator);
+  RIterator<U> cast<U>() => RIterator(_list.getRange(_start, _end).cast<U>().iterator);
 
   @override
-  bool contains(Object? element) =>
-      _list.getRange(_start, _end).contains(element);
+  bool contains(Object? element) => _list.getRange(_start, _end).contains(element);
 
   @override
   T elementAt(int index) => _list.getRange(_start, _end).elementAt(index);
@@ -663,8 +676,7 @@ final class Slice<T> implements Iterable<T> {
   void forEach(void Function(T) f) => _list.getRange(_start, _end).forEach(f);
 
   @override
-  String join([String separator = '']) =>
-      _list.getRange(_start, _end).join(separator);
+  String join([String separator = '']) => _list.getRange(_start, _end).join(separator);
 
   @override
   T lastWhere(bool Function(T) f, {T Function()? orElse}) =>
@@ -674,8 +686,7 @@ final class Slice<T> implements Iterable<T> {
   int get length => _end - _start;
 
   @override
-  RIterator<U> map<U>(U Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).map(f).iterator);
+  RIterator<U> map<U>(U Function(T) f) => RIterator(_list.getRange(_start, _end).map(f).iterator);
 
   @override
   T reduce(T Function(T, T) f) => _list.getRange(_start, _end).reduce(f);
@@ -688,16 +699,14 @@ final class Slice<T> implements Iterable<T> {
       _list.getRange(_start, _end).singleWhere(f, orElse: orElse);
 
   @override
-  RIterator<T> skip(int count) =>
-      RIterator(_list.getRange(_start, _end).skip(count).iterator);
+  RIterator<T> skip(int count) => RIterator(_list.getRange(_start, _end).skip(count).iterator);
 
   @override
   RIterator<T> skipWhile(bool Function(T) f) =>
       RIterator(_list.getRange(_start, _end).skipWhile(f).iterator);
 
   @override
-  RIterator<T> take(int count) =>
-      RIterator(_list.getRange(_start, _end).take(count).iterator);
+  RIterator<T> take(int count) => RIterator(_list.getRange(_start, _end).take(count).iterator);
 
   @override
   RIterator<T> takeWhile(bool Function(T) f) =>
@@ -715,6 +724,5 @@ final class Slice<T> implements Iterable<T> {
       RIterator(_list.getRange(_start, _end).where(f).iterator);
 
   @override
-  RIterator<U> whereType<U>() =>
-      RIterator(_list.getRange(_start, _end).whereType<U>().iterator);
+  RIterator<U> whereType<U>() => RIterator(_list.getRange(_start, _end).whereType<U>().iterator);
 }

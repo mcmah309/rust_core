@@ -5,16 +5,26 @@ import 'package:rust_core/iter.dart';
 
 /// A fixed-size array, denoted as [T; N] in Rust.
 extension type Arr<T>._(List<T> list) implements Iterable<T> {
+  @pragma("vm:prefer-inline")
   Arr(T defaultVal, int size)
       : list = List.filled(size, defaultVal, growable: false);
 
+  @pragma("vm:prefer-inline")
   const Arr.constant(this.list);
 
+  @pragma("vm:prefer-inline")
   Arr.fromList(this.list);
 
+  @pragma("vm:prefer-inline")
   Arr.empty() : list = const [];
 
+  @pragma("vm:prefer-inline")
+  Arr.generate(int length,  T Function(int) generator) : list =  List.generate(length, generator, growable: false);
+
+  @pragma("vm:prefer-inline")
   T operator [](int index) => list[index];
+
+  @pragma("vm:prefer-inline")
   void operator []=(int index, T value) => list[index] = value;
 
   // as_ascii: Will not be implemented, not possible in Dart
@@ -105,7 +115,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   /// Returns the length of an iterator.
   @pragma("vm:prefer-inline")
-  int length() => list.length;
+  int len() => list.length;
 
   /// Returns the single element of an iterator, None if this is empty or has more than one element.
   Option<T> single() {
