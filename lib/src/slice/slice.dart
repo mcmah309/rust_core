@@ -81,8 +81,7 @@ final class Slice<T> implements Iterable<T> {
   /// Returns an iterator over all contiguous windows of length size. The windows overlap.
   /// If the array is shorter than size, the iterator returns no values.
   RIterator<Arr<T>> arrayWindows(int size) {
-    // Dev Note: No need to a panic in release mode, `Iterable.generate` already does a check
-    assert(size > 0, "Size must be positive");
+    RangeError.checkNotNegative(size);
     return RIterator.fromIterable(_arrayWindowsHelper(size));
   }
 
@@ -107,14 +106,14 @@ final class Slice<T> implements Iterable<T> {
     final Arr<Arr<T?>> chunks = Arr.generate(numOfChunks, (i) => Arr(null, n));
     for (var i = 0; i < chunks.len(); i++) {
       for (var j = 0; j < n; j++) {
-        chunks[i][j] = this[i * n + j];
+        chunks[i][j] = getUnchecked(i * n + j);
       }
       chunks[i] = chunks[i].cast<T>();
     }
     final remainderLength = length % n;
     var remainder = Arr<T?>(null, remainderLength);
     for (var i = 0; i < remainderLength; i++) {
-      remainder[i] = this[i + chunks.len() * n];
+      remainder[i] = getUnchecked(i + chunks.len() * n);
     }
     return (chunks.cast<Arr<T>>(), remainder.cast<T>());
   }
@@ -136,13 +135,13 @@ final class Slice<T> implements Iterable<T> {
     final remainderLength = length % n;
     var remainder = Arr<T?>(null, remainderLength);
     for (var i = 0; i < remainderLength; i++) {
-      remainder[i] = this[i];
+      remainder[i] = getUnchecked(i);
     }
     final numOfChunks = length ~/ n;
     final Arr<Arr<T?>> chunks = Arr.generate(numOfChunks, (i) => Arr(null, n));
     for (var i = 0; i < chunks.len(); i++) {
       for (var j = 0; j < n; j++) {
-        chunks[i][j] = this[remainderLength + i * n + j];
+        chunks[i][j] = getUnchecked(remainderLength + i * n + j);
       }
       chunks[i] = chunks[i].cast<T>();
     }
@@ -162,7 +161,7 @@ final class Slice<T> implements Iterable<T> {
 
     while (left <= right) {
       int mid = left + ((right - left) >> 1);
-      int comp = comparator(this[mid]);
+      int comp = comparator(getUnchecked(mid));
 
       if (comp == 0) {
         return Ok(mid);
@@ -184,7 +183,7 @@ final class Slice<T> implements Iterable<T> {
 
     while (left <= right) {
       int mid = left + ((right - left) >> 1);
-      K midKey = keyExtractor(this[mid]);
+      K midKey = keyExtractor(getUnchecked(mid));
       int comp = midKey.compareTo(key);
 
       if (comp == 0) {
@@ -265,54 +264,43 @@ final class Slice<T> implements Iterable<T> {
 // flatten_mut: Will not implement, covered by flatten
 
   Option<T> get(int index) {
-    if (index < 0 || index >= _end - _start) {
+    if (index < 0 || index >= len()) {
       return None;
     }
-    return Some(this[index]);
+    return Some(getUnchecked(index));
   }
 
   /// Returns mutable references to many indices at once.
   /// Returns an error if any index is out-of-bounds.
-  Result<Arr<T>, GetManyError> getMany(List<int> indices) {
-    if (indices.length > _end - _start) {
-      return const Err(GetManyErrorTooManyIndices());
-    }
-    if (indices.isEmpty) {
-      return Ok(Arr.empty());
-    }
-    var array = Arr(this.first, indices.length);
+  Result<Arr<T>, GetManyError> getMany(Arr<int> indices) {
+    final Arr<T?> array = Arr(null, indices.length);
+    final length = len();
     for (final (int i, int index) in indices.iter().enumerate()) {
-      if (index < _start || index >= _end) {
+      if (index < 0 || index >= length) {
         return const Err(GetManyErrorRequestedIndexOutOfBounds());
       }
-      array[i] = this[index];
+      array[i] = getUnchecked(index);
     }
-    return Ok(array);
+    return Ok(array.cast<T>());
   }
 
 // get_many_mut: Will not implement, covered by get_many
 
   /// Returns mutable references to many indices at once, without doing any checks.
-  Arr<T> getManyUnchecked(List<int> indices) {
-    assert(indices.length <= _end - _start,
-        "The number of indices must be less than or equal to the length of the slice");
-    if (indices.isEmpty) {
-      return Arr.empty();
+  Arr<T> getManyUnchecked(Arr<int> indices) {
+    if(indices.isEmpty()){
+      return Arr.constant(const []);
     }
     assert(isNotEmpty, "Requested indices, but this slice is empty.");
     var array = Arr(this.first, indices.length);
     for (final (int i, int index) in indices.iter().enumerate()) {
-      assert(index >= _start && index < _end, "The requiested index out of bounds");
-      array[i] = this[index];
+      assert(index >= 0 && index < length, "The requested index `$index` out of bounds. Length was `$length`");
+      array[i] = getUnchecked(index);
     }
     return array;
   }
 // get_many_unchecked_mut: Will not implement, covered by get_many_unchecked
 // get_mut: Will not implement, mut the same as get
-
-  /// Returns the element at the given index without doing bounds checking.
-  getUnchecked(int index) => this[index];
-
 // get_unchecked_mut: Will not implement, mut the same as get_unchecked
 
   /// Returns an %iterator over the slice producing non-overlapping runs of elements using the predicate to separate them.
@@ -408,7 +396,7 @@ final class Slice<T> implements Iterable<T> {
 
     while (low < high) {
       int mid = (low + high) >> 1;
-      if (predicate(this[mid])) {
+      if (predicate(getUnchecked(mid))) {
         low = mid + 1;
       } else {
         high = mid;
@@ -732,8 +720,7 @@ final class Slice<T> implements Iterable<T> {
   /// Returns an iterator over all contiguous windows of length size. The windows overlap.
   /// If the slice is shorter than size, the iterator returns no values.
   RIterator<Slice<T>> windows(int size) {
-    // Dev Note: No need to a panic in release mode, `Iterable.generate` already does a check
-    assert(size > 0, "Size must be positive");
+    RangeError.checkNotNegative(size);
     return RIterator.fromIterable(_windowsHelper(size));
   }
 
@@ -745,11 +732,31 @@ final class Slice<T> implements Iterable<T> {
     }
   }
 
-  @pragma("vm:prefer-inline")
-  T operator [](int index) => _list[index + _start];
+  T operator [](int index) {
+    RangeError.checkNotNegative(index);
+    final n = index + _start;
+    if (n >= _end) {
+      throw RangeError.range(index, 0, len());
+    }
+    return _list[n];
+  }
 
+  /// Returns the element at the given index without doing bounds checking.
   @pragma("vm:prefer-inline")
-  void operator []=(int index, T value) => _list[index + _start] = value;
+  T getUnchecked(int index) => _list[index + _start];
+
+  void operator []=(int index, T value) {
+    RangeError.checkNotNegative(index);
+    final n = index + _start;
+    if (n >= _end) {
+      throw RangeError.range(index, 0, len());
+    }
+    _list[n] = value;
+  }
+
+  /// Sets the element at the given index without doing bounds checking.
+  @pragma("vm:prefer-inline")
+  void setUnchecked(int index, T value) => _list[index + _start] = value;
 
   @pragma("vm:prefer-inline")
   Slice<T> slice([int start = 0, int? end]) {

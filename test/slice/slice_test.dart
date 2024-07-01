@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 
 main() {
-    test("arrayWindows", () {
+  test("arrayWindows", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     var windows = slice.arrayWindows(2);
@@ -264,24 +264,27 @@ main() {
   test("getMany", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
-    expect(slice.getMany(const [0, 1, 2]).unwrap(), [1, 2, 3]);
-    expect(slice.getMany(const [0, 1, 2, 3, 4]).unwrap(), [1, 2, 3, 4, 5]);
-    expect(slice.getMany(const [1, 3]).unwrap(), [2, 4]);
-    expect(slice.getMany(const []).unwrap(), []);
-    expect(slice.getMany(const [0, 1, 2, 3, 4, 5]).unwrapErr(), GetManyErrorTooManyIndices());
-    expect(slice.getMany(const [0, 1, 6]).unwrapErr(), GetManyErrorRequestedIndexOutOfBounds());
-    expect([].asSlice().getMany(const [0]).unwrapErr(), GetManyErrorTooManyIndices());
-    expect([].asSlice().getMany(const []).unwrap(), []);
-    expect([1].asSlice().getMany(const []).unwrap(), []);
+    expect(slice.getMany(Arr.constant(const [0, 1, 2])).unwrap(), [1, 2, 3]);
+    expect(slice.getMany(Arr.constant(const [0, 1, 2, 3, 4])).unwrap(), [1, 2, 3, 4, 5]);
+    expect(slice.getMany(Arr.constant(const [1, 3])).unwrap(), [2, 4]);
+    expect(slice.getMany(Arr.constant(const [])).unwrap(), []);
+    expect(slice.getMany(Arr.constant(const [0, 1, 2, 3, 4, 5])).unwrapErr(),
+        GetManyErrorRequestedIndexOutOfBounds());
+    expect(slice.getMany(Arr.constant(const [0, 1, 6])).unwrapErr(),
+        GetManyErrorRequestedIndexOutOfBounds());
+    expect([].asSlice().getMany(Arr.constant(const [0])).unwrapErr(),
+        GetManyErrorRequestedIndexOutOfBounds());
+    expect([].asSlice().getMany(Arr.constant(const [])).unwrap(), []);
+    expect([1].asSlice().getMany(Arr.constant(const [])).unwrap(), []);
   });
 
   test("getManyUnchecked", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
-    expect(slice.getManyUnchecked(const [0, 1, 2]), [1, 2, 3]);
-    expect(slice.getManyUnchecked(const [0, 1, 2, 3, 4]), [1, 2, 3, 4, 5]);
-    expect(slice.getManyUnchecked(const [1, 3]), [2, 4]);
-    expect(slice.getManyUnchecked(const []), []);
+    expect(slice.getManyUnchecked(Arr.constant(const [0, 1, 2])), [1, 2, 3]);
+    expect(slice.getManyUnchecked(Arr.constant(const [0, 1, 2, 3, 4])), [1, 2, 3, 4, 5]);
+    expect(slice.getManyUnchecked(Arr.constant(const [1, 3])), [2, 4]);
+    expect(slice.getManyUnchecked(Arr.constant(const [])), []);
   });
 
   test("groupBy", () {
