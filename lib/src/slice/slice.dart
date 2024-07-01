@@ -398,7 +398,6 @@ final class Slice<T> implements Iterable<T> {
     return Some(_list[_end - 1]);
   }
 
-
   /// Return an array with the last N items in the slice. If the slice is not at least N in length, this will return None.
   Option<Arr<T>> lastChunk(int n) {
     if (n > len()) {
@@ -417,8 +416,44 @@ final class Slice<T> implements Iterable<T> {
 // make_ascii_lowercase: Will not implement, not possible in Dart
 // make_ascii_uppercase: Will not implement, not possible in Dart
 // partition_dedup: Implemented in extension
-// partition_dedup_by: //todo
-// partition_dedup_by_key: //todo
+
+  /// Moves all consecutive repeated elements to the end of the slice according to [Comparable].
+  /// Returns two slices. The first contains no consecutive repeated elements. The second contains all the duplicates in no specified order.
+  /// The [sameBucket] function is passed the to two elements from the slice and must determine if the elements compare equal.
+  /// The elements are passed in opposite order from their order in the slice, so if same_bucket(a, b) returns true, a is moved at the end of the slice.
+  /// If the slice is sorted, the first returned slice contains no duplicates.
+  (Slice<T> dedup, Slice<T> duplicates) partitionDedupBy(bool Function(T, T) sameBucket) {
+    final length = len();
+    if (length <= 1) {
+      return (slice(0, length), slice(0, 0));
+    }
+
+    int nextRead = 1;
+    int nextWrite = 1;
+
+    while (nextRead < length) {
+      if (!sameBucket(getUnchecked(nextRead), getUnchecked(nextWrite - 1))) {
+        if (nextRead != nextWrite) {
+          T temp = getUnchecked(nextRead);
+          setUnchecked(nextRead, getUnchecked(nextWrite));
+          setUnchecked(nextWrite, temp);
+        }
+        nextWrite += 1;
+      }
+      nextRead += 1;
+    }
+
+    return (slice(0, nextWrite), slice(nextWrite));
+  }
+
+  /// Moves all but the first of consecutive elements to the end of the list that resolve to the same key.
+  /// Returns two slices. The first contains no consecutive repeated elements. The second contains all the duplicates in no specified order.
+  /// If the list is sorted, the first returned list contains no duplicates.
+  @pragma("vm:prefer-inline")
+  (Slice<T> dedup, Slice<T> duplicates) partitionDedupByKey<K extends Comparable<K>>(
+      K Function(T) key) {
+    return partitionDedupBy((e0, e1) => key(e0) == key(e1));
+  }
 
   /// Returns the index of the partition point according to the given predicate (the index of the first element of the second partition).
   /// The slice is assumed to be partitioned according to the given predicate. This means that all elements for which the predicate returns
@@ -461,7 +496,7 @@ final class Slice<T> implements Iterable<T> {
   /// Returns an iterator over subslices separated by elements that match pred,
   /// starting at the end of the slice and working backwards.
   /// The matched element is not contained in the subslices.
-  RIterator<Slice<T>> rSplit(bool Function(T) pred) {
+  RIterator<Slice<T>> rsplit(bool Function(T) pred) {
     return RIterator(_rSplitHelper(pred).iterator);
   }
 

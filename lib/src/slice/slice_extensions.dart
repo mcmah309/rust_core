@@ -75,32 +75,9 @@ extension SliceOnComparableSliceExtension<T extends Comparable<T>> on Slice<T> {
   /// Moves all consecutive repeated elements to the end of the slice according to [Comparable].
   /// Returns two slices. The first contains no consecutive repeated elements. The second contains all the duplicates in no specified order.
   /// If the slice is sorted, the first returned slice contains no duplicates.
+  @pragma("vm:prefer-inline")
   (Slice<T> dedup, Slice<T> duplicates) partitionDedup() {
-    final length = len();
-    if(length <= 1){
-      return (slice(0, length), slice(0, 0));
-    }
-    final List<T> dedup = [];
-    final List<T> duplicates = [];
-
-    T lastOne = getUnchecked(0);
-    dedup.add(lastOne);
-    for (int i = 1; i < length; i++) {
-      T current = getUnchecked(i);
-      if (lastOne == current) {
-        duplicates.add(current);
-      } else {
-        dedup.add(current);
-      }
-      lastOne = current;
-    }
-    for (int i = 0; i < dedup.length; i++) {
-      setUnchecked(i, dedup[i]);
-    }
-    for (int i = dedup.length, j = 0; j < duplicates.length; i++, j++) {
-      setUnchecked(i, duplicates[j]);
-    }
-    return (slice(0, dedup.length), slice(dedup.length, dedup.length + duplicates.length));
+    return partitionDedupBy((e0, e1) => e0 == e1);
   }
 }
 

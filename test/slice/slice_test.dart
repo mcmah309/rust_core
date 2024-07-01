@@ -4,6 +4,7 @@ import 'package:rust_core/array.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/panic.dart';
 import 'package:rust_core/result.dart';
+import 'package:rust_core/str.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 
@@ -234,6 +235,59 @@ main() {
 
     slice = <num>[1].asSlice();
     (dedup, duplicates) = slice.partitionDedup();
+    expect(dedup.toList(), [1]);
+    expect(duplicates.toList(), []);
+  });
+
+  test("partitionDedupBy", (){
+    var sliceStr = ["foo", "Foo", "BAZ", "Bar", "bar", "baz", "BAZ"].asSlice();
+    var (dedupStr, duplicatesStr) = sliceStr.partitionDedupBy((a, b) => a.eqIgnoreCase(b));
+    expect(dedupStr, ["foo", "BAZ", "Bar", "baz"]);
+    expect(duplicatesStr, ["bar", "Foo", "BAZ"]);
+
+    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
+    var (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
+    expect(dedup.toList(), [1, 2, 3, 2, 1]);
+    expect(duplicates.toList(), [2, 3, 1]);
+
+    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2,7);
+    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(slice.toList(), [2, 3, 2, 1, 3]);
+    expect(dedup.toList(), [2, 3, 2, 1]);
+    expect(duplicates.toList(), [3]);
+
+    slice = <num>[].asSlice();
+    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(dedup.toList(), []);
+    expect(duplicates.toList(), []);
+
+    slice = <num>[1].asSlice();
+    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(dedup.toList(), [1]);
+    expect(duplicates.toList(), []);
+  });
+
+  test("partitionDedupByKey", (){
+    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
+    var (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
+    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
+    expect(dedup.toList(), [1, 2, 3, 2, 1]);
+    expect(duplicates.toList(), [2, 3, 1]);
+
+    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2,7);
+    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
+    expect(slice.toList(), [2, 3, 2, 1, 3]);
+    expect(dedup.toList(), [2, 3, 2, 1]);
+    expect(duplicates.toList(), [3]);
+
+    slice = <num>[].asSlice();
+    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
+    expect(dedup.toList(), []);
+    expect(duplicates.toList(), []);
+
+    slice = <num>[1].asSlice();
+    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
     expect(dedup.toList(), [1]);
     expect(duplicates.toList(), []);
   });
@@ -486,7 +540,7 @@ main() {
   test("rsplit", () {
     var list = [11, 22, 33, 0, 44, 55];
     var slice = Slice(list, 0, 6);
-    var iter = slice.rSplit((num) => num == 0);
+    var iter = slice.rsplit((num) => num == 0);
     expect(iter.next().unwrap(), [44, 55]);
     expect(iter.next().unwrap(), [11, 22, 33]);
   });
