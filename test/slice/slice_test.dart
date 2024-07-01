@@ -686,6 +686,42 @@ main() {
     expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$2, []);
   });
 
+  test("rsplitn", () {
+    var list = [10, 40, 33, 20];
+    var iter = Slice(list, 0, 4).rsplitn(2, (num) => num % 3 == 0);
+    expect(iter.next().unwrap(), [20]);
+    expect(iter.next().unwrap(), [10, 40]);
+    expect(iter.next().isNone(), true);
+
+    iter = Slice(list, 0, 4).rsplitn(1, (num) => num % 3 == 0);
+    expect(iter.next().unwrap(), [10, 40, 33, 20]);
+
+    iter = Slice(list, 0, 4).rsplitn(2, (num) => num % 5 == 0);
+    expect(iter.next().unwrap(), []);
+    expect(iter.next().unwrap(), [10, 40, 33]);
+
+    iter = Slice(list, 0, 4).rsplitn(5, (num) => num % 5 == 0);
+    expect(iter.next().unwrap(), []);
+    expect(iter.next().unwrap(), [33]);
+    expect(iter.next().unwrap(), []);
+    expect(iter.next().unwrap(), []);
+    expect(iter.next().isNone(), true);
+
+    list = [10, 40, 30, 20, 60, 50];
+    iter = Slice(list, 0, 6).rsplitn(2, (num) => num % 3 == 0);
+    expect(iter.next().unwrap(), [50]);
+    expect(iter.next().unwrap(), [10, 40, 30, 20]);
+
+    list = [];
+    iter = Slice(list, 0, 0).rsplitn(2, (p0) => true);
+    expect(iter.next().unwrap(), []);
+
+    list = [1, 2, 3];
+    iter = Slice(list, 0, 0).rsplitn(0, (p0) => true);
+    expect(iter.next().isNone(), true);
+    expect(() => Slice(list, 0, 3).rsplitn(-1, (p0) => true), throwsA(isA<Panic>()));
+  });
+
   test("sortUnstable", () {
     var list = [5, 4, 3, 2, 1];
     var slice = Slice(list, 0, 5);
@@ -849,6 +885,15 @@ main() {
     iter = Slice(list, 0, 6).splitn(2, (num) => num % 3 == 0);
     expect(iter.next().unwrap(), [10, 40]);
     expect(iter.next().unwrap(), [20, 60, 50]);
+
+    list = [];
+    iter = Slice(list, 0, 0).splitn(2, (p0) => true);
+    expect(iter.next().unwrap(), []);
+
+    list = [1, 2, 3];
+    iter = Slice(list, 0, 0).splitn(0, (p0) => true);
+    expect(iter.next().isNone(), true);
+    expect(() => list.asSlice().splitn(-1, (p0) => true), throwsA(isA<Panic>()));
   });
 
   test("startsWith", () {

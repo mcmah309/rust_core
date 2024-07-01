@@ -521,7 +521,6 @@ final class Slice<T> implements Iterable<T> {
     }
   }
 
-
 // rchunks_exact: // todo, need to create an RIterator class that has `remainder()` method
 // rchunks_exact_mut: Will not implement, covered by rchunks_exact
 // rchunks_mut: Will not implement, covered by rchunks
@@ -627,7 +626,35 @@ final class Slice<T> implements Iterable<T> {
     return None;
   }
 
-// rsplitn: //todo priority low
+  /// Returns an iterator over slices separated by elements that match pred, limited to returning at most n items, starting from the end.
+  /// The matched element is not contained in the slices.
+  /// The last element returned, if any, will contain the remainder of the slice.
+  RIterator<Slice<T>> rsplitn(int n, bool Function(T) pred) {
+    if (n < 0) {
+      panic("'n' cannot be negative");
+    }
+    return RIterator(_rsplitnHelper(n, pred).iterator);
+  }
+
+  @pragma("vm:prefer-inline")
+  Iterable<Slice<T>> _rsplitnHelper(int n, bool Function(T) pred) sync* {
+    if (n == 0) {
+      return;
+    }
+    var start = _end;
+    var end = _end;
+    var count = 1;
+    while (start > _start && count < n) {
+      if (pred(_list[start - 1])) {
+        yield Slice(_list, start, end);
+        end = start - 1;
+        count++;
+      }
+      start--;
+    }
+    yield Slice(_list, _start, end);
+  }
+
 // rsplitn_mut: Implemented by above
 // select_nth_unstable: //todo priority low
 // select_nth_unstable_by: // todo priority low
@@ -751,14 +778,17 @@ final class Slice<T> implements Iterable<T> {
   /// The matched element is not contained in the subslices.
   /// The last element returned, if any, will contain the remainder of the slice.
   RIterator<Slice<T>> splitn(int n, bool Function(T) pred) {
-    assert(n > 0, "n must be positive");
-    if (n < 1) {
-      return RIterator(<Slice<T>>[].iterator);
+    if (n < 0) {
+      panic("'n' cannot be negative");
     }
     return RIterator(_splitnHelper(n, pred).iterator);
   }
 
+  @pragma("vm:prefer-inline")
   Iterable<Slice<T>> _splitnHelper(int n, bool Function(T) pred) sync* {
+    if (n == 0) {
+      return;
+    }
     var start = _start;
     var end = _start;
     var count = 1;
@@ -773,7 +803,7 @@ final class Slice<T> implements Iterable<T> {
     yield Slice(_list, start, _end);
   }
 
-// splitn_mut: Implemented by above
+// splitn_mut: Implemented by splitn
 
   /// Returns true if needle is a prefix of the slice.
   bool startsWith(Slice<T> needle) {
