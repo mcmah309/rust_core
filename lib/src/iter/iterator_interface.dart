@@ -39,7 +39,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Equal = 0
   /// Greater = 1
   int cmpBy<U>(
-      Iterator<U> other, int Function(T, U) f); // todo change to iterator
+      Iterator<U> other, int Function(T, U) f);
 
 // collect: Implemented by extensions
 

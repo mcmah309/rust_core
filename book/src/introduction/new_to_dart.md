@@ -4,57 +4,7 @@ Welcome to Dart!
 
 Dart is a great language choice for fast cross platform development and scripting.
 
-rust_core is great start to learn the Dart semantics as you will feel like you are writing native rust. Just look at this Rust code:
-> Goal: Get the index of every "!" in a string not followed by a "?"
-```rust
-use std::iter::Peekable;
-
-fn main() {
-  let mut answer: Vec<usize> = Vec::new();
-  let string = "kl!sd!?!";
-  let mut iter: Peekable<_> = string
-      .chars()
-      .map_windows(|w: &[char; 2]| *w)
-      .enumerate()
-      .peekable();
-
-  while let Some((index, window)) = iter.next() {
-      match window {
-          ['!', '?'] => continue,
-          ['!', _] => answer.push(index),
-          [_, '!'] if iter.peek().is_none() => answer.push(index + 1),
-          _ => continue,
-      }
-  }
-  assert_eq!(answer, [2, 7]);
-}
-```
-Dart equivalent with rust_core:
-```dart
-import 'package:rust_core/rust_core.dart';
-
-void main() {
-  List<int> answer = [];
-  String string = "kl!sd!?!";
-  Peekable<(int index, Arr<String> window)> iter = string
-      .chars()
-      .mapWindows(2, identity)
-      .enumerate()
-      .peekable();
-  while (iter.moveNext()) {
-    final (int index, Arr<String> window) = iter.current;
-    switch (window) {
-      case ["!", "?"]:
-        break;
-      case ["!", _]:
-        answer.add(iter.current.$1);
-      case [_, "!"] when iter.peek().isNone():
-        answer.add(index + 1);
-    }
-  }
-  expect(answer, [2, 7]);
-}
-```
+rust_core is great start to learn the Dart semantics as you will feel like you are writing native rust.
 
 rust_core will introduce you to a few new types you may find useful as a Dart developer:
 

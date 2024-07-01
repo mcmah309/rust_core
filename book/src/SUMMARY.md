@@ -1,7 +1,7 @@
 # Introduction
 
 - [Introduction](./introduction/introduction.md)
-- [Demo](./introduction/demo.md)
+- [Quickstart](./introduction/quickstart.md)
 - [New To Rust](./introduction/new_to_rust.md)
 - [New To Dart](./introduction/new_to_dart.md)
 

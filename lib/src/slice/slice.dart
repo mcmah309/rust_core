@@ -580,9 +580,9 @@ final class Slice<T> implements Iterable<T> {
     }
   }
 
-  /// Returns an iterator over subslices separated by elements that match pred,
+  /// Returns an iterator over slices separated by elements that match pred,
   /// starting at the end of the slice and working backwards.
-  /// The matched element is not contained in the subslices.
+  /// The matched element is not contained in the slices.
   RIterator<Slice<T>> rsplit(bool Function(T) pred) {
     return RIterator(_rSplitHelper(pred).iterator);
   }

@@ -5,38 +5,38 @@ the Dart implementation of the Rust iterator is `RIterator`. `RIterator`
 makes working with collections of `rust_core` types and regular Dart types a breeze. e.g.
 
 ```dart
-    List<int> list = [1, 2, 3, 4, 5];
-    RIterator<int> filtered = list.iter().filterMap((e) {
-      if (e % 2 == 0) {
-        return Some(e * 2);
-      }
-      return None;
-    });
-    expect(filtered, [4, 8]);
+List<int> list = [1, 2, 3, 4, 5];
+RIterator<int> filtered = list.iter().filterMap((e) {
+  if (e % 2 == 0) {
+    return Some(e * 2);
+  }
+  return None;
+});
+expect(filtered, [4, 8]);
 ```
 
 `RIterator` can be iterated like an `Iterable` and is consumed like an `Iterator`.
 ```dart
-    List<int> list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    RIterator<int> rIterator = list.iter();
-    List<int> collect = [];
-    for (final e in rIterator.take(5).map((e) => e * e)) {
-      if (e.isEven) {
-        collect.add(e);
-      }
-    }
-    expect(collect, [4, 16]);
-    Option<int> next = rIterator.next();
-    expect(next, Some(6));
-    collect.add(next.unwrap());
-    next = rIterator.next();
-    collect.add(next.unwrap());
-    expect(next, Some(7));
-    while(rIterator.moveNext()){
-      collect.add(rIterator.current * rIterator.current);
-    }
-    expect(collect, [4, 16, 6, 7, 64, 81]);
-    expect(rIterator,[]);
+List<int> list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+RIterator<int> rIterator = list.iter();
+List<int> collect = [];
+for (final e in rIterator.take(5).map((e) => e * e)) {
+  if (e.isEven) {
+    collect.add(e);
+  }
+}
+expect(collect, [4, 16]);
+Option<int> next = rIterator.next();
+expect(next, Some(6));
+collect.add(next.unwrap());
+next = rIterator.next();
+collect.add(next.unwrap());
+expect(next, Some(7));
+while(rIterator.moveNext()){
+  collect.add(rIterator.current * rIterator.current);
+}
+expect(collect, [4, 16, 6, 7, 64, 81]);
+expect(rIterator,[]);
 ```
 
 ## Dart vs Rust Example
@@ -123,4 +123,4 @@ This means the iterator can be cloned without cloning the underlying data.
     expect(iter3.collectList(), [4, 5]);
     expect(iter4.collectList(), [2, 3, 4, 5]);
 ```
-This for allows for situations where you want to work ahead and not lose your iterator position, or pass the `RIterator` to another function without needing to call e.g. `collectList()`, `collectArr()`, etc.
+This allows for situations where you want to work ahead and not lose your iterator position, or pass the `RIterator` to another function without needing to call e.g. `collectList()`, `collectArr()`, etc.

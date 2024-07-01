@@ -113,7 +113,7 @@ passed to a Result it unlocks the inner value, or returns to the surrounding con
 Result<int, String> innerErrFn() => Err("message");
 Result<int, String> earlyReturn() => Result(($) { // Early Return Key
    int y = 2;
-   // The function will return here will the Err value;
+   // The function will return here
    int x = innerErrFn()[$];
    return Ok(x + y);
  });

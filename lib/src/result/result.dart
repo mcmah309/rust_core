@@ -8,7 +8,7 @@ import 'package:rust_core/iter.dart';
 part 'future_result.dart';
 
 /// {@template result}
-/// [Result] class representing the type union between [Ok] and [Err].
+/// [Result] is used for propagating errors and represents the sum type of [Ok] and [Err].
 ///
 /// [S] is the ok type (aka success) and [F] is an error (aka failure).
 /// {@endtemplate}
