@@ -42,8 +42,8 @@ main() {
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
-    expect(() => slice.windows(0), throwsA(isA<Object>()));
-    expect(() => slice.windows(-1), throwsA(isA<Object>()));
+    expect(() => slice.arrayWindows(0), throwsA(isA<Panic>()));
+    expect(() => slice.arrayWindows(-1), throwsA(isA<Panic>()));
   });
 
   test("asChunks", () {
@@ -334,15 +334,21 @@ main() {
     dstList = [6, 7, 8, 9, 10];
     src = Slice(srcList, 0, 5);
     dst = Slice(dstList, 1, 4);
-    dst.copyFromSlice(src);
-    expect(dstList, [6, 1, 2, 3, 10]);
+    expect(() => dst.copyFromSlice(src), throwsA(isA<Panic>()));
 
     srcList = [1, 2, 3, 4, 5];
     dstList = [6, 7, 8, 9, 10];
-    src = Slice(srcList, 1, 4);
-    dst = Slice(dstList, 0, 5);
+    src = Slice(srcList, 1, 5);
+    dst = Slice(dstList, 0, 4);
     dst.copyFromSlice(src);
-    expect(dstList, [2, 3, 4, 9, 10]);
+    expect(dstList, [2, 3, 4, 5, 10]);
+
+    srcList = [1, 2, 3, 4, 5];
+    dstList = [6, 7, 8, 9, 10];
+    src = Slice(srcList, 0, 4);
+    dst = Slice(dstList, 1, 5);
+    dst.copyFromSlice(src);
+    expect(dstList, [6, 1, 2, 3, 4]);
   });
 
   test("copyWithin", () {
@@ -923,7 +929,7 @@ main() {
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
-    expect(() => slice.windows(0), throwsA(isA<Object>()));
-    expect(() => slice.windows(-1), throwsA(isA<Object>()));
+    expect(() => slice.windows(0), throwsA(isA<Panic>()));
+    expect(() => slice.windows(-1), throwsA(isA<Panic>()));
   });
 }

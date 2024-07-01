@@ -82,8 +82,11 @@ final class Slice<T> implements Iterable<T> {
 
   /// Returns an iterator over all contiguous windows of length size. The windows overlap.
   /// If the array is shorter than size, the iterator returns no values.
+  /// Panics if size is zero or less.
   RIterator<Arr<T>> arrayWindows(int size) {
-    RangeError.checkNotNegative(size);
+    if(size <= 0){
+      panic("window size must be non-zero");
+    }
     return RIterator.fromIterable(_arrayWindowsHelper(size));
   }
 
@@ -210,7 +213,7 @@ final class Slice<T> implements Iterable<T> {
 // contains: Implemented by Iterable.contains
 
   /// Copies the elements from src into self.
-  /// The length of src must be the same as self.
+  /// The length of src must be the same as this.
   void copyFromSlice(Slice<T> src) {
     final length = len();
     final srcLength = src.len();
@@ -833,10 +836,13 @@ final class Slice<T> implements Iterable<T> {
 // trim_ascii_end: Will not implement, not possible in Dart
 // trim_ascii_start: Will not implement, not possible in Dart
 
-  /// Returns an iterator over all contiguous windows of length size. The windows overlap.
+  /// Returns an iterator of slices of this slice over all contiguous windows of length size. The windows overlap.
   /// If the slice is shorter than size, the iterator returns no values.
+  /// Panics if size is zero or less.
   RIterator<Slice<T>> windows(int size) {
-    RangeError.checkNotNegative(size);
+    if(size <= 0){
+      panic("window size must be non-zero");
+    }
     return RIterator.fromIterable(_windowsHelper(size));
   }
 
