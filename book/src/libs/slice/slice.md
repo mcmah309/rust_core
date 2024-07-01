@@ -8,6 +8,7 @@ thus slices are more efficient than creating a sub-list, but they do not own the
 ```dart
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 1, 4);
+    slice = list.slice(1,4); // alternative
     expect(slice, [2, 3, 4]);
     var taken = slice.takeLast();
     expect(taken, 4);

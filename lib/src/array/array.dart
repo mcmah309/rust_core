@@ -21,6 +21,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   // as_ascii_unchecked_mut: Will not be implemented, not possible in Dart
   // as_mut_slice: Will not be implemented, covered by `asSlice`
 
+  @pragma("vm:prefer-inline")
   Slice<T> asSlice() => Slice.fromList(list);
 
   // each_mut: Will not be implemented, not possible in Dart
@@ -83,11 +84,14 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   }
 
   /// Returns true if the iterator is empty, false otherwise.
+  @pragma("vm:prefer-inline")
   bool isEmpty() => list.isEmpty;
 
   /// Returns true if the iterator is not empty, false otherwise.
+  @pragma("vm:prefer-inline")
   bool isNotEmpty() => list.isNotEmpty;
 
+  @pragma("vm:prefer-inline")
   Iterator<T> get iterator => list.iterator;
 
   /// Returns the last element of an iterator, None if empty.
@@ -100,6 +104,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   }
 
   /// Returns the length of an iterator.
+  @pragma("vm:prefer-inline")
   int length() => list.length;
 
   /// Returns the single element of an iterator, None if this is empty or has more than one element.
@@ -120,6 +125,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   // }
 
   /// Casts this Arr<T> to an Arr<U>.
+  @pragma("vm:prefer-inline")
   Arr<U> cast<U>() => Arr.fromList(list.cast<U>());
 
   // bool contains(Object? element) => list.contains(element);
@@ -128,6 +134,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // bool every(bool Function(T) f) => list.every(f);
 
+  @pragma("vm:prefer-inline")
   RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
       RIterator(list.expand(f).iterator);
 
@@ -135,6 +142,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => list.fold(initialValue, f);
 
+  @pragma("vm:prefer-inline")
   RIterator<T> followedBy(Iterable<T> other) =>
       RIterator(list.followedBy(other).iterator);
 
@@ -150,13 +158,17 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // T singleWhere(bool Function(T) f, {T Function()? orElse}) => list.singleWhere(f, orElse: orElse);
 
+  @pragma("vm:prefer-inline")
   RIterator<T> skip(int count) => RIterator(list.skip(count).iterator);
 
+  @pragma("vm:prefer-inline")
   RIterator<T> skipWhile(bool Function(T) f) =>
       RIterator(list.skipWhile(f).iterator);
 
+  @pragma("vm:prefer-inline")
   RIterator<T> take(int count) => RIterator(list.take(count).iterator);
 
+  @pragma("vm:prefer-inline")
   RIterator<T> takeWhile(bool Function(T) f) =>
       RIterator(list.takeWhile(f).iterator);
 
@@ -166,8 +178,10 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   // String toString() => list.toString();
 
+  @pragma("vm:prefer-inline")
   RIterator<T> where(bool Function(T) f) => RIterator(list.where(f).iterator);
 
+  @pragma("vm:prefer-inline")
   RIterator<U> whereType<U>() => RIterator(list.whereType<U>().iterator);
 
   //************************************************************************//

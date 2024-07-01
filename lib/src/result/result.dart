@@ -34,6 +34,7 @@ sealed class Result<S, F extends Object> {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
+  @pragma("vm:prefer-inline")
   factory Result(_ResultEarlyReturnFunction<S, F> fn) {
     try {
       return fn(_ResultEarlyReturnKey<F>._());
@@ -65,6 +66,7 @@ sealed class Result<S, F extends Object> {
   ///
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
+  @pragma("vm:prefer-inline")
   static Future<Result<S, F>> async<S, F extends Object>(
     // ignore: library_private_types_in_public_api
     _AsyncResultEarlyReturnFunction<S, F> fn,
@@ -232,35 +234,43 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   S unwrap() {
     return ok;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   S unwrapOr(S defaultValue) => ok;
 
   @override
+  @pragma("vm:prefer-inline")
   S unwrapOrElse(S Function(F error) onError) {
     return ok;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   S unwrapOrNull() => ok;
 
   @override
+  @pragma("vm:prefer-inline")
   Some<S> unwrapOrOption() => Some(ok);
 
   @override
+  @pragma("vm:prefer-inline")
   F unwrapErr() {
     throw Panic("Called `unwrapErr` on an `$runtimeType` of `$ok`.");
   }
 
   @override
+  @pragma("vm:prefer-inline")
   S expect(String message) {
     return ok;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   F expectErr(String message) {
     throw Panic("Called `expectErr` on an `$runtimeType` of `$ok`. $message");
   }
@@ -268,20 +278,25 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   bool isErr() => false;
 
   @override
+  @pragma("vm:prefer-inline")
   bool isErrAnd(bool Function(F) fn) => false;
 
   @override
+  @pragma("vm:prefer-inline")
   bool isOk() => true;
 
   @override
+  @pragma("vm:prefer-inline")
   bool isOkAnd(bool Function(S) fn) => fn(ok);
 
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<S> iter() {
     return RIterator([ok].iterator);
   }
@@ -289,16 +304,19 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   Result<S2, F> and<S2>(Result<S2, F> other) {
     return other;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Result<S, F2> or<F2 extends Object>(Result<S, F2> other) {
     return into();
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Result<S, F2> orElse<F2 extends Object>(Result<S, F2> Function(F) fn) {
     return into();
   }
@@ -306,37 +324,44 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   W match<W>({required W Function(S) ok, required W Function(F) err}) {
     return ok(this.ok);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Ok<W, F> map<W>(W Function(S ok) fn) {
     final newOk = fn(ok);
     return Ok<W, F>(newOk);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   W mapOr<W>(W defaultValue, W Function(S ok) fn) {
     return fn(ok);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   W mapOrElse<W>(W Function(F err) defaultFn, W Function(S ok) fn) {
     return fn(ok);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Ok<S, W> mapErr<W extends Object>(W Function(F error) fn) {
     return Ok<S, W>(ok);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Result<W, F> andThen<W>(Result<W, F> Function(S ok) fn) {
     return fn(ok);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Ok<S, W> andThenErr<W extends Object>(
     Result<S, W> Function(F error) fn,
   ) {
@@ -344,12 +369,14 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Ok<S, F> inspect(void Function(S ok) fn) {
     fn(ok);
     return this;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Ok<S, F> inspectErr(void Function(F error) fn) {
     return this;
   }
@@ -357,11 +384,13 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   Ok<S, F> copy() {
     return Ok(ok);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Ok<S2, F> intoUnchecked<S2>() {
     return Ok(ok as S2);
   }
@@ -372,6 +401,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   /// Note: This function should almost never be used, since if the calling function expects a [Result], then calling
   /// functions [F] type should be a super type of this [F] type. [into] is usually only useful for this is known to
   /// be an error
+  @pragma("vm:prefer-inline")
   Ok<S, F2> into<F2 extends Object>() {
     return Ok(ok);
   }
@@ -379,6 +409,7 @@ final class Ok<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   // ignore: library_private_types_in_public_api
   S operator [](_ResultEarlyReturnKey<F> op) {
     return ok;
@@ -415,35 +446,43 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   S unwrap() {
     throw Panic("Called `unwrap` on an `$runtimeType` of `$err`.");
   }
 
   @override
+  @pragma("vm:prefer-inline")
   S unwrapOr(S defaultValue) => defaultValue;
 
   @override
+  @pragma("vm:prefer-inline")
   S unwrapOrElse(S Function(F error) onError) {
     return onError(err);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   S? unwrapOrNull() => null;
 
   @override
+  @pragma("vm:prefer-inline")
   Option<S> unwrapOrOption() => None;
 
   @override
+  @pragma("vm:prefer-inline")
   F unwrapErr() {
     return err;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   S expect(String message) {
     throw Panic("Called `expect` on an `$runtimeType` of `$err`. $message");
   }
 
   @override
+  @pragma("vm:prefer-inline")
   F expectErr(String message) {
     return err;
   }
@@ -451,20 +490,25 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   bool isErr() => true;
 
   @override
+  @pragma("vm:prefer-inline")
   bool isErrAnd(bool Function(F) fn) => fn(err);
 
   @override
+  @pragma("vm:prefer-inline")
   bool isOk() => false;
 
   @override
+  @pragma("vm:prefer-inline")
   bool isOkAnd(bool Function(S) fn) => false;
 
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<S> iter() {
     return RIterator(<S>[].iterator);
   }
@@ -472,16 +516,19 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   Result<S2, F> and<S2>(Result<S2, F> other) {
     return into();
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Result<S, F2> or<F2 extends Object>(Result<S, F2> other) {
     return other;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Result<S, F2> orElse<F2 extends Object>(Result<S, F2> Function(F) fn) {
     return fn(err);
   }
@@ -489,37 +536,44 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   W match<W>({required W Function(S) ok, required W Function(F) err}) {
     return err(this.err);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Err<W, F> map<W>(W Function(S ok) fn) {
     return Err<W, F>(err);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   W mapOr<W>(W defaultValue, W Function(S ok) fn) {
     return defaultValue;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   W mapOrElse<W>(W Function(F err) defaultFn, W Function(S ok) fn) {
     return defaultFn(err);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Err<S, W> mapErr<W extends Object>(W Function(F error) fn) {
     final newError = fn(err);
     return Err(newError);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Result<W, F> andThen<W>(Result<W, F> Function(S ok) fn) {
     return Err<W, F>(err);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Result<S, W> andThenErr<W extends Object>(
     Result<S, W> Function(F error) fn,
   ) {
@@ -527,11 +581,13 @@ final class Err<S, F extends Object> implements Result<S, F> {
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Err<S, F> inspect(void Function(S ok) fn) {
     return this;
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Err<S, F> inspectErr(void Function(F error) fn) {
     fn(err);
     return this;
@@ -540,11 +596,13 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   Err<S, F> copy() {
     return Err(err);
   }
 
   @override
+  @pragma("vm:prefer-inline")
   Err<S2, F> intoUnchecked<S2>() {
     return Err(err);
   }
@@ -565,6 +623,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
   ///```
   /// Note how above, the [S2] value is inferred by Dart, this is usually what be want rather than being explicit.
   /// Note: In Rust, "into" is handled by the "?" operator, but there is no equivalent in Dart.
+  @pragma("vm:prefer-inline")
   Err<S2, F> into<S2>() {
     return Err(err);
   }
@@ -572,6 +631,7 @@ final class Err<S, F extends Object> implements Result<S, F> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   // ignore: library_private_types_in_public_api
   S operator [](_ResultEarlyReturnKey<F> op) {
     throw _ResultEarlyReturnNotification(this.into());

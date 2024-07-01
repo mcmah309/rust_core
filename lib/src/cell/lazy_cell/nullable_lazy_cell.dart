@@ -26,6 +26,7 @@ class NullableLazyCell<T> {
   }
 
   /// Returns true if this has already been called, otherwise false.
+  @pragma("vm:prefer-inline")
   bool isEvaluated() {
     return _isSet;
   }

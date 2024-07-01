@@ -6,4 +6,5 @@ typedef Infallible = Never;
 /// ```dart
 /// var function = conditional ? identity : manipulate;
 /// ```
+@pragma("vm:prefer-inline")
 T identity<T>(T x) => x;

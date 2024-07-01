@@ -2,6 +2,7 @@ part of 'option.dart';
 
 extension OptionOptionExtension<T> on Option<Option<T>> {
   /// Converts from Option<Option<T>> to Option<T>.
+  @pragma("vm:prefer-inline")
   Option<T> flatten() {
     return v as Option<T>;
   }
@@ -9,6 +10,7 @@ extension OptionOptionExtension<T> on Option<Option<T>> {
 
 extension OptionNullableExtension<T extends Object> on Option<T?> {
   /// Converts from Option<T?> to Option<T>.
+  @pragma("vm:prefer-inline")
   Option<T> flatten() {
     return Option._(v);
   }
@@ -45,6 +47,7 @@ extension OptionResultExtension<S extends Object, F extends Object>
 extension FutureOptionResultExtension<S extends Object, F extends Object>
     on FutureOption<Result<S?, F>> {
   /// Transposes an FutureOption of a Result into a Result of an Option.
+  @pragma("vm:prefer-inline")
   Future<Result<Option<S>, F>> transpose() async {
     return then((result) => result.transpose());
   }

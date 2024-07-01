@@ -31,6 +31,7 @@ extension type const Option<T>._(T? v) {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
+  @pragma("vm:prefer-inline")
   factory Option(_OptionEarlyReturnFunction<T> fn) {
     try {
       return fn(const _OptionEarlyReturnKey._());
@@ -53,6 +54,7 @@ extension type const Option<T>._(T? v) {
   ///```
   /// This should be used at the top level of a function as above. Passing "$" to any other functions, nesting, or
   /// attempting to bring "$" out of the original scope should be avoided.
+  @pragma("vm:prefer-inline")
   static Future<Option<T>> async<T>(
       _OptionAsyncEarlyReturnFunction<T> fn) async {
     try {
@@ -68,12 +70,14 @@ extension type const Option<T>._(T? v) {
 
 extension OptionMethodsExtension<T extends Object> on Option<T> {
   /// Returns None if the option is None, otherwise returns [other].
+  @pragma("vm:prefer-inline")
   Option<U> and<U extends Object>(Option<U> other) {
     return v == null ? None : other;
   }
 
   ///Returns None if the option is None, otherwise calls f with the wrapped value and returns the result. Some
   ///languages call this operation flatmap.
+  @pragma("vm:prefer-inline")
   Option<U> andThen<U extends Object>(Option<U> Function(T) f) {
     return v == null ? None : f(v!);
   }
@@ -81,6 +85,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   // copy: Does not make sense to add here since this is an extension type
 
   /// Returns the contained Some value if [Some], otherwise throws a [Panic].
+  @pragma("vm:prefer-inline")
   T expect(String msg) {
     return v == null
         ? throw Panic("Called `expect` on a value that was `None`. $msg")
@@ -90,6 +95,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   /// Returns None if the option is None, otherwise calls predicate with the wrapped value and returns
   /// Some(t) if predicate returns true (where t is the wrapped value), and
   // None if predicate returns false
+  @pragma("vm:prefer-inline")
   Option<T> filter(bool Function(T) predicate) {
     if (v == null) {
       return None;
@@ -110,6 +116,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   // T insert(T value); // not possible, otherwise lose const
 
   /// Calls the provided closure with a reference to the contained value
+  @pragma("vm:prefer-inline")
   Option<T> inspect(Function(T) f) {
     if (v == null) {
       return this;
@@ -120,16 +127,19 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Returns true if the option is a None value.
+  @pragma("vm:prefer-inline")
   bool isNone() {
     return this == null;
   }
 
   /// Returns true if the option is a Some value.
+  @pragma("vm:prefer-inline")
   bool isSome() {
     return this != null;
   }
 
   /// Returns true if the option is a Some and the value inside of it matches a predicate.
+  @pragma("vm:prefer-inline")
   bool isSomeAnd(bool Function(T) f) {
     if (v == null) {
       return false;
@@ -139,6 +149,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Returns an RIterator over the possibly contained value.
+  @pragma("vm:prefer-inline")
   RIterator<T> iter() {
     if (v == null) {
       return RIterator(<T>[].iterator);
@@ -149,6 +160,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
 
   /// Maps an this Option<T> to Option<U> by applying a function to a contained value (if Some) or returns None (if
   /// None).
+  @pragma("vm:prefer-inline")
   Option<U> map<U extends Object>(U Function(T) f) {
     if (v == null) {
       return None;
@@ -158,6 +170,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Returns the provided default result (if none), or applies a function to the contained value (if any).
+  @pragma("vm:prefer-inline")
   U mapOr<U>(U defaultValue, U Function(T) f) {
     if (v == null) {
       return defaultValue;
@@ -167,6 +180,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Computes a default function result (if none), or applies a different function to the contained value (if any).
+  @pragma("vm:prefer-inline")
   U mapOrElse<U>(U Function() defaultFn, U Function(T) f) {
     if (v == null) {
       return defaultFn();
@@ -176,6 +190,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err).
+  @pragma("vm:prefer-inline")
   Result<T, E> okOr<E extends Object>(E err) {
     if (v == null) {
       return Err(err);
@@ -185,6 +200,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Transforms the Option<T> into a Result<T, E>, mapping Some(v) to Ok(v) and None to Err(err()).
+  @pragma("vm:prefer-inline")
   Result<T, E> okOrElse<E extends Object>(E Function() errFn) {
     if (v == null) {
       return Err(errFn());
@@ -194,6 +210,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Returns the option if it contains a value, otherwise returns other.
+  @pragma("vm:prefer-inline")
   Option<T> or(Option<T> other) {
     if (v == null) {
       return other;
@@ -203,6 +220,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Returns the option if it contains a value, otherwise calls f and returns the result.
+  @pragma("vm:prefer-inline")
   Option<T> orElse(Option<T> Function() f) {
     if (v == null) {
       return f();
@@ -220,11 +238,13 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   // transpose: Added as extension
 
   /// Returns the contained Some value, consuming the self value.
+  @pragma("vm:prefer-inline")
   T unwrap() {
     return v as T;
   }
 
   /// Returns the contained Some value or a provided default.
+  @pragma("vm:prefer-inline")
   T unwrapOr(T defaultValue) {
     if (v == null) {
       return defaultValue;
@@ -234,6 +254,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Returns the contained Some value or computes it from a closure.
+  @pragma("vm:prefer-inline")
   T unwrapOrElse(T Function() f) {
     if (v == null) {
       return f();
@@ -245,6 +266,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   // unzip: Added as extension
 
   /// Returns Some if exactly one of self, [other] is Some, otherwise returns None.
+  @pragma("vm:prefer-inline")
   Option<T> xor(Option<T> other) {
     if (v == null) {
       if (other.isSome()) {
@@ -260,6 +282,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Zips self with another Option.
+  @pragma("vm:prefer-inline")
   Option<(T, U)> zip<U extends Object>(Option<U> other) {
     if (v == null) {
       return None;
@@ -272,6 +295,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   }
 
   /// Zips self and another Option with function f
+  @pragma("vm:prefer-inline")
   Option<R> zipWith<U extends Object, R extends Object>(
       Option<U> other, R Function(T, U) f) {
     if (v == null) {
@@ -287,6 +311,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   //************************************************************************//
 
   /// Returns the inner type as the nullable version of [T]
+  @pragma("vm:prefer-inline")
   T? toNullable() {
     return v;
   }
@@ -294,6 +319,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
   //************************************************************************//
 
   /// Functions an "Early Return Operator" when given an "Early Return key" "$". See [Option.$] for more information.
+  @pragma("vm:prefer-inline")
   T operator [](_OptionEarlyReturnKey op) {
     if (v == null) {
       throw const _OptionEarlyReturnNotification();
@@ -310,22 +336,27 @@ extension type const Some<T>._(T v) implements Option<T> {
 }
 
 extension SomeMethodsExtension<T extends Object> on Some<T> {
+  @pragma("vm:prefer-inline")
   Option<U> and<U extends Object>(Option<U> other) {
     return other;
   }
 
+  @pragma("vm:prefer-inline")
   Option<U> andThen<U extends Object>(Option<U> Function(T self) f) {
     return f(v);
   }
 
+  @pragma("vm:prefer-inline")
   Some<T> copy() {
     return Some(v);
   }
 
+  @pragma("vm:prefer-inline")
   T expect(String msg) {
     return v;
   }
 
+  @pragma("vm:prefer-inline")
   Option<T> filter(bool Function(T self) predicate) {
     if (predicate(v)) {
       return Some(v);
@@ -333,71 +364,88 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   Some<T> inspect(Function(T self) f) {
     f(v);
     return this;
   }
 
+  @pragma("vm:prefer-inline")
   bool isNone() {
     return false;
   }
 
+  @pragma("vm:prefer-inline")
   bool isSome() {
     return true;
   }
 
+  @pragma("vm:prefer-inline")
   bool isSomeAnd(bool Function(T self) f) {
     return f(v);
   }
 
+  @pragma("vm:prefer-inline")
   RIterator<T> iter() {
     return RIterator([v].iterator);
   }
 
+  @pragma("vm:prefer-inline")
   Some<U> map<U extends Object>(U Function(T self) f) {
     return Some(f(v));
   }
 
+  @pragma("vm:prefer-inline")
   U mapOr<U>(U defaultValue, U Function(T) f) {
     return f(v);
   }
 
+  @pragma("vm:prefer-inline")
   U mapOrElse<U>(U Function() defaultFn, U Function(T) f) {
     return f(v);
   }
 
+  @pragma("vm:prefer-inline")
   Ok<T, Infallible> okOr<E extends Object>(E err) {
     return Ok(v);
   }
 
+  @pragma("vm:prefer-inline")
   Ok<T, Infallible> okOrElse<E extends Object>(E Function() errFn) {
     return Ok(v);
   }
 
+  @pragma("vm:prefer-inline")
   Some<T> or(Option<T> other) {
     return Some(v);
   }
 
+  @pragma("vm:prefer-inline")
   Some<T> orElse(Option<T> Function() f) {
     return Some(v);
   }
 
+  @pragma("vm:prefer-inline")
   T? toNullable() {
     return v;
   }
 
+  @pragma("vm:prefer-inline")
   T unwrap() {
     return v;
   }
 
+  @pragma("vm:prefer-inline")
   T unwrapOr(T defaultValue) {
     return v;
   }
 
+  @pragma("vm:prefer-inline")
   T unwrapOrElse(T Function() f) {
     return v;
   }
 
+  @pragma("vm:prefer-inline")
   Option<T> xor(Option<T> other) {
     if (other.isSome()) {
       return None;
@@ -405,6 +453,7 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
     return Some(v);
   }
 
+  @pragma("vm:prefer-inline")
   Option<(T, U)> zip<U extends Object>(Option<U> other) {
     if (other.isSome()) {
       return Some((v, other.unwrap()));
@@ -412,6 +461,7 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   Option<R> zipWith<U extends Object, R extends Object>(
       Option<U> other, R Function(T p1, U p2) f) {
     if (other.isSome()) {
@@ -422,6 +472,7 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
 
   //************************************************************************//
 
+  @pragma("vm:prefer-inline")
   T operator [](_OptionEarlyReturnKey op) {
     return v;
   }
@@ -437,86 +488,107 @@ extension type const _None._(Null _) implements Option<Infallible> {
 }
 
 extension NoneMethodsExtension on _None {
+  @pragma("vm:prefer-inline")
   _None and<U extends Object>(Option<U> other) {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   _None andThen<U extends Object>(Option<U> Function(void self) f) {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   _None copy() {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   Infallible expect(String msg) {
     throw Panic("Called `expect` on a value that was `None`. $msg");
   }
 
+  @pragma("vm:prefer-inline")
   _None filter(bool Function(void self) predicate) {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   _None inspect(Function(void self) f) {
     return this;
   }
 
+  @pragma("vm:prefer-inline")
   bool isNone() {
     return true;
   }
 
+  @pragma("vm:prefer-inline")
   bool isSome() {
     return false;
   }
 
+  @pragma("vm:prefer-inline")
   bool isSomeAnd(bool Function(void self) f) {
     return false;
   }
 
+  @pragma("vm:prefer-inline")
   RIterator<_None> iter() {
     return RIterator((const <_None>[]).iterator);
   }
 
+  @pragma("vm:prefer-inline")
   _None map<U extends Object>(U Function(void self) f) {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   U mapOr<U>(U defaultValue, U Function(void) f) {
     return defaultValue;
   }
 
+  @pragma("vm:prefer-inline")
   U mapOrElse<U>(U Function() defaultFn, U Function(void) f) {
     return defaultFn();
   }
 
+  @pragma("vm:prefer-inline")
   Err<Infallible, E> okOr<E extends Object>(E err) {
     return Err(err);
   }
 
+  @pragma("vm:prefer-inline")
   Err<Infallible, E> okOrElse<E extends Object>(E Function() errFn) {
     return Err(errFn());
   }
 
+  @pragma("vm:prefer-inline")
   Option<T> or<T extends Object>(Option<T> other) {
     return other;
   }
 
+  @pragma("vm:prefer-inline")
   Option<T> orElse<T extends Object>(Option<T> Function() f) {
     return f();
   }
 
+  @pragma("vm:prefer-inline")
   Infallible unwrap() {
     throw Panic("Called `unwrap` on a value that was `None`.");
   }
 
+  @pragma("vm:prefer-inline")
   T unwrapOr<T>(T defaultValue) {
     return defaultValue;
   }
 
+  @pragma("vm:prefer-inline")
   T unwrapOrElse<T>(T Function() f) {
     return f();
   }
 
+  @pragma("vm:prefer-inline")
   Option<T> xor<T extends Object>(Option<T> other) {
     if (other.isSome()) {
       return other;
@@ -524,10 +596,12 @@ extension NoneMethodsExtension on _None {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   _None zip<U extends Object>(Option<U> other) {
     return None;
   }
 
+  @pragma("vm:prefer-inline")
   _None zipWith<U extends Object, R extends Object>(
       Option<U> other, R Function(void p1, U p2) f) {
     return None;
@@ -535,6 +609,7 @@ extension NoneMethodsExtension on _None {
 
   //************************************************************************//
 
+  @pragma("vm:prefer-inline")
   // ignore: prefer_void_to_null
   T? toNullable<T>() {
     return null;
@@ -542,6 +617,7 @@ extension NoneMethodsExtension on _None {
 
   //************************************************************************//
 
+  @pragma("vm:prefer-inline")
   Infallible operator [](_OptionEarlyReturnKey op) {
     throw const _OptionEarlyReturnNotification();
   }

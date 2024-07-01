@@ -12,6 +12,7 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
   NonNullableLazyCell(this._func);
 
   @override
+  @pragma("vm:prefer-inline")
   T call() {
     if (_val == null) {
       _val = _func();
@@ -21,6 +22,7 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
   }
 
   @override
+  @pragma("vm:prefer-inline")
   bool isEvaluated() {
     return _val == null ? false : true;
   }

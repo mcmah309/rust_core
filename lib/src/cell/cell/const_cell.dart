@@ -7,11 +7,13 @@ class ConstCell<T> {
   const ConstCell(this._val);
 
   /// Shallow copy of this.
+  @pragma("vm:prefer-inline")
   Cell<T> copy() {
     return Cell(_val);
   }
 
   /// Returns the inner value.
+  @pragma("vm:prefer-inline")
   T get() {
     return _val;
   }

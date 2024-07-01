@@ -6,6 +6,7 @@ import 'package:rust_core/option.dart';
 
 extension FlattenExtension<S, F extends Object> on Result<Result<S, F>, F> {
   /// Converts a [Result] of a [Result] into a single [Result]
+  @pragma("vm:prefer-inline")
   Result<S, F> flatten() {
     if (isOk()) {
       return unwrap();
@@ -14,8 +15,8 @@ extension FlattenExtension<S, F extends Object> on Result<Result<S, F>, F> {
   }
 }
 
-extension FlattenFutureExtension<S, F extends Object>
-    on FutureResult<Result<S, F>, F> {
+extension FlattenFutureExtension<S, F extends Object> on FutureResult<Result<S, F>, F> {
+  @pragma("vm:prefer-inline")
   FutureResult<S, F> flatten() {
     return then((result) => result.flatten());
   }
@@ -38,15 +39,14 @@ extension ResultNullExtension<S, F extends Object> on Result<S?, F> {
   }
 }
 
-extension FutureResultNullExtension<S extends Object, F extends Object>
-    on Future<Result<S?, F>> {
+extension FutureResultNullExtension<S extends Object, F extends Object> on Future<Result<S?, F>> {
+  @pragma("vm:prefer-inline")
   Future<Result<S, F>?> transpose() {
     return then((result) => result.transposeOut());
   }
 }
 
-extension ResultOptionExtension<S extends Object, F extends Object>
-    on Result<Option<S?>, F> {
+extension ResultOptionExtension<S extends Object, F extends Object> on Result<Option<S?>, F> {
   /// Transposes a Result of an Option into an Option of a Result.
   Option<Result<S, F>> transpose() {
     if (isOk()) {
@@ -65,6 +65,7 @@ extension ResultOptionExtension<S extends Object, F extends Object>
 extension FutureResultOptionExtension<S extends Object, F extends Object>
     on Future<Result<Option<S?>, F>> {
   /// Transposes a FutureResult of an Option into an Option of a Result.
+  @pragma("vm:prefer-inline")
   Future<Option<Result<S, F>>> transpose() async {
     return then((result) => result.transpose());
   }
@@ -87,8 +88,7 @@ extension NullResultExtension<S, F extends Object> on Result<S, F>? {
 
 //************************************************************************//
 
-extension IterableResultExtensions<S, F extends Object>
-    on Iterable<Result<S, F>> {
+extension IterableResultExtensions<S, F extends Object> on Iterable<Result<S, F>> {
   /// Transforms an Iterable of results into a single result where the ok value is the list of all successes. If any
   /// error is encountered, the first error is used as the error result.
   Result<List<S>, F> toResultEager() {
@@ -125,19 +125,19 @@ extension IterableResultExtensions<S, F extends Object>
   }
 }
 
-extension FutureIterableResultExtensions<S, F extends Object>
-    on Future<Iterable<Result<S, F>>> {
+extension FutureIterableResultExtensions<S, F extends Object> on Future<Iterable<Result<S, F>>> {
+  @pragma("vm:prefer-inline")
   FutureResult<List<S>, F> toResultEager() {
     return then((result) => result.toResultEager());
   }
 
+  @pragma("vm:prefer-inline")
   FutureResult<List<S>, List<F>> toResult() {
     return then((result) => result.toResult());
   }
 }
 
-extension IterableFutureResultExtensions<S, F extends Object>
-    on Iterable<FutureResult<S, F>> {
+extension IterableFutureResultExtensions<S, F extends Object> on Iterable<FutureResult<S, F>> {
   /// Transforms an Iterable of [FutureResult]s into a single result where the ok value is the list of all successes. If
   /// any error is encountered, the first error is used as the error result. The order of [S] and [F] is determined by
   /// the order in which futures complete.
@@ -179,10 +179,12 @@ extension IterableFutureResultExtensions<S, F extends Object>
 
 extension FutureIterableFutureResultExtensions<S, F extends Object>
     on Future<Iterable<FutureResult<S, F>>> {
+  @pragma("vm:prefer-inline")
   FutureResult<List<S>, F> toResultEager() async {
     return then((result) => result.toResultEager());
   }
 
+  @pragma("vm:prefer-inline")
   FutureResult<List<S>, List<F>> toResult() async {
     return then((result) => result.toResult());
   }
@@ -190,13 +192,13 @@ extension FutureIterableFutureResultExtensions<S, F extends Object>
 
 extension ResultToFutureResultExtension<S, F extends Object> on Result<S, F> {
   /// Turns a [Result] into a [FutureResult].
+  @pragma("vm:prefer-inline")
   FutureResult<S, F> toFutureResult() async {
     return this;
   }
 }
 
-extension ResultFutureToFutureResultExtension<S, F extends Object>
-    on Result<Future<S>, F> {
+extension ResultFutureToFutureResultExtension<S, F extends Object> on Result<Future<S>, F> {
   /// Turns a [Result] of a [Future] into a [FutureResult].
   FutureResult<S, F> toFutureResult() async {
     if (isErr()) {
@@ -208,42 +210,45 @@ extension ResultFutureToFutureResultExtension<S, F extends Object>
 
 extension ToOkExtension<S> on S {
   /// Convert the object to a [Result] type [Ok].
+  @pragma("vm:prefer-inline")
   Ok<S, E> toOk<E extends Object>() {
-    assert(this is! Result,
-        'Don\'t use the "toOk()" method on instances of Result.');
+    assert(this is! Result, 'Don\'t use the "toOk()" method on instances of Result.');
     return Ok(this);
   }
 }
 
 extension ToErrExtension<E extends Object> on E {
   /// Convert the object to a [Result] type [Err].
+  @pragma("vm:prefer-inline")
   Err<S, E> toErr<S>() {
-    assert(this is! Result,
-        'Don\'t use the "toErr()" method on instances of Result.');
+    assert(this is! Result, 'Don\'t use the "toErr()" method on instances of Result.');
     return Err(this);
   }
 }
 
 extension InfallibleOkExtension<S> on Result<S, Infallible> {
+  @pragma("vm:prefer-inline")
   S intoOk() {
     return unwrap();
   }
 }
 
 extension InfallibleErrExtension<F extends Object> on Result<Infallible, F> {
+  @pragma("vm:prefer-inline")
   F intoErr() {
     return unwrapErr();
   }
 }
 
 extension InfallibleFutureOkExtension<S> on FutureResult<S, Infallible> {
+  @pragma("vm:prefer-inline")
   Future<S> intoOk() {
     return then((result) => result.intoOk());
   }
 }
 
-extension InfallibleFutureErrExtension<F extends Object>
-    on FutureResult<Infallible, F> {
+extension InfallibleFutureErrExtension<F extends Object> on FutureResult<Infallible, F> {
+  @pragma("vm:prefer-inline")
   Future<F> intoErr() {
     return then((result) => result.intoErr());
   }

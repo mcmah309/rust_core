@@ -18,6 +18,7 @@ class Panic extends Error {
 /// ```dart
 /// throw Panic(...)
 /// ```
+@pragma("vm:prefer-inline")
 Never panic([String? msg]) {
   throw Panic(msg);
 }

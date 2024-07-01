@@ -13,11 +13,13 @@ class Cell<T> implements ConstCell<T> {
 
   /// Returns the inner value.
   @override
+  @pragma("vm:prefer-inline")
   T get() {
     return _val;
   }
 
   /// Replaces the inner value with the provided [val] and returns the original inner value.
+  @pragma("vm:prefer-inline")
   T replace(T val) {
     final temp = _val;
     _val = val;
@@ -25,11 +27,13 @@ class Cell<T> implements ConstCell<T> {
   }
 
   /// Sets the inner value to [val].
+  @pragma("vm:prefer-inline")
   void set(T val) {
     _val = val;
   }
 
   /// swaps the inner values between this cell and that [cell].
+  @pragma("vm:prefer-inline")
   void swap(covariant Cell<T> cell) {
     final temp = cell._val;
     cell._val = _val;
@@ -37,6 +41,7 @@ class Cell<T> implements ConstCell<T> {
   }
 
   /// Updates the contained value using [fn] and returns the new value
+  @pragma("vm:prefer-inline")
   T update(T Function(T) fn) {
     _val = fn(_val);
     return _val;
@@ -44,6 +49,7 @@ class Cell<T> implements ConstCell<T> {
 
   /// Shallow copy of this [Cell].
   @override
+  @pragma("vm:prefer-inline")
   Cell<T> copy() {
     return Cell(_val);
   }

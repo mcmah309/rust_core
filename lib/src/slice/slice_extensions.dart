@@ -1,8 +1,10 @@
 part of 'slice.dart';
 
 extension SliceOnListExtension<T> on List<T> {
+  @pragma("vm:prefer-inline")
   Slice<T> asSlice() => Slice.fromList(this);
 
+  @pragma("vm:prefer-inline")
   Slice<T> slice([int start = 0, int? end]) {
     end ??= length;
     return Slice(this, start, end);
@@ -11,6 +13,7 @@ extension SliceOnListExtension<T> on List<T> {
 
 extension SliceOnSliceIntExtension<T extends num> on Slice<T> {
   /// Sorts the slice, but might not preserve the order of equal elements.
+  @pragma("vm:prefer-inline")
   void sortUnstable() {
     _quickSort<num>(this, _start, _end - 1);
   }
@@ -28,6 +31,7 @@ extension SliceOnSliceIntExtension<T extends num> on Slice<T> {
 
 extension SliceOnComparableSliceExtension<T extends Comparable<T>> on Slice<T> {
   /// Sorts the slice, but might not preserve the order of equal elements.
+  @pragma("vm:prefer-inline")
   void sortUnstable() {
     _quickSort(this, _start, _end - 1);
   }
@@ -101,6 +105,7 @@ int _partitionBy<T>(
   return i + 1;
 }
 
+@pragma("vm:prefer-inline")
 void _swapBy<T>(List<T> list, int i, int j) {
   T temp = list[i];
   list[i] = list[j];

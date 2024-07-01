@@ -14,6 +14,7 @@ class Unreachable extends Panic {
 /// ```dart
 /// throw Unreachable(...)
 /// ```
+@pragma("vm:prefer-inline")
 Never unreachable([String msg = "This code should be unreachable."]) {
   throw Unreachable(msg);
 }

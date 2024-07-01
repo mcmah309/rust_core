@@ -4,16 +4,19 @@ part of 'iterator.dart';
 
 extension IterableExtension<T> on Iterable<T> {
   /// Returns an [RIterator] over the [Iterable].
+  @pragma("vm:prefer-inline")
   RIterator<T> iter() => RIterator<T>(iterator);
 }
 
 extension IteratorExtension<T> on Iterator<T> {
   /// Returns an [RIterator] for this [Iterator].
+  @pragma("vm:prefer-inline")
   RIterator<T> iter() => RIterator<T>(this);
 }
 
-extension IteratorOnIteratorIterabel<T> on RIterator<Iterable<T>> {
+extension IteratorOnIteratorIterable<T> on RIterator<Iterable<T>> {
   /// Flatten an iterator of iterators into a single iterator.
+  @pragma("vm:prefer-inline")
   RIterator<T> flatten() {
     return RIterator(_flattenHelper().iterator);
   }
@@ -54,26 +57,31 @@ extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
   }
 
   /// Determines if the elements of this Iterator are lexicographically greater than or equal to those of another.
+  @pragma("vm:prefer-inline")
   bool ge(Iterator<U> other) {
     return cmp(other) >= 0;
   }
 
   /// Determines if the elements of this Iterator are lexicographically greater than those of another.
+  @pragma("vm:prefer-inline")
   bool gt(Iterator<U> other) {
     return cmp(other) > 0;
   }
 
   /// Determines if the elements of this Iterator are lexicographically less or equal to those of another.
+  @pragma("vm:prefer-inline")
   bool le(Iterator<U> other) {
     return cmp(other) <= 0;
   }
 
   /// Determines if the elements of this Iterator are lexicographically less than those of another.
+  @pragma("vm:prefer-inline")
   bool lt(Iterator<U> other) {
     return cmp(other) < 0;
   }
 
   /// Determines if the elements of this Iterator are not equal to those of another.
+  @pragma("vm:prefer-inline")
   bool ne(Iterator<U> other) {
     return cmp(other) != 0;
   }

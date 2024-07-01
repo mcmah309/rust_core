@@ -18,6 +18,7 @@ class NullableOnceCell<T> {
   const factory NullableOnceCell.constant(Object id) = ConstNullableOnceCell;
 
   /// Gets the underlying value, returns null if the cell is empty
+  @pragma("vm:prefer-inline")
   T? getOrNull() {
     return _val;
   }
@@ -68,6 +69,7 @@ class NullableOnceCell<T> {
   }
 
   /// Returns true if the value has been set. Returns false otherwise.
+  @pragma("vm:prefer-inline")
   bool isSet() {
     return _isSet;
   }
