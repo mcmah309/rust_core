@@ -505,6 +505,40 @@ main() {
     expect(duplicates.toList(), []);
   });
 
+  test("rchunks", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = list.slice();
+    var chunks = slice.rchunks(2).toList();
+    expect(chunks, [
+      [4, 5],
+      [2, 3],
+      [1]
+    ]);
+    list = [1, 2, 3, 4];
+    slice = list.slice();
+    chunks = slice.rchunks(2).toList();
+    expect(chunks, [
+      [3, 4],
+      [1, 2]
+    ]);
+    list = [];
+    slice = list.slice();
+    chunks = slice.rchunks(2).toList();
+    expect(chunks, []);
+    list = [1];
+    slice = list.slice();
+    chunks = slice.rchunks(2).toList();
+    expect(chunks, [
+      [1]
+    ]);
+    chunks = slice.rchunks(1).toList();
+    expect(chunks, [
+      [1]
+    ]);
+    expect(() => slice.rchunks(0), throwsA(isA<Panic>()));
+    expect(() => slice.rchunks(-1), throwsA(isA<Panic>()));
+  });
+
   test("rotateLeft", () {
     Slice<String> slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
     slice.rotateLeft(2);

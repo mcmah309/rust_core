@@ -222,7 +222,7 @@ final class Slice<T> implements Iterable<T> {
     }
   }
 
-// chunks_exact: // todo
+// chunks_exact: // todo, need to create an RIterator class that has `remainder()` method
 // chunks_exact_mut: Will not implement, covered by chunks_exact
 // chunks_mut: Will not implement, covered by chunks
 // clone_from_slice: Will not implement, not possible in Dart
@@ -496,8 +496,33 @@ final class Slice<T> implements Iterable<T> {
     return low;
   }
 
-// rchunks: //todo
-// rchunks_exact: //todo
+  /// Returns an iterator over [chunkSize] elements of the slice at a time, starting at the end of the slice.
+  /// The chunks are slices and do not overlap. If chunk_size does not divide the length of the slice,
+  /// then the last chunk will not have length [chunkSize].
+  /// Panics if [chunkSize] is less than or equal to zero
+  RIterator<Slice<T>> rchunks(int chunkSize) {
+    return RIterator.fromIterable(_rchunksHelper(chunkSize));
+  }
+
+  @pragma("vm:prefer-inline")
+  Iterable<Slice<T>> _rchunksHelper(int chunkSize) sync* {
+    if (chunkSize <= 0) {
+      panic("'chunkSize' must be positive");
+    }
+    final length = len();
+    final numOfChunks = length ~/ chunkSize;
+    for (var i = 0; i < numOfChunks; i++) {
+      final end = length - (i * chunkSize);
+      yield slice(end - chunkSize, end);
+    }
+    final remainderLength = length % chunkSize;
+    if (remainderLength > 0) {
+      yield slice(0, remainderLength);
+    }
+  }
+
+
+// rchunks_exact: // todo, need to create an RIterator class that has `remainder()` method
 // rchunks_exact_mut: Will not implement, covered by rchunks_exact
 // rchunks_mut: Will not implement, covered by rchunks
 
