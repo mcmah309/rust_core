@@ -2,6 +2,7 @@
 
 import 'package:rust_core/option.dart';
 import 'package:rust_core/iter.dart';
+import 'package:rust_core/panic.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/array.dart';
 import 'package:rust_core/slice.dart';
@@ -40,8 +41,9 @@ final class Slice<T> implements Iterable<T> {
   final List<T> _list;
 
   @pragma("vm:prefer-inline")
-  Slice(this._list, this._start, this._end)
-      : assert(_start >= 0 && _end <= _list.length, "Index out of bounds");
+  Slice(this._list, [this._start = 0, int? end])
+      : _end = end ?? _list.length,
+        assert(_start >= 0 && (end == null || end <= _list.length), "Index out of bounds");
 
   @pragma("vm:prefer-inline")
   Slice.fromList(List<T> list) : this(list, 0, list.length);
@@ -210,12 +212,36 @@ final class Slice<T> implements Iterable<T> {
   /// Copies the elements from src into self.
   /// The length of src must be the same as self.
   void copyFromSlice(Slice<T> src) {
-    for (var i = src._start, j = _start; i < src._end && j < _end; i++, j++) {
+    final length = len();
+    final srcLength = src.len();
+    if (length != srcLength) {
+      panic("Slices must be the same length, this is `$length` and src is `$src");
+    }
+    for (var i = src._start, j = _start; i < src._end; i++, j++) {
       _list[j] = src._list[i];
     }
   }
 
-// copy_within: //todo
+  /// Copies elements from one part of the slice to another part of itself
+  /// The edge conditions can be changes with [sInc] and [eInc].
+  /// [sInc] is whether the start is inclusive and [eInc] is whether the end is inclusive.
+  void copyWithin(int start, int end, int dst, {bool sInc = true, bool enInc = false}) {
+    if (!sInc) start += 1;
+    if (enInc) end += 1;
+    final length = len();
+    if (start < 0 || start >= length || end < 0 || end > length || dst < 0 || dst >= length) {
+      panic("Index out of bounds");
+    }
+    if (dst < start) {
+      for (var i = start, j = dst; i < end; i++, j++) {
+        _list[j + _start] = _list[i + _start];
+      }
+    } else {
+      for (var i = end - 1, j = dst + end - start - 1; i >= start; i--, j--) {
+        _list[j + _start] = _list[i + _start];
+      }
+    }
+  }
 
   /// Returns true if needle is a suffix of the slice.
   bool endsWith(Slice<T> needle) {
@@ -288,13 +314,14 @@ final class Slice<T> implements Iterable<T> {
 
   /// Returns mutable references to many indices at once, without doing any checks.
   Arr<T> getManyUnchecked(Arr<int> indices) {
-    if(indices.isEmpty()){
+    if (indices.isEmpty()) {
       return Arr.constant(const []);
     }
     assert(isNotEmpty, "Requested indices, but this slice is empty.");
     var array = Arr(this.first, indices.length);
     for (final (int i, int index) in indices.iter().enumerate()) {
-      assert(index >= 0 && index < length, "The requested index `$index` out of bounds. Length was `$length`");
+      assert(index >= 0 && index < length,
+          "The requested index `$index` out of bounds. Length was `$length`");
       array[i] = getUnchecked(index);
     }
     return array;
@@ -653,14 +680,18 @@ final class Slice<T> implements Iterable<T> {
     _list[j + _start] = temp;
   }
 
-// swap_unchecked: Will not implement, not possible in Dart
+// swap_unchecked: Will not implement
 
   /// Swaps all elements in this with those in other.
   /// The length of other must be the same as this.
-  /// Will throw if the length of other is not the same as this.
+  /// Will [panic] if the length of other is not the same as this.
   void swapWithSlice(Slice<T> other) {
-    assert(_end - _start == other._end - other._start, "Slices must be the same length");
-    for (var i = 0; i < _end - _start; i++) {
+    final length = len();
+    final otherLength = other.len();
+    if (length != otherLength) {
+      panic("Slices must be the same length, this is `$length` and other is `$otherLength");
+    }
+    for (var i = 0; i < length; i++) {
       var temp = _list[i + _start];
       _list[i + _start] = other._list[i + other._start];
       other._list[i + other._start] = temp;

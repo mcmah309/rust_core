@@ -2,6 +2,7 @@
 
 import 'package:rust_core/array.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/panic.dart';
 import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
@@ -234,6 +235,33 @@ main() {
     dst = Slice(dstList, 0, 5);
     dst.copyFromSlice(src);
     expect(dstList, [2, 3, 4, 9, 10]);
+  });
+
+  test("copyWithin", () {
+    var slice = Slice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    slice.copyWithin(2, 5, 0); // [3, 4, 5]
+    expect(slice.toList(), [3, 4, 5, 4, 5, 6, 7, 8, 9, 10]);
+
+    slice = Slice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    slice.copyWithin(1, 4, 6, sInc: false, enInc: true); // [3, 4, 5]
+    expect(slice.toList(), [1, 2, 3, 4, 5, 6, 3, 4, 5, 10]);
+
+    slice = Slice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(() => slice.copyWithin(10, 12, 0), throwsA(isA<Panic>()));
+    expect(() => slice.copyWithin(-1, 3, 0), throwsA(isA<Panic>()));
+    expect(() => slice.copyWithin(2, 5, 10), throwsA(isA<Panic>()));
+
+    slice = Slice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    slice.copyWithin(0, 3, 1); // [1, 2, 3]
+    expect(slice.toList(), [1, 1, 2, 3, 5, 6, 7, 8, 9, 10]);
+
+    slice = Slice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    slice.copyWithin(3, 6, 0); // [4, 5, 6]
+    expect(slice.toList(), [4, 5, 6, 4, 5, 6, 7, 8, 9, 10]);
+
+    slice = Slice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    slice.copyWithin(4, 5, 0); // [5]
+    expect(slice.toList(), [5, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
   test("endsWith", () {
