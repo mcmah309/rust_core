@@ -63,11 +63,11 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   bool all(bool Function(T) f) => every(f);
 
   @override
-  ArrayChunksRIterator<T> arrayChunks(int size) =>
-      ArrayChunksRIterator(this, size);
+  ArrayChunks<T> arrayChunks(int size) =>
+      ArrayChunks(this, size);
 
   @override
-  ChainRIterator<T> chain(Iterator<T> other) => ChainRIterator(this, other);
+  Chain<T> chain(Iterator<T> other) => Chain(this, other);
 
   @override
   int cmpBy<U>(Iterator<U> other, int Function(T, U) f) {
@@ -92,7 +92,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   RIterator<T> clone() {
-    return CloneRIterator<T>._original(this);
+    return Clone<T>._original(this);
   }
 
   @override
@@ -125,7 +125,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   int count() => super.length;
 
   @override
-  CycleRIterator<T> cycle() => CycleRIterator(this);
+  Cycle<T> cycle() => Cycle(this);
 
   @override
   RIterator<(int, T)> enumerate() => RIterator.fromIterable(indexed);
@@ -212,8 +212,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  FlatMapRIterator<T, U> flatMap<U>(Iterator<U> Function(T) f) =>
-      FlatMapRIterator<T, U>(this, f);
+  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f) =>
+      FlatMap<T, U>(this, f);
 
   @override
   RIterator<T> inspect(void Function(T) f) {
@@ -531,7 +531,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  PeekableRIterator<T> peekable() => PeekableRIterator(this);
+  Peekable<T> peekable() => Peekable(this);
 
   @override
   Option<int> position(bool Function(T) f) {
@@ -598,8 +598,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  ZipRIterator<T, U> zip<U>(Iterator<U> other) =>
-      ZipRIterator<T, U>(this, other);
+  Zip<T, U> zip<U>(Iterator<U> other) =>
+      Zip<T, U>(this, other);
 
   //************************************************************************//
   // Iterable: Overriding iterable methods

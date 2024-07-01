@@ -11,4 +11,5 @@ export "option.dart";
 export "panic.dart";
 export "result.dart";
 export "slice.dart";
+export "str.dart";
 export 'sync.dart';

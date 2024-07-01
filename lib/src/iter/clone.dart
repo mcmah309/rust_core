@@ -4,19 +4,19 @@ part of 'iterator.dart';
 /// Note: Do not modify the original collection the original [Iterable] is based on while iterating.
 /// Explanation:
 /// Since Dart [Iterator]s cannot be copied,
-/// [CloneRIterator] replaces the underlying iterator from the [RIterator] provided in the constructor with itself and
+/// [Clone] replaces the underlying iterator from the [RIterator] provided in the constructor with itself and
 /// collects any first calls to [moveNext] from any derived iterator.
 /// Due to this, modifications of the original iterable may have
 /// unintentional behavior on the cloned iterator. i.e. the first encounter of an object during iteration will be the one
-/// seen by the derived [RIterator] and all other subsequent [CloneRIterator]s.
-/// Therefore if createing a [CloneRIterator] do not modify the original
+/// seen by the derived [RIterator] and all other subsequent [Clone]s.
+/// Therefore if createing a [Clone] do not modify the original
 /// collection the passed in [RIterator] is based on.
-final class CloneRIterator<T> extends RIterator<T> {
+final class Clone<T> extends RIterator<T> {
   final List<T> _trackedValues;
   late final _CollectingIterator<T> _iterator;
   int index = -1;
 
-  CloneRIterator._original(RIterator<T> rIterator)
+  Clone._original(RIterator<T> rIterator)
       : _trackedValues = [],
         super._late() {
     _wIterator = this;
@@ -24,8 +24,8 @@ final class CloneRIterator<T> extends RIterator<T> {
     rIterator._wIterator = _iterator;
   }
 
-  /// Clone of the iterator. Creates a seperate [CloneRIterator] which will not affect the original.
-  CloneRIterator._clone(CloneRIterator<T> iterator)
+  /// Clone of the iterator. Creates a seperate [Clone] which will not affect the original.
+  Clone._clone(Clone<T> iterator)
       : _iterator = iterator._iterator,
         _trackedValues = iterator._trackedValues,
         index = iterator.index,
@@ -34,7 +34,7 @@ final class CloneRIterator<T> extends RIterator<T> {
   }
 
   /// To be used by subclasses to wrap their own iterators.
-  CloneRIterator._trackable(Iterator<T> iterator)
+  Clone._trackable(Iterator<T> iterator)
       : _trackedValues = [],
         super._late() {
     _wIterator = this;
@@ -58,8 +58,8 @@ final class CloneRIterator<T> extends RIterator<T> {
   }
 
   @override
-  CloneRIterator<T> clone() {
-    return CloneRIterator._clone(this);
+  Clone<T> clone() {
+    return Clone._clone(this);
   }
 }
 

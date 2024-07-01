@@ -1,14 +1,14 @@
 part of 'iterator.dart';
 
 /// An iterator which can use the "peek" to look at the next element of the iterator without consuming it.
-final class PeekableRIterator<T> extends RIterator<T> {
+final class Peekable<T> extends RIterator<T> {
   late Iterator<T> _iterator;
   late T _peeked;
   late T _current;
   // Needed since T may be nullable.
   bool _hasPeaked = false;
 
-  PeekableRIterator(this._iterator) : super._late() {
+  Peekable(this._iterator) : super._late() {
     _wIterator = this;
   }
 
@@ -45,14 +45,14 @@ final class PeekableRIterator<T> extends RIterator<T> {
   T get current => _current;
 
   @override
-  PeekableRIterator<T> clone() {
-    final temp = CloneRIterator._trackable(_iterator);
+  Peekable<T> clone() {
+    final temp = Clone._trackable(_iterator);
     _iterator = temp;
     if (_hasPeaked) {
-      return PeekableRIterator(
-          _PrefixedIterator(_peeked, CloneRIterator._clone(temp)));
+      return Peekable(
+          _PrefixedIterator(_peeked, Clone._clone(temp)));
     }
-    return PeekableRIterator(CloneRIterator._clone(temp));
+    return Peekable(Clone._clone(temp));
   }
 }
 

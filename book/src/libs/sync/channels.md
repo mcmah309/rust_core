@@ -128,7 +128,7 @@ void main() async {
 
 ## Isolate Channels
 
-`isolateChannel` is used for bi-directional isolate communication with channels. The returned
+`isolateChannel` is used for bi-directional isolate communication. The returned
 `Sender` and `Receiver` can communicate with the spawned isolate and 
 the spawned isolate is passed a `Sender` and `Receiver` to communicate with the original isolate.
 Each item `T` sent by the `Sender` will only be seen once by the `Receiver`. If the `Sender` calls `close` while the `Receiver`'s buffer

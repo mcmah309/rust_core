@@ -45,25 +45,25 @@ Goal: Get the index of every "!" in a string not followed by a "?"
 import 'package:rust_core/rust_core.dart';
 
 void main() {
-    List<int> answer = [];
-    String string = "kl!sd!?!";
-    Peekable<(int, Arr<String>)> iter = string
-        .chars()
-        .windows(2)
-        .enumerate()
-        .peekable();
-    while (iter.moveNext()) {
-      final (int index, Arr<String> window) = iter.current;
-      switch (window) {
-        case ["!", "?"]:
-          break;
-        case ["!", _]:
-          answer.add(iter.current.$1);
-        case [_, "!"] when iter.peek().isNone():
-          answer.add(index + 1);
-      }
+  List<int> answer = [];
+  String string = "kl!sd!?!";
+  Peekable<(int index, Arr<String> window)> iter = string
+      .chars()
+      .mapWindows(2, identity)
+      .enumerate()
+      .peekable();
+  while (iter.moveNext()) {
+    final (int index, Arr<String> window) = iter.current;
+    switch (window) {
+      case ["!", "?"]:
+        break;
+      case ["!", _]:
+        answer.add(iter.current.$1);
+      case [_, "!"] when iter.peek().isNone():
+        answer.add(index + 1);
     }
-    expect(answer, [2, 7]);
+  }
+  expect(answer, [2, 7]);
 }
 ```
 Rust equivalent
@@ -71,25 +71,23 @@ Rust equivalent
 use std::iter::Peekable;
 
 fn main() {
-    let mut answer: Vec<usize> = Vec::new();
-    let string = "kl!sd!?!";
-    let chars: Vec<char> = string
+  let mut answer: Vec<usize> = Vec::new();
+  let string = "kl!sd!?!";
+  let mut iter: Peekable<_> = string
       .chars()
-      .collect();
-    let mut iter: Peekable<_> = chars
-      .windows(2)
+      .map_windows(|w: &[char; 2]| *w)
       .enumerate()
       .peekable();
 
-    while let Some((index, window)) = iter.next() {
-        match window {
-            ['!', '?'] => continue, 
-            ['!', _] => answer.push(index),
-            [_, '!'] if iter.peek().is_none() => answer.push(index + 1),
-            _ => continue,
-        }
-    }
-    assert_eq!(answer, [2, 7]);
+  while let Some((index, window)) = iter.next() {
+      match window {
+          ['!', '?'] => continue,
+          ['!', _] => answer.push(index),
+          [_, '!'] if iter.peek().is_none() => answer.push(index + 1),
+          _ => continue,
+      }
+  }
+  assert_eq!(answer, [2, 7]);
 }
 ```
 ## Additional Examples

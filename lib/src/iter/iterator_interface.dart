@@ -19,17 +19,17 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// Returns an iterator over N elements of the iterator at a time.
   /// The chunks do not overlap. If N does not divide the length of the iterator, then the last up to N-1 elements will
   /// be omitted and can be retrieved from the [.intoRemainder()] function of the iterator.
-  ArrayChunksRIterator<T> arrayChunks(int size);
+  ArrayChunks<T> arrayChunks(int size);
 
 // by_ref: Will not implement, Dart does not have borrowing
 
   /// Takes two iterators and creates a new iterator over both in sequence.
-  ChainRIterator<T> chain(Iterator<T> other);
+  Chain<T> chain(Iterator<T> other);
 
 // cloned: Will not implement, Dart objects are not clonable
 
   /// An iterator which is a "clone" of the original iterator. Iterating through the original or the clone will not affect the other.
-  /// Do not modify the original collection the original [Iterable] is based on while iterating. See [CloneRIterator] for more information.
+  /// Do not modify the original collection the original [Iterable] is based on while iterating. See [Clone] for more information.
   RIterator<T> clone();
 
 // cmp: Implemented in an extension
@@ -55,7 +55,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   int count();
 
   /// Creates an iterator which repeats the elements of the original iterator endlessly.
-  CycleRIterator<T> cycle();
+  Cycle<T> cycle();
 
   /// Creates an iterator which gives the current iteration count as well as the next value.
   RIterator<(int, T)> enumerate();
@@ -80,7 +80,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   Option<U> findMap<U extends Object>(Option<U> Function(T) f);
 
   /// Creates an iterator that works like map, but flattens nested structure.
-  FlatMapRIterator<T, U> flatMap<U>(Iterator<U> Function(T) f);
+  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f);
 
 // flatten: Implemented in an extension
 // fold: Implemented by Iterable.fold
@@ -177,7 +177,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   int partitionInPlace(bool Function(T) f);
 
   /// Creates an iterator which can use the "peek" to look at the next element of the iterator without consuming it.
-  PeekableRIterator<T> peekable();
+  Peekable<T> peekable();
 
   /// Searches for an element in an iterator, returning its index.
   Option<int> position(bool Function(T) f);
@@ -217,5 +217,5 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   // Zips this iterator with another and yields pairs of elements.
   // The first element comes from the first iterator, and the second element comes from the second iterator.
   // If either iterator does not have another element, the iterator stops.
-  ZipRIterator<T, U> zip<U>(Iterator<U> other);
+  Zip<T, U> zip<U>(Iterator<U> other);
 }

@@ -1,6 +1,8 @@
+import 'package:rust_core/convert.dart';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
 import 'package:rust_core/slice.dart';
+import 'package:rust_core/str.dart';
 import 'package:test/test.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/array.dart';
@@ -493,7 +495,7 @@ main() {
 
   test("peekable", () {
     var list = [1, 2, 3, 4, 5];
-    PeekableRIterator<int> peekable = list.iter().peekable();
+    Peekable<int> peekable = list.iter().peekable();
     expect(peekable.peek(), Some(1));
     expect(peekable.next(), Some(1));
     expect(peekable.peek(), Some(2));
@@ -1006,7 +1008,7 @@ main() {
     /// Get the index of every "!" in a string not followed by a "?"
     List<int> answer = [];
     String string = "kl!sd!?!";
-    PeekableRIterator<(int, int)> iter =
+    Peekable<(int, int)> iter =
         string.runes.iter().enumerate().peekable();
     while (iter.moveNext()) {
       if (iter.current.$2 == "!".codeUnitAt(0) &&
@@ -1022,7 +1024,7 @@ main() {
     /// Get the index of every "!" in a string not followed by a "?"
     List<int> answer = [];
     String string = "kl!sd!?!";
-    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+    Peekable<(int, Arr<String>)> iter = string.runes
         .iter()
         .map((e) => String.fromCharCode(e))
         .mapWindows(2, (e) => e)
@@ -1046,7 +1048,7 @@ main() {
     /// Get the index of every "!" in a string not followed by a "?"
     List<int> answer = [];
     String string = "kl!sd!?!";
-    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+    Peekable<(int, Arr<String>)> iter = string.runes
         .iter()
         .map((e) => String.fromCharCode(e))
         .mapWindows(2, (e) => e)
@@ -1085,7 +1087,7 @@ main() {
     /// Get the index of every "!" in a string not followed by a "?"
     List<int> answer = [];
     String string = "kl!sd!?!";
-    PeekableRIterator<(int, Arr<String>)> iter = string.runes
+    Peekable<(int, Arr<String>)> iter = string.runes
         .iter()
         .map((e) => String.fromCharCode(e))
         .mapWindows(2, (e) => e)
@@ -1113,10 +1115,9 @@ main() {
   test("Use case example 6", () {
     /// Get the index of every "!" in a string not followed by a "?"
     String string = "kl!sd!?!";
-    PeekableRIterator<(int index, Arr<String> window)> iter = string.runes
-        .iter()
-        .map((e) => String.fromCharCode(e))
-        .mapWindows(2, (e) => e)
+    Peekable<(int index, Arr<String> window)> iter = string
+        .chars()
+        .mapWindows(2, identity)
         .enumerate()
         .peekable();
     List<int> answer = [];

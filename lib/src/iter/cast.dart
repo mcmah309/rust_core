@@ -1,9 +1,9 @@
 part of 'iterator.dart';
 
-class CastRIterator<S, T> extends RIterator<T> {
+class Cast<S, T> extends RIterator<T> {
   Iterator<S> _source;
 
-  CastRIterator(this._source) : super._late() {
+  Cast(this._source) : super._late() {
     _wIterator = this;
   }
 
@@ -13,9 +13,9 @@ class CastRIterator<S, T> extends RIterator<T> {
   T get current => _source.current as T;
 
   @override
-  CastRIterator<S, T> clone() {
-    final temp = CloneRIterator._trackable(_source);
+  Cast<S, T> clone() {
+    final temp = Clone._trackable(_source);
     _source = temp;
-    return CastRIterator(CloneRIterator._clone(temp).iterator);
+    return Cast(Clone._clone(temp).iterator);
   }
 }
