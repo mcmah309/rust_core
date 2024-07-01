@@ -37,6 +37,44 @@ main() {
       [1]
     ]);
     expect(remainder, []);
+    expect(() => slice.asChunks(0), throwsA(isA<Object>()));
+    expect(() => slice.asChunks(-1), throwsA(isA<Object>()));
+  });
+
+  test("asRchunks", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = list.slice();
+    var (remainder, chunks) = slice.asRchunks(2);
+    expect(chunks, [
+      [2, 3],
+      [4, 5]
+    ]);
+    expect(remainder, [1]);
+    list = [1, 2, 3, 4];
+    slice = list.slice();
+    (remainder, chunks) = slice.asRchunks(2);
+    expect(chunks, [
+      [1, 2],
+      [3, 4]
+    ]);
+    expect(remainder, []);
+    list = [];
+    slice = list.slice();
+    (remainder, chunks) = slice.asRchunks(2);
+    expect(chunks, []);
+    expect(remainder, []);
+    list = [1];
+    slice = list.slice();
+    (remainder, chunks) = slice.asRchunks(2);
+    expect(chunks, []);
+    expect(remainder, [1]);
+    (remainder, chunks) = slice.asRchunks(1);
+    expect(chunks, [
+      [1]
+    ]);
+    expect(remainder, []);
+    expect(() => slice.asRchunks(0), throwsA(isA<Object>()));
+    expect(() => slice.asRchunks(-1), throwsA(isA<Object>()));
   });
 
   test("copyFromSlice", () {
@@ -582,5 +620,15 @@ main() {
     expect(windows, [
       [1, 2, 3, 4, 5]
     ]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    windows = slice.windows(4);
+    expect(windows, []);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    expect(() => slice.windows(0), throwsA(isA<Object>()));
+    expect(() => slice.windows(-1), throwsA(isA<Object>()));
   });
 }

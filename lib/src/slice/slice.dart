@@ -84,8 +84,10 @@ final class Slice<T> implements Iterable<T> {
 
   /// Splits the slice into a slice of N-element arrays, starting at the beginning of the slice, and a remainder slice with length strictly less than N.
   (Arr<Arr<T>> chunks, Arr<T> remainder) asChunks(int n) {
+    // Dev Note: No need to a panic in release mode, `Arr.generate` already does a check
     assert(n > 0, "'n' must be positive");
-    final numOfChunks = (_end - _start) ~/ n;
+    final length = len();
+    final numOfChunks = length ~/ n;
     final Arr<Arr<T?>> chunks = Arr.generate(numOfChunks, (i) => Arr(null, n));
     for (var i = 0; i < chunks.len(); i++) {
       for (var j = 0; j < n; j++) {
@@ -93,7 +95,7 @@ final class Slice<T> implements Iterable<T> {
       }
       chunks[i] = chunks[i].cast<T>();
     }
-    final remainderLength = (_end - _start) % n;
+    final remainderLength = length % n;
     var remainder = Arr<T?>(null, remainderLength);
     for (var i = 0; i < remainderLength; i++) {
       remainder[i] = this[i + chunks.len() * n];
@@ -108,12 +110,33 @@ final class Slice<T> implements Iterable<T> {
 // as_mut_ptr_range: Will not implement, not possible in Dart
 // as_ptr: Will not implement, not possible in Dart
 // as_ptr_range: Will not implement, not possible in Dart
-// as_rchunks: //todo, use Array
+
+// Splits the slice into a slice of N-element arrays, starting at the end of the slice, and a remainder slice with length strictly less than N
+(Arr<T> remainder, Arr<Arr<T>> chunks) asRchunks(int n) {
+    // Dev Note: No need to a panic in release mode, `Arr()` already does a check
+    assert(n > 0, "'n' must be positive");
+    final length = len();
+    final remainderLength = length % n;
+    var remainder = Arr<T?>(null, remainderLength);
+    for (var i = 0; i < remainderLength; i++) {
+      remainder[i] = this[i];
+    }
+    final numOfChunks = length ~/ n;
+    final Arr<Arr<T?>> chunks = Arr.generate(numOfChunks, (i) => Arr(null, n));
+    for (var i = 0; i < chunks.len(); i++) {
+      for (var j = 0; j < n; j++) {
+        chunks[i][j] = this[remainderLength + i * n + j];
+      }
+      chunks[i] = chunks[i].cast<T>();
+    }
+    return (remainder.cast<T>(), chunks.cast<Arr<T>>());
+  }
+
 // as_rchunks_mut: Will not implement, covered by as_rchunks
 // as_simd: Will not implement, not possible in Dart
 // as_simd_mut: Will not implement, covered by as_simd
 // as_str: Will not implement, not possible in Dart
-// binary_search: //todo
+// binary_search: //todo;
 // binary_search_by: //todo
 // binary_search_by_key: //todo
 // chunks: Will not implement, covered by array_chunks
@@ -286,6 +309,7 @@ final class Slice<T> implements Iterable<T> {
 
   /// Returns the last element of the slice, can throw.
   @override
+  @pragma("vm:prefer-inline")
   T get last {
     return _list[_end - 1];
   }
@@ -303,7 +327,8 @@ final class Slice<T> implements Iterable<T> {
 // last_mut: Will not implement, covered by last
 
   /// Returns the length of the slice.
-  int len() => _start - _end;
+  @pragma("vm:prefer-inline")
+  int len() =>  _end - _start;
 
 // make_ascii_lowercase: Will not implement, not possible in Dart
 // make_ascii_uppercase: Will not implement, not possible in Dart
@@ -622,15 +647,22 @@ final class Slice<T> implements Iterable<T> {
 // trim_ascii_end: Will not implement, not possible in Dart
 // trim_ascii_start: Will not implement, not possible in Dart
 
+  /// Returns an iterator over all contiguous windows of length size. The windows overlap. 
+  /// If the slice is shorter than size, the iterator returns no values.
   RIterator<Slice<T>> windows(int size) {
+    // Dev Note: No need to a panic in release mode, `Iterable.generate` already does a check
     assert(size > 0, "Size must be positive");
-    assert(size <= _end - _start, "Size must be less than or equal to the length of the slice");
+    if(size > _end - _start){
+      return RIterator.fromIterable(const []);
+    }
     return RIterator(Iterable.generate(
         _end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)).iterator);
   }
 
+  @pragma("vm:prefer-inline")
   T operator [](int index) => _list[index + _start];
 
+  @pragma("vm:prefer-inline")
   void operator []=(int index, T value) => _list[index + _start] = value;
 
   @pragma("vm:prefer-inline")
@@ -642,87 +674,112 @@ final class Slice<T> implements Iterable<T> {
   //************************************************************************//
 
   @override
+  @pragma("vm:prefer-inline")
   bool any(bool Function(T) f) => _list.getRange(_start, _end).any(f);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<U> cast<U>() => RIterator(_list.getRange(_start, _end).cast<U>().iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   bool contains(Object? element) => _list.getRange(_start, _end).contains(element);
 
   @override
+  @pragma("vm:prefer-inline")
   T elementAt(int index) => _list.getRange(_start, _end).elementAt(index);
 
   @override
+  @pragma("vm:prefer-inline")
   bool every(bool Function(T) f) => _list.getRange(_start, _end).every(f);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
       RIterator(_list.getRange(_start, _end).expand(f).iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   T firstWhere(bool Function(T) f, {T Function()? orElse}) =>
       _list.getRange(_start, _end).firstWhere(f, orElse: orElse);
 
   @override
+  @pragma("vm:prefer-inline")
   U fold<U>(U initialValue, U Function(U previousValue, T element) f) =>
       _list.getRange(_start, _end).fold(initialValue, f);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<T> followedBy(Iterable<T> other) =>
       RIterator(_list.getRange(_start, _end).followedBy(other).iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   void forEach(void Function(T) f) => _list.getRange(_start, _end).forEach(f);
 
   @override
+  @pragma("vm:prefer-inline")
   String join([String separator = '']) => _list.getRange(_start, _end).join(separator);
 
   @override
+  @pragma("vm:prefer-inline")
   T lastWhere(bool Function(T) f, {T Function()? orElse}) =>
       _list.getRange(_start, _end).lastWhere(f, orElse: orElse);
 
   @override
+  @pragma("vm:prefer-inline")
   int get length => _end - _start;
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<U> map<U>(U Function(T) f) => RIterator(_list.getRange(_start, _end).map(f).iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   T reduce(T Function(T, T) f) => _list.getRange(_start, _end).reduce(f);
 
   @override
+  @pragma("vm:prefer-inline")
   T get single => _list.getRange(_start, _end).single;
 
   @override
+  @pragma("vm:prefer-inline")
   T singleWhere(bool Function(T) f, {T Function()? orElse}) =>
       _list.getRange(_start, _end).singleWhere(f, orElse: orElse);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<T> skip(int count) => RIterator(_list.getRange(_start, _end).skip(count).iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<T> skipWhile(bool Function(T) f) =>
       RIterator(_list.getRange(_start, _end).skipWhile(f).iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<T> take(int count) => RIterator(_list.getRange(_start, _end).take(count).iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<T> takeWhile(bool Function(T) f) =>
       RIterator(_list.getRange(_start, _end).takeWhile(f).iterator);
 
   /// [growable] is ignore, always returns a growable list.
   @override
+  @pragma("vm:prefer-inline")
   List<T> toList({bool growable = true}) => _list.sublist(_start, _end);
 
   @override
+  @pragma("vm:prefer-inline")
   Set<T> toSet() => _list.getRange(_start, _end).toSet();
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<T> where(bool Function(T) f) =>
       RIterator(_list.getRange(_start, _end).where(f).iterator);
 
   @override
+  @pragma("vm:prefer-inline")
   RIterator<U> whereType<U>() => RIterator(_list.getRange(_start, _end).whereType<U>().iterator);
 }
