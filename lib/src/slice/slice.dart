@@ -416,7 +416,7 @@ final class Slice<T> implements Iterable<T> {
 
 // make_ascii_lowercase: Will not implement, not possible in Dart
 // make_ascii_uppercase: Will not implement, not possible in Dart
-// partition_dedup: //todo
+// partition_dedup: Implemented in extension
 // partition_dedup_by: //todo
 // partition_dedup_by_key: //todo
 
@@ -461,11 +461,11 @@ final class Slice<T> implements Iterable<T> {
   /// Returns an iterator over subslices separated by elements that match pred,
   /// starting at the end of the slice and working backwards.
   /// The matched element is not contained in the subslices.
-  RIterator<Slice<T>> rsplit(bool Function(T) pred) {
-    return RIterator(_rsplitHelper(pred).iterator);
+  RIterator<Slice<T>> rSplit(bool Function(T) pred) {
+    return RIterator(_rSplitHelper(pred).iterator);
   }
 
-  Iterable<Slice<T>> _rsplitHelper(bool Function(T) pred) sync* {
+  Iterable<Slice<T>> _rSplitHelper(bool Function(T) pred) sync* {
     var start = _end - 1;
     var end = _end - 1;
     while (start >= _start) {

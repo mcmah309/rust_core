@@ -214,6 +214,30 @@ main() {
     expect(s.binarySearchByKey(11, (x) => x.$2), Err(9));
   });
 
+  test("partitionDedup", (){
+    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
+    var (dedup, duplicates) = slice.partitionDedup();
+    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
+    expect(dedup.toList(), [1, 2, 3, 2, 1]);
+    expect(duplicates.toList(), [2, 3, 1]);
+
+    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2,7);
+    (dedup, duplicates) = slice.partitionDedup();
+    expect(slice.toList(), [2, 3, 2, 1, 3]);
+    expect(dedup.toList(), [2, 3, 2, 1]);
+    expect(duplicates.toList(), [3]);
+
+    slice = <num>[].asSlice();
+    (dedup, duplicates) = slice.partitionDedup();
+    expect(dedup.toList(), []);
+    expect(duplicates.toList(), []);
+
+    slice = <num>[1].asSlice();
+    (dedup, duplicates) = slice.partitionDedup();
+    expect(dedup.toList(), [1]);
+    expect(duplicates.toList(), []);
+  });
+
   test("copyFromSlice", () {
     var srcList = [1, 2, 3, 4, 5];
     var dstList = [6, 7, 8, 9, 10];
@@ -462,7 +486,7 @@ main() {
   test("rsplit", () {
     var list = [11, 22, 33, 0, 44, 55];
     var slice = Slice(list, 0, 6);
-    var iter = slice.rsplit((num) => num == 0);
+    var iter = slice.rSplit((num) => num == 0);
     expect(iter.next().unwrap(), [44, 55]);
     expect(iter.next().unwrap(), [11, 22, 33]);
   });
