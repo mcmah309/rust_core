@@ -77,14 +77,14 @@ final class Slice<T> implements Iterable<T> {
 
 // align_to: Will not implement, not possible in Dart
 // align_to_mut: Will not implement, not possible in Dart
-// array_chunks: Will not implement, covered by iter's array chunks
+// array_chunks: Will not implement, covered by iter's array_chunks
 // array_chunks_mut: Will not implement, covered by array_chunks
 
   /// Returns an iterator over all contiguous windows of length size. The windows overlap.
   /// If the array is shorter than size, the iterator returns no values.
   /// Panics if size is zero or less.
   RIterator<Arr<T>> arrayWindows(int size) {
-    if(size <= 0){
+    if (size <= 0) {
       panic("window size must be non-zero");
     }
     return RIterator.fromIterable(_arrayWindowsHelper(size));
@@ -102,25 +102,22 @@ final class Slice<T> implements Iterable<T> {
 // as_ascii_unchecked: Will not implement, not possible in Dart
 // as_bytes: Will not implement, not possible in Dart
 
-  /// Splits the slice into a slice of N-element arrays, starting at the beginning of the slice, and a remainder slice with length strictly less than N.
-  (Arr<Arr<T>> chunks, Arr<T> remainder) asChunks(int n) {
-    // Dev Note: No need to a panic in release mode, `Arr.generate` already does a check
-    assert(n > 0, "'n' must be positive");
+  /// Splits the slice into a slice of N-element arrays, starting at the beginning of the slice,
+  /// and a remainder slice with length strictly less than N.
+  /// Panics if [chunkSize] is 0 or less.
+  (Arr<Arr<T>> chunks, Arr<T> remainder) asChunks(int chunkSize) {
+    if (chunkSize <= 0) {
+      panic("'chunkSize' must be positive");
+    }
     final length = len();
-    final numOfChunks = length ~/ n;
-    final Arr<Arr<T?>> chunks = Arr.generate(numOfChunks, (i) => Arr(null, n));
-    for (var i = 0; i < chunks.len(); i++) {
-      for (var j = 0; j < n; j++) {
-        chunks[i][j] = getUnchecked(i * n + j);
-      }
-      chunks[i] = chunks[i].cast<T>();
-    }
-    final remainderLength = length % n;
-    var remainder = Arr<T?>(null, remainderLength);
-    for (var i = 0; i < remainderLength; i++) {
-      remainder[i] = getUnchecked(i + chunks.len() * n);
-    }
-    return (chunks.cast<Arr<T>>(), remainder.cast<T>());
+    final numOfChunks = length ~/ chunkSize;
+    final Arr<Arr<T>> chunks = Arr.generate(numOfChunks, (i) {
+      return Arr.generate(chunkSize, (j) => getUnchecked(i * chunkSize + j));
+    });
+    final remainderLength = length % chunkSize;
+    var remainder =
+        Arr<T>.generate(remainderLength, (i) => getUnchecked(i + chunks.len() * chunkSize));
+    return (chunks, remainder);
   }
 
 // as_chunks_mut: Will not implement, covered by as_chunks
@@ -132,25 +129,20 @@ final class Slice<T> implements Iterable<T> {
 // as_ptr_range: Will not implement, not possible in Dart
 
   /// Splits the slice into a slice of N-element arrays, starting at the end of the slice,
-  /// and a remainder slice with length strictly less than N
-  (Arr<T> remainder, Arr<Arr<T>> chunks) asRchunks(int n) {
-    // Dev Note: No need to a panic in release mode, `Arr()` already does a check
-    assert(n > 0, "'n' must be positive");
+  /// and a remainder slice with length strictly less than N.
+  /// Panics if [chunkSize] is 0 or less.
+  (Arr<T> remainder, Arr<Arr<T>> chunks) asRchunks(int chunkSize) {
+    if (chunkSize <= 0) {
+      panic("'chunkSize' must be positive");
+    }
     final length = len();
-    final remainderLength = length % n;
-    var remainder = Arr<T?>(null, remainderLength);
-    for (var i = 0; i < remainderLength; i++) {
-      remainder[i] = getUnchecked(i);
-    }
-    final numOfChunks = length ~/ n;
-    final Arr<Arr<T?>> chunks = Arr.generate(numOfChunks, (i) => Arr(null, n));
-    for (var i = 0; i < chunks.len(); i++) {
-      for (var j = 0; j < n; j++) {
-        chunks[i][j] = getUnchecked(remainderLength + i * n + j);
-      }
-      chunks[i] = chunks[i].cast<T>();
-    }
-    return (remainder.cast<T>(), chunks.cast<Arr<T>>());
+    final remainderLength = length % chunkSize;
+    var remainder = Arr<T>.generate(remainderLength, (i) => getUnchecked(i));
+    final numOfChunks = length ~/ chunkSize;
+    final Arr<Arr<T>> chunks = Arr.generate(numOfChunks, (i) {
+      return Arr.generate(chunkSize, (j) => getUnchecked(remainderLength + i * chunkSize + j));
+    });
+    return (remainder, chunks);
   }
 
 // as_rchunks_mut: Will not implement, covered by as_rchunks
@@ -204,10 +196,35 @@ final class Slice<T> implements Iterable<T> {
     return Err(left);
   }
 
-// chunks: Will not implement, covered by array_chunks
-// chunks_exact: Will not implement, covered by array_chunks
-// chunks_exact_mut: Will not implement, covered by array_chunks
-// chunks_mut: Will not implement, covered by array_chunks
+  /// Returns an iterator over [chunkSize] elements of the slice at a time, starting at the beginning of the slice.
+  /// The chunks are slices and do not overlap. If [chunkSize] does not divide the length of the slice,
+  /// then the last chunk will not have length chunkSize.
+  /// Panics if [chunkSize] is 0 or less.
+  RIterator<Slice<T>> chunks(int n) {
+    return RIterator.fromIterable(_chunksHelper(n));
+  }
+
+  @pragma("vm:prefer-inline")
+  Iterable<Slice<T>> _chunksHelper(int chunkSize) sync* {
+    if (chunkSize <= 0) {
+      panic("'chunkSize' must be positive");
+    }
+    final length = len();
+    final numOfChunks = length ~/ chunkSize;
+    for (var i = 0; i < numOfChunks; i++) {
+      final start = i * chunkSize;
+      yield slice(start, start + chunkSize);
+    }
+    final remainderLength = length % chunkSize;
+    if (remainderLength > 0) {
+      final start = numOfChunks * chunkSize;
+      yield slice(start, start + remainderLength);
+    }
+  }
+
+// chunks_exact: // todo
+// chunks_exact_mut: Will not implement, covered by chunks_exact
+// chunks_mut: Will not implement, covered by chunks
 // clone_from_slice: Will not implement, not possible in Dart
 
 // contains: Implemented by Iterable.contains
@@ -493,7 +510,7 @@ final class Slice<T> implements Iterable<T> {
     }
   }
 
-  /// Rotates the slice in-place such that the first mid elements of the slice move to the end while the 
+  /// Rotates the slice in-place such that the first mid elements of the slice move to the end while the
   /// last `this.len() - mid` elements move to the front. After calling [rotateLeft], the element previously
   /// at index mid will become the first element in the slice.
   void rotateLeft(int mid) {
@@ -840,7 +857,7 @@ final class Slice<T> implements Iterable<T> {
   /// If the slice is shorter than size, the iterator returns no values.
   /// Panics if size is zero or less.
   RIterator<Slice<T>> windows(int size) {
-    if(size <= 0){
+    if (size <= 0) {
       panic("window size must be non-zero");
     }
     return RIterator.fromIterable(_windowsHelper(size));

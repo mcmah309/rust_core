@@ -215,111 +215,38 @@ main() {
     expect(s.binarySearchByKey(11, (x) => x.$2), Err(9));
   });
 
-  test("partitionDedup", () {
-    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
-    var (dedup, duplicates) = slice.partitionDedup();
-    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
-    expect(dedup.toList(), [1, 2, 3, 2, 1]);
-    expect(duplicates.toList(), [2, 3, 1]);
-
-    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2, 7);
-    (dedup, duplicates) = slice.partitionDedup();
-    expect(slice.toList(), [2, 3, 2, 1, 3]);
-    expect(dedup.toList(), [2, 3, 2, 1]);
-    expect(duplicates.toList(), [3]);
-
-    slice = <num>[].asSlice();
-    (dedup, duplicates) = slice.partitionDedup();
-    expect(dedup.toList(), []);
-    expect(duplicates.toList(), []);
-
-    slice = <num>[1].asSlice();
-    (dedup, duplicates) = slice.partitionDedup();
-    expect(dedup.toList(), [1]);
-    expect(duplicates.toList(), []);
-  });
-
-  test("partitionDedupBy", () {
-    var sliceStr = ["foo", "Foo", "BAZ", "Bar", "bar", "baz", "BAZ"].asSlice();
-    var (dedupStr, duplicatesStr) = sliceStr.partitionDedupBy((a, b) => a.eqIgnoreCase(b));
-    expect(dedupStr, ["foo", "BAZ", "Bar", "baz"]);
-    expect(duplicatesStr, ["bar", "Foo", "BAZ"]);
-
-    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
-    var (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
-    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
-    expect(dedup.toList(), [1, 2, 3, 2, 1]);
-    expect(duplicates.toList(), [2, 3, 1]);
-
-    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2, 7);
-    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
-    expect(slice.toList(), [2, 3, 2, 1, 3]);
-    expect(dedup.toList(), [2, 3, 2, 1]);
-    expect(duplicates.toList(), [3]);
-
-    slice = <num>[].asSlice();
-    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
-    expect(dedup.toList(), []);
-    expect(duplicates.toList(), []);
-
-    slice = <num>[1].asSlice();
-    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
-    expect(dedup.toList(), [1]);
-    expect(duplicates.toList(), []);
-  });
-
-  test("partitionDedupByKey", () {
-    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
-    var (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
-    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
-    expect(dedup.toList(), [1, 2, 3, 2, 1]);
-    expect(duplicates.toList(), [2, 3, 1]);
-
-    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2, 7);
-    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
-    expect(slice.toList(), [2, 3, 2, 1, 3]);
-    expect(dedup.toList(), [2, 3, 2, 1]);
-    expect(duplicates.toList(), [3]);
-
-    slice = <num>[].asSlice();
-    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
-    expect(dedup.toList(), []);
-    expect(duplicates.toList(), []);
-
-    slice = <num>[1].asSlice();
-    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
-    expect(dedup.toList(), [1]);
-    expect(duplicates.toList(), []);
-  });
-
-  test("rotateLeft", () {
-    Slice<String> slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
-    slice.rotateLeft(2);
-    expect(slice, ['c', 'd', 'e', 'f', 'a', 'b']);
-
-    slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
-    slice.slice(1, 5).rotateLeft(1);
-    expect(slice, ['a', 'c', 'd', 'e', 'b', 'f']);
-
-    Slice<int> slice2 = [1, 2, 3, 4, 5].asSlice();
-    slice2.rotateLeft(3);
-    expect(slice2, [4, 5, 1, 2, 3]);
-  });
-
-  test("rotateRight", () {
-    Slice<String> slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
-    slice.rotateRight(2);
-    expect(slice, ['e', 'f', 'a', 'b', 'c', 'd']);
-
-    slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
-    slice.slice(1, 5).rotateRight(1);
-    expect(slice, ['a', 'e', 'b', 'c', 'd', 'f']);
-
-    Slice<int> slice2 = [1, 2, 3, 4, 5].asSlice();
-    slice2.rotateRight(3);
-    expect(slice2, [3, 4, 5, 1, 2]);
-
-    print("All rotateRight tests passed!");
+  test("chunks", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = list.slice();
+    var chunks = slice.chunks(2).toList();
+    expect(chunks, [
+      [1, 2],
+      [3, 4],
+      [5]
+    ]);
+    list = [1, 2, 3, 4];
+    slice = list.slice();
+    chunks = slice.chunks(2).toList();
+    expect(chunks, [
+      [1, 2],
+      [3, 4]
+    ]);
+    list = [];
+    slice = list.slice();
+    chunks = slice.chunks(2).toList();
+    expect(chunks, []);
+    list = [1];
+    slice = list.slice();
+    chunks = slice.chunks(2).toList();
+    expect(chunks, [
+      [1]
+    ]);
+    chunks = slice.chunks(1).toList();
+    expect(chunks, [
+      [1]
+    ]);
+    expect(() => slice.chunks(0), throwsA(isA<Panic>()));
+    expect(() => slice.chunks(-1), throwsA(isA<Panic>()));
   });
 
   test("copyFromSlice", () {
@@ -499,6 +426,113 @@ main() {
     slice = list.asSlice();
     expect(slice.lastChunk(1), None);
     expect(slice.lastChunk(0), Some([]));
+  });
+
+  test("partitionDedup", () {
+    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
+    var (dedup, duplicates) = slice.partitionDedup();
+    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
+    expect(dedup.toList(), [1, 2, 3, 2, 1]);
+    expect(duplicates.toList(), [2, 3, 1]);
+
+    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2, 7);
+    (dedup, duplicates) = slice.partitionDedup();
+    expect(slice.toList(), [2, 3, 2, 1, 3]);
+    expect(dedup.toList(), [2, 3, 2, 1]);
+    expect(duplicates.toList(), [3]);
+
+    slice = <num>[].asSlice();
+    (dedup, duplicates) = slice.partitionDedup();
+    expect(dedup.toList(), []);
+    expect(duplicates.toList(), []);
+
+    slice = <num>[1].asSlice();
+    (dedup, duplicates) = slice.partitionDedup();
+    expect(dedup.toList(), [1]);
+    expect(duplicates.toList(), []);
+  });
+
+  test("partitionDedupBy", () {
+    var sliceStr = ["foo", "Foo", "BAZ", "Bar", "bar", "baz", "BAZ"].asSlice();
+    var (dedupStr, duplicatesStr) = sliceStr.partitionDedupBy((a, b) => a.eqIgnoreCase(b));
+    expect(dedupStr, ["foo", "BAZ", "Bar", "baz"]);
+    expect(duplicatesStr, ["bar", "Foo", "BAZ"]);
+
+    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
+    var (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
+    expect(dedup.toList(), [1, 2, 3, 2, 1]);
+    expect(duplicates.toList(), [2, 3, 1]);
+
+    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2, 7);
+    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(slice.toList(), [2, 3, 2, 1, 3]);
+    expect(dedup.toList(), [2, 3, 2, 1]);
+    expect(duplicates.toList(), [3]);
+
+    slice = <num>[].asSlice();
+    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(dedup.toList(), []);
+    expect(duplicates.toList(), []);
+
+    slice = <num>[1].asSlice();
+    (dedup, duplicates) = slice.partitionDedupBy((a, b) => a == b);
+    expect(dedup.toList(), [1]);
+    expect(duplicates.toList(), []);
+  });
+
+  test("partitionDedupByKey", () {
+    var slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].asSlice();
+    var (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
+    expect(slice.toList(), [1, 2, 3, 2, 1, 2, 3, 1]);
+    expect(dedup.toList(), [1, 2, 3, 2, 1]);
+    expect(duplicates.toList(), [2, 3, 1]);
+
+    slice = <num>[1, 2, 2, 3, 3, 2, 1, 1].slice(2, 7);
+    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
+    expect(slice.toList(), [2, 3, 2, 1, 3]);
+    expect(dedup.toList(), [2, 3, 2, 1]);
+    expect(duplicates.toList(), [3]);
+
+    slice = <num>[].asSlice();
+    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
+    expect(dedup.toList(), []);
+    expect(duplicates.toList(), []);
+
+    slice = <num>[1].asSlice();
+    (dedup, duplicates) = slice.partitionDedupByKey<num>((a) => a);
+    expect(dedup.toList(), [1]);
+    expect(duplicates.toList(), []);
+  });
+
+  test("rotateLeft", () {
+    Slice<String> slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
+    slice.rotateLeft(2);
+    expect(slice, ['c', 'd', 'e', 'f', 'a', 'b']);
+
+    slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
+    slice.slice(1, 5).rotateLeft(1);
+    expect(slice, ['a', 'c', 'd', 'e', 'b', 'f']);
+
+    Slice<int> slice2 = [1, 2, 3, 4, 5].asSlice();
+    slice2.rotateLeft(3);
+    expect(slice2, [4, 5, 1, 2, 3]);
+  });
+
+  test("rotateRight", () {
+    Slice<String> slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
+    slice.rotateRight(2);
+    expect(slice, ['e', 'f', 'a', 'b', 'c', 'd']);
+
+    slice = ['a', 'b', 'c', 'd', 'e', 'f'].asSlice();
+    slice.slice(1, 5).rotateRight(1);
+    expect(slice, ['a', 'e', 'b', 'c', 'd', 'f']);
+
+    Slice<int> slice2 = [1, 2, 3, 4, 5].asSlice();
+    slice2.rotateRight(3);
+    expect(slice2, [3, 4, 5, 1, 2]);
+
+    print("All rotateRight tests passed!");
   });
 
   test("reverse", () {

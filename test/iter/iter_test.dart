@@ -1032,6 +1032,7 @@ main() {
         .peekable();
     while (iter.moveNext()) {
       switch (iter.current) {
+        // ignore: unused_local_variable
         case (int index, ["!", "?"]):
           break;
         case (int index, ["!", var _]):
