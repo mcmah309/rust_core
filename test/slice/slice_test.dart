@@ -134,6 +134,48 @@ main() {
     expect(s.binarySearch(11), Err(9));
   });
 
+  test('binarySearchByKey and partitionPoint', () {
+    Slice<(int, int)> s = [
+      (0, 0),
+      (2, 1),
+      (4, 1),
+      (5, 1),
+      (3, 1),
+      (1, 2),
+      (2, 3),
+      (4, 5),
+      (5, 8),
+      (3, 13),
+      (1, 21),
+      (2, 34),
+      (4, 55)
+    ].asSlice();
+
+    expect(s.binarySearchByKey(13, (x) => x.$2), Ok(9));
+    expect(s.binarySearchByKey(4, (x) => x.$2), Err(7));
+    expect(s.binarySearchByKey(100, (x) => x.$2), Err(13));
+
+    var r = s.binarySearchByKey(1, (x) => x.$2);
+    expect(r, anyOf([Ok(1), Ok(2), Ok(3), Ok(4)]));
+
+    int low = s.partitionPoint((x) => x.$2 < 1);
+    expect(low, 1);
+
+    int high = s.partitionPoint((x) => x.$2 <= 1);
+    expect(high, 5);
+
+    r = s.binarySearchByKey(1, (x) => x.$2);
+    expect(r is Ok ? range(low, high).contains(r.unwrap()) : false, true);
+
+    expect(s.slice(0, low).every((x) => x.$2 < 1), true);
+    expect(s.slice(low, high).every((x) => x.$2 == 1), true);
+    expect(s.slice(high).every((x) => x.$2 > 1), true);
+
+    expect(s.partitionPoint((x) => x.$2 < 11), 9);
+    expect(s.partitionPoint((x) => x.$2 <= 11), 9);
+    expect(s.binarySearchByKey(11, (x) => x.$2), Err(9));
+  });
+
   test("copyFromSlice", () {
     var srcList = [1, 2, 3, 4, 5];
     var dstList = [6, 7, 8, 9, 10];
