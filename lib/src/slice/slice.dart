@@ -138,7 +138,29 @@ final class Slice<T> implements Iterable<T> {
 // as_simd_mut: Will not implement, covered by as_simd
 // as_str: Will not implement, not possible in Dart
 // binary_search: implemented in extension
-// binary_search_by: //todo
+
+  /// Binary searches this slice with a comparator function. See [binarySearch] for more.
+  Result<int, int> binarySearchBy(int Function(T) comparator) {
+    int left = 0;
+    int right = this.length - 1;
+
+    while (left <= right) {
+      int mid = left + ((right - left) >> 1);
+      int comp = comparator(this[mid]);
+
+      if (comp == 0) {
+        return Ok(mid);
+      } else if (comp < 0) {
+        left = mid + 1;
+      } else {
+        right = mid - 1;
+      }
+    }
+
+    // If not found, return the index where it can be inserted to maintain sorted order.
+    return Err(left);
+  }
+
 // binary_search_by_key: //todo
 // chunks: Will not implement, covered by array_chunks
 // chunks_exact: Will not implement, covered by array_chunks
