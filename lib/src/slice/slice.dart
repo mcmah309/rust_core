@@ -77,7 +77,23 @@ final class Slice<T> implements Iterable<T> {
 // align_to_mut: Will not implement, not possible in Dart
 // array_chunks: Will not implement, covered by iter's array chunks
 // array_chunks_mut: Will not implement, covered by array_chunks
-// array_windows: Will not implement, not possible in Dart, would need an allocation for the Dart Array version. Uses `windows` instead.
+
+  /// Returns an iterator over all contiguous windows of length size. The windows overlap.
+  /// If the array is shorter than size, the iterator returns no values.
+  RIterator<Arr<T>> arrayWindows(int size) {
+    // Dev Note: No need to a panic in release mode, `Iterable.generate` already does a check
+    assert(size > 0, "Size must be positive");
+    return RIterator.fromIterable(_arrayWindowsHelper(size));
+  }
+
+  Iterable<Arr<T>> _arrayWindowsHelper(int size) sync* {
+    final numOfArrays = _end - _start - size + 1;
+    for (int i = 0; i < numOfArrays; i++) {
+      final start = _start + i;
+      yield Arr.generate(size, (index) => _list[start + index]);
+    }
+  }
+
 // as_ascii: Will not implement, not possible in Dart
 // as_ascii_unchecked: Will not implement, not possible in Dart
 // as_bytes: Will not implement, not possible in Dart
@@ -162,8 +178,7 @@ final class Slice<T> implements Iterable<T> {
   }
 
   /// Binary searches this slice with a key extraction function. See [SliceOnComparableSliceExtension.binarySearch] for more.
-  Result<int, int> binarySearchByKey<K extends Comparable>(
-      K key, K Function(T) keyExtractor) {
+  Result<int, int> binarySearchByKey<K extends Comparable>(K key, K Function(T) keyExtractor) {
     int left = 0;
     int right = length - 1;
 
@@ -719,11 +734,15 @@ final class Slice<T> implements Iterable<T> {
   RIterator<Slice<T>> windows(int size) {
     // Dev Note: No need to a panic in release mode, `Iterable.generate` already does a check
     assert(size > 0, "Size must be positive");
-    if (size > _end - _start) {
-      return RIterator.fromIterable(const []);
+    return RIterator.fromIterable(_windowsHelper(size));
+  }
+
+  Iterable<Slice<T>> _windowsHelper(int size) sync* {
+    final numOfSlices = _end - _start - size + 1;
+    for (int i = 0; i < numOfSlices; i++) {
+      final start = _start + i;
+      yield Slice(_list, start, start + size);
     }
-    return RIterator(Iterable.generate(
-        _end - _start - size + 1, (i) => Slice(_list, _start + i, _start + i + size)).iterator);
   }
 
   @pragma("vm:prefer-inline")

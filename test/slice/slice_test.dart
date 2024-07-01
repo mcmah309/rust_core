@@ -7,6 +7,43 @@ import 'package:test/test.dart';
 import 'package:rust_core/slice.dart';
 
 main() {
+    test("arrayWindows", () {
+    var list = [1, 2, 3, 4, 5];
+    var slice = Slice(list, 0, 5);
+    var windows = slice.arrayWindows(2);
+    expect(windows, [
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5]
+    ]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    windows = slice.arrayWindows(2);
+    expect(windows, [
+      [2, 3],
+      [3, 4]
+    ]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 0, 5);
+    windows = slice.arrayWindows(5);
+    expect(windows, [
+      [1, 2, 3, 4, 5]
+    ]);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    windows = slice.arrayWindows(5);
+    expect(windows, []);
+
+    list = [1, 2, 3, 4, 5];
+    slice = Slice(list, 1, 4);
+    expect(() => slice.windows(0), throwsA(isA<Object>()));
+    expect(() => slice.windows(-1), throwsA(isA<Object>()));
+  });
+
   test("asChunks", () {
     var list = [1, 2, 3, 4, 5];
     var slice = list.slice();
@@ -697,7 +734,7 @@ main() {
   test("windows", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
-    var windows = slice.windows(2);
+    var windows = slice.windows(2).map((e) => e.toList()).toList();
     expect(windows, [
       [1, 2],
       [2, 3],
@@ -707,7 +744,7 @@ main() {
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
-    windows = slice.windows(2);
+    windows = slice.windows(2).map((e) => e.toList()).toList();
     expect(windows, [
       [2, 3],
       [3, 4]
@@ -715,14 +752,14 @@ main() {
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 0, 5);
-    windows = slice.windows(5);
+    windows = slice.windows(5).map((e) => e.toList()).toList();
     expect(windows, [
       [1, 2, 3, 4, 5]
     ]);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
-    windows = slice.windows(4);
+    windows = slice.windows(4).map((e) => e.toList()).toList();
     expect(windows, []);
 
     list = [1, 2, 3, 4, 5];
