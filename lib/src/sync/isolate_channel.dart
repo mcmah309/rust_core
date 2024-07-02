@@ -1,11 +1,23 @@
 part of 'channel.dart';
 
+Finalizer<SendPort> _sendFinalizer = Finalizer((sPort) {
+  sPort.send(const _CloseSignal());
+});
+
+Finalizer<ReceivePort> _receiveFinalizer = Finalizer((rPort) {
+  rPort.close();
+});
+
 class IsolateSender<T> extends Sender<T> {
   final SendPort _sPort;
   final SendCodec<T>? _codec;
 
-  IsolateSender._(this._codec, this._sPort);
+  IsolateSender._(this._codec, this._sPort) {
+    _sendFinalizer.attach(this, _sPort);
+  }
 
+  /// Sends the [data] to the isolate, the isolate may or may not receive the data depending on if the
+  /// isolate has terminated or [close] has been called.
   @override
   void send(T data) {
     if (_codec == null) {
@@ -14,23 +26,32 @@ class IsolateSender<T> extends Sender<T> {
       _sPort.send(_codec.encode(data));
     }
   }
+
+  /// Closes the port on the isolate. Good practice to call, otherwise the port will eventually
+  /// close on it's own when this goes out of scope. Calling may result in the port closing before
+  /// previous [send] operations have succeeded.
+  void close() => _sPort.send(const _CloseSignal());
 }
 
-class IsolateReceiver<T> extends LocalReceiver<T> {
+class IsolateReceiver<T> extends _ReceiverImpl<T> {
   IsolateReceiver._(SendCodec<T>? codec, ReceivePort rPort)
-      : super._(rPort
-            .map((data) {
-              if (data is _CloseSignal) {
-                rPort.close();
-                return null;
-              } else if (codec != null) {
-                return codec.decode(data as ByteBuffer);
-              } else {
-                return data as T;
-              }
-            })
-            .where((event) => event != null)
-            .cast<T>());
+      : super._(
+            rPort
+                .map((data) {
+                  if (data is _CloseSignal) {
+                    rPort.close();
+                    return null;
+                  } else if (codec != null) {
+                    return codec.decode(data as ByteBuffer);
+                  } else {
+                    return data as T;
+                  }
+                })
+                .where((event) => event != null)
+                .cast<T>(),
+            () async => rPort.close()) {
+    _receiveFinalizer.attach(this, rPort);
+  }
 }
 
 /// [isolateChannel] is used for bi-directional isolate communication. The returned
@@ -60,10 +81,9 @@ Future<(IsolateSender<T> tx, IsolateReceiver<U> rx)> isolateChannel<T, U>(
 
     try {
       await func(isolateSender, isolateReceiver);
-    } catch (e) {
+    } finally {
       isolateSender._sPort.send(const _CloseSignal());
       receiveFromMain.close();
-      rethrow;
     }
   }
 
@@ -80,8 +100,8 @@ Future<(IsolateSender<T> tx, IsolateReceiver<U> rx)> isolateChannel<T, U>(
     await Future.delayed(Duration.zero);
   }
 
-  final receiver = IsolateReceiver._(
-      fromIsolateCodec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
+  final receiver =
+      IsolateReceiver._(fromIsolateCodec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
   final sender = IsolateSender._(toIsolateCodec, sendToIsolate!);
 
   return (sender, receiver);

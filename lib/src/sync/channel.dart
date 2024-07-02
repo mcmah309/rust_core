@@ -8,16 +8,15 @@ import 'package:rust_core/sync.dart';
 
 part 'isolate_channel.dart';
 
-/// Creates a new channel, returning the [Sender] and [LocalReceiver]. Each item [T] sent by the [Sender]
-/// will only be seen once by the [LocalReceiver]. Even if the [Sender] calls [close] while the [LocalReceiver]s buffer
-/// is not empty, the [LocalReceiver] will still yield the remaining items in the buffer until empty.
+/// Creates a new channel, returning the [Sender] and [LocalClosableReceiver]. Each item [T] sent by the [Sender]
+/// will only be seen once by the [LocalClosableReceiver]. Even if the [Sender] calls [close] while the [LocalClosableReceiver]s buffer
+/// is not empty, the [LocalClosableReceiver] will still yield the remaining items in the buffer until empty.
 (LocalSender<T>, LocalReceiver<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();
-  final receiver = LocalReceiver._(controller.stream);
   final sender = LocalSender._(controller.sink);
+  final receiver = LocalReceiver._(controller.stream, () => sender.close());
   sender._receiver = receiver;
-  receiver._sender = sender;
   return (sender, receiver);
 }
 
@@ -29,6 +28,7 @@ abstract class Sender<T> {
 /// The receiving-half of [channel]. [Receiver]s do not close if the [Sender] sends an error.
 abstract class Receiver<T> {
   bool get isClosed;
+  bool get isBufferEmpty;
 
   /// Attempts to wait for a value on this receiver, returning [Err] of:
   ///
@@ -79,14 +79,21 @@ class LocalSender<T> implements Sender<T> {
     return const Ok(());
   }
 
-  /// Stops any more messages from being sent and releases any waiting [LocalReceiver].
+  /// Stops any more messages from being sent and releases any waiting [LocalClosableReceiver].
   Future close() => _sink.close();
 }
 
 /// [Receiver] for a single isolate.
-class LocalReceiver<T> implements Receiver<T> {
+class LocalReceiver<T> extends _ReceiverImpl<T> {
+  LocalReceiver._(Stream<T> stream, Future Function() close) : super._(stream, close);
+
+  /// Stops any more messages from being sent.
+  Future close() => _onDone.call();
+}
+
+class _ReceiverImpl<T> implements Receiver<T> {
   late final StreamSubscription<T> _streamSubscription;
-  late final LocalSender<T> _sender;
+  final Future Function() _onDone;
   final List<Result<T, Object>> _buffer = [];
   bool _isClosed = false;
   Completer _waker = Completer();
@@ -94,7 +101,10 @@ class LocalReceiver<T> implements Receiver<T> {
   @override
   bool get isClosed => _isClosed;
 
-  LocalReceiver._(Stream<T> stream) {
+  @override
+  bool get isBufferEmpty => _buffer.isEmpty;
+
+  _ReceiverImpl._(Stream<T> stream, this._onDone) {
     _streamSubscription = stream.listen((data) {
       assert(!_isClosed);
       _buffer.add(Ok(data));
@@ -110,7 +120,7 @@ class LocalReceiver<T> implements Receiver<T> {
     }, onDone: () {
       assert(!_isClosed);
       _isClosed = true;
-      _sender._sink.close();
+      _onDone.call();
       _streamSubscription.cancel();
       if (!_waker.isCompleted) {
         _waker.complete();
@@ -171,17 +181,14 @@ class LocalReceiver<T> implements Receiver<T> {
     }
   }
 
-  /// Stops any more messages from being sent.
-  Future close() => _sender._sink.close();
-
   Future<Result<T, RecvError>> _next() async {
     while (true) {
       await _waker.future;
-      if (_isClosed) {
-        return Err(DisconnectedError());
-      }
       if (_buffer.isNotEmpty) {
         return _buffer.removeAt(0).mapErr((error) => OtherError(error));
+      }
+      if (_isClosed) {
+        return const Err(DisconnectedError());
       }
       _waker = Completer();
     }
@@ -205,17 +212,21 @@ class SendError {
   int get hashCode => 0;
 }
 
-/// An error returned from the [recv] function on a [LocalReceiver].
-class RecvError {}
+/// An error returned from the [recv] function on a [LocalClosableReceiver].
+sealed class RecvError {
+  const RecvError();
+}
 
-/// An error returned from the [recvTimeout] function on a [LocalReceiver].
-sealed class RecvTimeoutError {}
+/// An error returned from the [recvTimeout] function on a [LocalClosableReceiver].
+sealed class RecvTimeoutError {
+  const RecvTimeoutError();
+}
 
-/// An error returned from the [recvTimeout] function on a [LocalReceiver] when the time limit is reached before the [Sender] sends any data.
+/// An error returned from the [recvTimeout] function on a [LocalClosableReceiver] when the time limit is reached before the [Sender] sends any data.
 class TimeoutError implements RecvTimeoutError {
   final TimeoutException timeoutException;
 
-  TimeoutError(this.timeoutException);
+  const TimeoutError(this.timeoutException);
 
   @override
   String toString() {
@@ -233,9 +244,9 @@ class TimeoutError implements RecvTimeoutError {
   }
 }
 
-/// An error returned from the [recv] function on a [LocalReceiver] when the [Sender] called [close].
+/// An error returned from the [recv] function on a [LocalClosableReceiver] when the [Sender] called [close].
 class DisconnectedError implements RecvTimeoutError, RecvError {
-  DisconnectedError();
+  const DisconnectedError();
 
   @override
   String toString() {
@@ -253,11 +264,11 @@ class DisconnectedError implements RecvTimeoutError, RecvError {
   }
 }
 
-/// An error returned from the [recv] function on a [LocalReceiver] when the [Sender] called [sendError].
+/// An error returned from the [recv] function on a [LocalClosableReceiver] when the [Sender] called [sendError].
 class OtherError implements RecvTimeoutError, RecvError {
   final Object error;
 
-  OtherError(this.error);
+  const OtherError(this.error);
 
   @override
   String toString() {
