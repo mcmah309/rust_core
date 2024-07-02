@@ -1,3 +1,5 @@
+// ignore_for_file: pattern_never_matches_value_type
+
 import 'package:rust_core/convert.dart';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
@@ -1023,6 +1025,7 @@ main() {
     out:
     do {
       switch (iter.next()) {
+        // ignore: unused_local_variable
         case Some(v: (int index, ["!", "?"])):
           break;
         case Some(v: (int index, ["!", _])):
