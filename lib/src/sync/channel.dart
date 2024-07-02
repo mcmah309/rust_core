@@ -85,7 +85,8 @@ class LocalSender<T> implements Sender<T> {
 
 /// [Receiver] for a single isolate.
 class LocalReceiver<T> extends _ReceiverImpl<T> {
-  LocalReceiver._(Stream<T> stream, Future Function() close) : super._(stream, close);
+  LocalReceiver._(Stream<T> stream, Future Function() close)
+      : super._(stream, close);
 
   /// Stops any more messages from being sent.
   Future close() => _onDone.call();
@@ -140,7 +141,9 @@ class _ReceiverImpl<T> implements Receiver<T> {
   @override
   Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit) async {
     try {
-      return await _next().timeout(timeLimit).mapErr((error) => error as RecvTimeoutError);
+      return await _next()
+          .timeout(timeLimit)
+          .mapErr((error) => error as RecvTimeoutError);
     } on TimeoutException catch (timeoutException) {
       return Err(TimeoutError(timeoutException));
     } catch (error) {

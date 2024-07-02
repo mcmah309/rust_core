@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:rust_core/array.dart';
 import 'package:rust_core/src/result/result.dart';
 import 'package:rust_core/sync.dart';
@@ -11,7 +9,9 @@ void main() async {
       final (tx1, rx1) = await isolateChannel<String, String>((tx2, rx2) async {
         assert((await rx2.recv()).unwrap() == "hello");
         tx2.send("hi");
-      }, toIsolateCodec: const StringCodec(), fromIsolateCodec: const StringCodec());
+      },
+          toIsolateCodec: const StringCodec(),
+          fromIsolateCodec: const StringCodec());
       tx1.send("hello");
       expect((await rx1.recv()).unwrap(), "hi");
     });
@@ -20,7 +20,9 @@ void main() async {
       final (tx1, rx1) = await isolateChannel<String, int>((tx2, rx2) async {
         assert((await rx2.recv()).unwrap() == "hello");
         tx2.send(1);
-      }, toIsolateCodec: const StringCodec(), fromIsolateCodec: const IntCodec());
+      },
+          toIsolateCodec: const StringCodec(),
+          fromIsolateCodec: const IntCodec());
       tx1.send("hello");
       expect((await rx1.recv()).unwrap(), 1);
     });
@@ -69,14 +71,17 @@ void main() async {
       final (tx1, rx1) = await isolateChannel<String, String>((tx2, rx2) async {
         assert((await rx2.recv()).unwrap() == "hello");
         throw Exception("An error occurred");
-      }, toIsolateCodec: const StringCodec(), fromIsolateCodec: const StringCodec());
+      },
+          toIsolateCodec: const StringCodec(),
+          fromIsolateCodec: const StringCodec());
 
       tx1.send("hello");
       expect((await rx1.recv()).unwrapErr(), DisconnectedError());
     });
 
     test("Complex data types", () async {
-      final (tx1, rx1) = await isolateChannel<List<int>, List<int>>((tx2, rx2) async {
+      final (tx1, rx1) =
+          await isolateChannel<List<int>, List<int>>((tx2, rx2) async {
         List<int> data = (await rx2.recv()).unwrap();
         data.sort();
         tx2.send(data);
@@ -98,7 +103,9 @@ void main() async {
     });
 
     test("Bidirectional complex data type messages", () async {
-      final (tx1, rx1) = await isolateChannel<Map<String, int>, Map<String, int>>((tx2, rx2) async {
+      final (tx1, rx1) =
+          await isolateChannel<Map<String, int>, Map<String, int>>(
+              (tx2, rx2) async {
         var data = (await rx2.recv()).unwrap();
         data["b"] = data["a"]! * 10;
         tx2.send(data);
@@ -117,15 +124,18 @@ void main() async {
           final receive = await rx2.recv();
           assert(receive.unwrapErr() == const DisconnectedError());
           //print("isolate received the implicit close");
-        }, toIsolateCodec: const IntCodec(), fromIsolateCodec: const IntCodec());
+        },
+            toIsolateCodec: const IntCodec(),
+            fromIsolateCodec: const IntCodec());
         tx1.send(1);
         return rx1;
       }
+
       final receiver = await scope();
       expect(receiver.isClosed, false);
       expect(receiver.isBufferEmpty, true);
       // force garbage collection, note will not work when debugging
-      for(final i in range(0, 1000)){
+      for (final i in range(0, 1000)) {
         await Future.delayed(Duration(milliseconds: 1));
         List.filled(i, null);
       }

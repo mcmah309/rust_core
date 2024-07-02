@@ -100,8 +100,8 @@ Future<(IsolateSender<T> tx, IsolateReceiver<U> rx)> isolateChannel<T, U>(
     await Future.delayed(Duration.zero);
   }
 
-  final receiver =
-      IsolateReceiver._(fromIsolateCodec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
+  final receiver = IsolateReceiver._(
+      fromIsolateCodec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
   final sender = IsolateSender._(toIsolateCodec, sendToIsolate!);
 
   return (sender, receiver);
