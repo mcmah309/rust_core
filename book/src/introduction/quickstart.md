@@ -4,7 +4,7 @@
 ***
 ### Install
 
-rust_core can be install like any other Dart package.
+rust_core can be installed like any other Dart package.
 
 Dart:
 ```shell
@@ -23,13 +23,13 @@ dependencies:
 
 ### Imports
 
-rust_core follows the same library structure and naming as [Rust's rust_core](https://doc.rust-lang.org/core/).
+rust_core follows the same library structure and naming as [Rust's core library](https://doc.rust-lang.org/core/).
 
 To that extent, each library can be imported individually
 ```dart
 import 'package:rust_core/result.dart';
 ```
-or in it's entirety
+or all libraries
 ```dart
 import 'package:rust_core/rust_core.dart';
 ```
@@ -52,7 +52,8 @@ These types can be easily chained with other operations or pattern matched.
 
 ### The Rust `?` Operator and Early Return Key Notion
 
-`Result<T,E>` and `Option<T>` both support early return key notation, which is a same as the rust `?` operator. 
+`Result<T,E>` and `Option<T>` both support early return key notation, which has 
+the same function as the rust `?` operator. 
 It returns from the scope if an `Err` or `None` is encountered, otherwise it retrieves the inner value.
 
 Result example:

@@ -10,6 +10,7 @@
 
 ## Community
 | Library | Description |
+| ------- | ----------- |
 | [rewind] | A logging utility that allows you completely customize what is captured and how your logs look at each logging level.  |
 | [thiserror] | A library for concisely defining error types (error enums / sealed classes) and their String representation. |
 

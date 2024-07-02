@@ -10,4 +10,4 @@ for(final entry in array){
 }
 var (slice1, slice2) = array.splitSlice(3);
 ```
-`Arr`'s allocation will be more efficient than compare to a `List` since it does not reserve additional capacity and allocates the full amount eagerly. Which is important since allocations account for most of the cost of the runtime costs of a List.
+`Arr`'s allocation will be more efficient than compared to a `List` since it does not reserve additional capacity and allocates the full amount eagerly. Which is important since allocations account for most of the cost of the runtime costs of a List.

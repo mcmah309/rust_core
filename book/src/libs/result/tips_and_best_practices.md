@@ -81,12 +81,12 @@ analyzer:
 ```
 ## ToResult and ToResultEager
 ***
-In various circumstances you just want a single `Result` for these times, think `toResult()` or in some cases 
+In various circumstances you may have multiple `Result`s and just want a single `Result`. 
+For these times, think `toResult()` or in some cases 
 `toResultEager()`. These extension methods have been added to make life easier.
 
-## Iterable Result
-***
-One of these is on `Iterable<Result<S,F>>`, which can turn into a
+### Iterable Result
+One of these situations is when you have a `Iterable<Result<S,F>>`, which can turn into a
 `Result<List<S>,List<F>>`. Also, there is `.toResultEager()` which can turn into a single `Result<List<S>,F>`.
 
 ```dart
@@ -96,8 +96,7 @@ expect(result.unwrap(), [1, 2, 3]);
 result = [Ok<int,int>(1), Err<int,int>(2), Ok<int,int>(3)].toResultEager();
 expect(result.unwrapErr(), 2);
 ```
-## Multiple Results of Different Success Types
-***
+### Multiple Results of Different Success Types
 Sometimes you need to call multiple functions that return `Result`s of different types. You could write something 
 like this:
 ```dart

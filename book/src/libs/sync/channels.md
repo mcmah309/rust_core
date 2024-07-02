@@ -7,7 +7,7 @@ rust_core supports two types of channels, "local" channels (same isolate) and "i
 `channel` is used for communication between produces and consumers on the **same** isolate. `channel` is
 similar to `StreamController` except it buffers data until read and will never throw.
 In more detail, `channel` returns a `Sender` and `Receiver`. Each item `T` sent by the `Sender`
-will only be seen once by the `Receiver`. If the `Sender` calls `close` while the `Receiver`'s buffer
+will only be seen once by the `Receiver`. Even if the `Sender` calls `close` while the `Receiver`'s buffer
 is not empty, the `Receiver` will still yield the remaining items in the buffer until empty.
 
 ### Examples
@@ -65,7 +65,7 @@ void main() async {
   // Sender sends data and then an error
   tx.send(1);
   tx.send(2);
-  tx.addError(Exception("Test error"));
+  tx.sendError(Exception("Test error"));
 
   // Receiver retrieves data and handles errors
   for (int i = 0; i < 3; i++) {
@@ -131,7 +131,7 @@ void main() async {
 `isolateChannel` is used for bi-directional isolate communication. The returned
 `Sender` and `Receiver` can communicate with the spawned isolate and 
 the spawned isolate is passed a `Sender` and `Receiver` to communicate with the original isolate.
-Each item `T` sent by the `Sender` will only be seen once by the `Receiver`. If the `Sender` calls `close` while the `Receiver`'s buffer
+Each item `T` sent by the `Sender` will only be seen once by the `Receiver`. Even if the `Sender` calls `close` while the `Receiver`'s buffer
 is not empty, the `Receiver` will still yield the remaining items in the buffer until empty.
 Types that can be sent over a `SendPort`, as defined [here](https://api.flutter.dev/flutter/dart-isolate/SendPort/send.html),
 are allow to be sent between isolates. Otherwise a `toIsolateCodec` and/or a `fromIsolateCodec` can be passed

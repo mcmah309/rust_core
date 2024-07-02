@@ -7,7 +7,7 @@ rust_core support nullable and `Option` implementations of classes and methods f
 can easily switch between the two with `toOption` and `toNullable` (or you can use `.v` directly).
 
 ### Usage
-The `Option` Type and features work very similar to [Result]. We are able to chain operations in a safe way without
+The `Option` Type and features work very similar to [Result](../result/result.md). We are able to chain operations in a safe way without
 needing a bunch of `if` statements to check if a value is null.
 
 ```dart
@@ -17,7 +17,7 @@ Option<double> val = intOptionFunc()
     .map(halfVal);
 expect(val.unwrapOr(2), 2);
 ```
-See the [docs] for all methods and extensions.
+See the [docs](https://pub.dev/documentation/rust_core/latest/option/option-library.html) for all methods and extensions.
 
 You can also use Option in pattern matching
 ```dart
@@ -70,5 +70,3 @@ With `Option` you will also never get another null assertion error again.
 
 As in the previous example, it is strongly recommended to use `Option` type as the return type, since it allows chaining operations.
 But the choice is up to the developer.
-
-[Result]: https://github.com/mcmah309/rust_core/tree/master/lib/src/result
