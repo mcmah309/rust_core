@@ -9,12 +9,16 @@ import 'package:rust_core/sync.dart';
 part 'isolate_channel.dart';
 
 /// Creates a new channel, returning the [Sender] and [LocalReceiver]. Each item [T] sent by the [Sender]
-/// will only be seen once by the [LocalReceiver]. If the [Sender] calls [close] while the [LocalReceiver]s buffer
+/// will only be seen once by the [LocalReceiver]. Even if the [Sender] calls [close] while the [LocalReceiver]s buffer
 /// is not empty, the [LocalReceiver] will still yield the remaining items in the buffer until empty.
-(Sender<T>, Receiver<T>) channel<T>() {
+(LocalSender<T>, LocalReceiver<T>) channel<T>() {
   // broadcast so no buffer
   StreamController<T> controller = StreamController<T>.broadcast();
-  return (LocalSender._(controller.sink), LocalReceiver._(controller.stream));
+  final receiver = LocalReceiver._(controller.stream);
+  final sender = LocalSender._(controller.sink);
+  sender._receiver = receiver;
+  receiver._sender = sender;
+  return (sender, receiver);
 }
 
 /// The sending-half of [channel].
@@ -53,17 +57,36 @@ abstract class Receiver<T> {
 
 /// [Sender] for a single isolate.
 class LocalSender<T> implements Sender<T> {
-  final StreamSink<T> sink;
+  final StreamSink<T> _sink;
+  late final LocalReceiver<T> _receiver;
 
-  LocalSender._(this.sink);
+  LocalSender._(this._sink);
 
   @override
-  void send(T data) => sink.add(data);
+  Result<(), SendError> send(T data) {
+    if (_receiver.isClosed) {
+      return const Err(SendError());
+    }
+    _sink.add(data);
+    return const Ok(());
+  }
+
+  Result<(), SendError> sendError(Object error) {
+    if (_receiver.isClosed) {
+      return const Err(SendError());
+    }
+    _sink.addError(error);
+    return const Ok(());
+  }
+
+  /// Stops any more messages from being sent and releases any waiting [LocalReceiver].
+  Future close() => _sink.close();
 }
 
 /// [Receiver] for a single isolate.
 class LocalReceiver<T> implements Receiver<T> {
   late final StreamSubscription<T> _streamSubscription;
+  late final LocalSender<T> _sender;
   final List<Result<T, Object>> _buffer = [];
   bool _isClosed = false;
   Completer _waker = Completer();
@@ -87,6 +110,7 @@ class LocalReceiver<T> implements Receiver<T> {
     }, onDone: () {
       assert(!_isClosed);
       _isClosed = true;
+      _sender._sink.close();
       _streamSubscription.cancel();
       if (!_waker.isCompleted) {
         _waker.complete();
@@ -106,9 +130,7 @@ class LocalReceiver<T> implements Receiver<T> {
   @override
   Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit) async {
     try {
-      return await _next()
-          .timeout(timeLimit)
-          .mapErr((error) => error as RecvTimeoutError);
+      return await _next().timeout(timeLimit).mapErr((error) => error as RecvTimeoutError);
     } on TimeoutException catch (timeoutException) {
       return Err(TimeoutError(timeoutException));
     } catch (error) {
@@ -149,6 +171,9 @@ class LocalReceiver<T> implements Receiver<T> {
     }
   }
 
+  /// Stops any more messages from being sent.
+  Future close() => _sender._sink.close();
+
   Future<Result<T, RecvError>> _next() async {
     while (true) {
       await _waker.future;
@@ -164,6 +189,21 @@ class LocalReceiver<T> implements Receiver<T> {
 }
 
 //************************************************************************//
+
+/// A [SendError] can only happen if the channel is disconnected,
+/// implying that the data could never be received.
+class SendError {
+  const SendError();
+
+  @override
+  String toString() => "SendError";
+
+  @override
+  bool operator ==(Object other) => other is SendError;
+
+  @override
+  int get hashCode => 0;
+}
 
 /// An error returned from the [recv] function on a [LocalReceiver].
 class RecvError {}
@@ -213,7 +253,7 @@ class DisconnectedError implements RecvTimeoutError, RecvError {
   }
 }
 
-/// An error returned from the [recv] function on a [LocalReceiver] when the [Sender] called [addError].
+/// An error returned from the [recv] function on a [LocalReceiver] when the [Sender] called [sendError].
 class OtherError implements RecvTimeoutError, RecvError {
   final Object error;
 

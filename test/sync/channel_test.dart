@@ -91,7 +91,7 @@ void main() {
       final (tx, rx) = channel<int>();
       tx.send(1);
       tx.send(2);
-      (tx as LocalSender<int>).sink.addError(Exception("Test error"));
+      tx.sendError(Exception("Test error"));
       tx.send(3);
       await Future.delayed(Duration(milliseconds: 100));
       bool foundError = false;
@@ -138,7 +138,7 @@ void main() {
       tx.send(4);
       () async {
         await Future.delayed(Duration(milliseconds: 1000));
-        (tx as LocalSender<int>).sink.close();
+        tx.close();
       }();
 
       List<int> results = [];
@@ -146,14 +146,7 @@ void main() {
         results.add(value);
       }
       expect(results, [1, 2, 3, 4]);
-      bool threw = false;
-      try {
-        tx.send(5);
-      } catch (e) {
-        threw = true;
-        expect(e, isA<StateError>());
-      }
-      expect(threw, true);
+      expect(tx.send(5).unwrapErr(), SendError());
       final value = await rx.recv();
       expect(value.unwrapErr(), DisconnectedError());
     });
