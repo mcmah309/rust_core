@@ -4,9 +4,7 @@ Welcome to Rust!
 
 Maybe you have heard of Rust and want to see what all the hype is about, maybe you know a little Rust
 and want to improve your Rust while writing Dart, for whatever the reason, rust_core is here to help.
-
 Rust has a solid reputation for writing safe, maintainable, and performant code. rust_core is great start to learn and improve your rust semantics/knowledge. You will write Dart and learn Rust along the way.
-
 With rust_core you can expect all the usual types you see in Rust. Here is a quick matrix
 comparing Rust, Dart, and Dart with rust_core:
 

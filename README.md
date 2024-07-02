@@ -49,7 +49,7 @@ void main() {
       .enumerate()
       .peekable();
   while (iter.moveNext()) {
-    final (int index, Arr<String> window) = iter.current;
+    final (index, window) = iter.current;
     switch (window) {
       case ["!", "?"]:
         break;

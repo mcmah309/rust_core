@@ -3,9 +3,7 @@
 Welcome to Dart!
 
 Dart is a great language choice for fast cross platform development and scripting.
-
-rust_core is great start to learn the Dart semantics as you will feel like you are writing native rust.
-
+You'll find that rust_core is great start to learn Dart's semantics as you will feel like you are writing native rust.
 rust_core will introduce you to a few new types you may find useful as a Dart developer:
 
 | Rust Type         | Dart Equivalent | rust_core | Description                                             |

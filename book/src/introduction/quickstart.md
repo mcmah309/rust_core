@@ -34,8 +34,8 @@ import 'package:rust_core/rust_core.dart';
 ```
 ## General Notes
 
-All of rust_core's classes and methods are well documented [docs](https://pub.dev/documentation/rust_core/latest/), but
-being an implementation of Rust's core library, you can also refer the the [Rust core](https://doc.rust-lang.org/beta/core/index.html) if anything is unclear.
+All of rust_core's classes and methods are well documented in the [docs](https://pub.dev/documentation/rust_core/latest/), but
+being an implementation of Rust's core library, you can also refer to [Rust core](https://doc.rust-lang.org/beta/core/index.html) if anything is unclear.
 The functionally is the same.
 
 ## The Basics
@@ -45,21 +45,21 @@ The functionally is the same.
 `Result<T, E>` is the type used for returning and propagating errors.
 
 `Option<T>` represents a value that can be either some value of type `T` (`Some<T>`) or `None`. 
-It is used "in place" of `null` (implemented as a zero cost extension type of `T?`).
+It is used "in place" of `T?` (implemented as a zero cost extension type of `T?`).
 
 These types can be easily chained with other operations.
 
 ### The Rust `?` Operator and Early Return Key Notion
 
-`Result<T,E>` and `Option<T>` both support early return key notation - which is a same as the rust `?` operator - It returns from
-the scope if an [Err] or `None` is encountered, otherwise it retrieves the inner value.
+`Result<T,E>` and `Option<T>` both support early return key notation, which is a same as the rust `?` operator. 
+It returns from the scope if an `Err` or `None` is encountered, otherwise it retrieves the inner value.
 
 Result example:
 ```dart
-Result<double, String> divedBy(int num, int divisor) => divisor == 0 ? Err("Divide by zero error") : Ok(num / divisor); 
+Result<double, String> divideBy(int num, int divisor) => divisor == 0 ? Err("Divide by zero error") : Ok(num / divisor); 
 Result<double, String> func(int x) => Result(($) { // Early Return Key
    // The function will return here
-   int val = divedBy(x, 0)[$] + 10;
+   int val = divideBy(x, 0)[$] + 10;
    return Ok(val);
  });
 
@@ -70,12 +70,12 @@ Result<double, String> func(int x) => Result(($) { // Early Return Key
 
 ### `List` and `Arr`
 
-`Arr` is a compliment to `List`, which represents a fixed sized `List`. No more runtime exceptions for trying to grow
-a non-growable `List`. It also has zero runtime cost, as it is an extension type of `List`. `Arr` is more efficient than a growable `List`.
+`Arr` (array) is a compliment to `List`, representing a fixed sized `List`. Having a separate `Arr` type fixes runtime exceptions for trying to grow
+a non-growable `List`. It also has zero runtime cost, as it is an extension type of `List` and is more efficient than a growable `List`. With `Arr`, type intent is clear for maintainers and developers are able think about code performance more critically.
 
 #### Iter
 rust_core implements the entirety of Rust's stable and unstable [Iterator](https://doc.rust-lang.org/beta/core/iter/trait.Iterator.html) methods.
-There are a lot of methods here that many Dart developers may not be familiar with. Definitely worth a look - [pub](https://pub.dev/documentation/rust_core/latest/iter/iter-library.html)
+There are a lot of methods here that many Dart developers may not be familiar with. Definitely worth a look - [docs](https://pub.dev/documentation/rust_core/latest/iter/iter-library.html)
 
 ```dart
 List<int> list = [1, 2, 3, 4, 5];
@@ -94,11 +94,10 @@ check [here](../libs/iter/iter.md) for more info.
 #### Slice
 
 A `Slice` is a contiguous sequence of elements in a `List` or `Arr`. Slices are a view into a list without allocating and copying to a new list,
-thus slices are more efficient than creating a sub-list with `list.sublist(x,y)`.
+thus slices are more efficient than creating a new `List` with `.sublist()` e.g. `list.sublist(x,y)`.
 ```dart
 var list = [1, 2, 3, 4, 5];
-var slice = Slice(list, 1, 4);
-slice = list.slice(1,4); // alternative
+var slice = Slice(list, 1, 4); // or `list.slice(1,4)`
 expect(slice, [2, 3, 4]);
 var taken = slice.takeLast();
 expect(taken, 4);
@@ -106,7 +105,7 @@ expect(slice, [2, 3]);
 slice[1] = 10;
 expect(list, [1, 2, 10, 4, 5]);
 ```
-`Slice` also has <u>a lot</u> of efficient methods for in-place mutation within and between slices.
+`Slice` also has <u>a lot</u> of efficient methods for in-place mutation within and between slices - [docs](https://pub.dev/documentation/rust_core/latest/slice/slice-library.html)
 
 ## Whats Next?
 
