@@ -1,5 +1,5 @@
 # Slice
-
+***
 A `Slice` is a contiguous sequence of elements in a [List]. Slices are a view into a list without allocating and copying to a new list,
 thus slices are more efficient than creating a sub-list, but they do not own their own data. That means shrinking the original list can cause the slices range to become invalid, which may cause an exception.
 

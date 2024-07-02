@@ -1,5 +1,5 @@
 # Iter
-
+***
 A Rust `Iterator` is analogous to the union of a Dart `Iterable` and `Iterator`. Since Dart already has an `Iterator` class, to avoid confusion,
 the Dart implementation of the Rust iterator is `RIterator`. `RIterator`
 makes working with collections of `rust_core` types and regular Dart types a breeze. e.g.

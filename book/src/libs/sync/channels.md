@@ -3,7 +3,7 @@
 rust_core supports two types of channels, "local" channels (same isolate) and "isolate" channels (different isolates).
 
 ## Local Channels
-
+***
 `channel` is used for communication between produces and consumers on the **same** isolate. `channel` is
 similar to `StreamController` except it buffers data until read and will never throw.
 In more detail, `channel` returns a `Sender` and `Receiver`. Each item `T` sent by the `Sender`
@@ -127,7 +127,7 @@ void main() async {
 ```
 
 ## Isolate Channels
-
+***
 `isolateChannel` is used for bi-directional isolate communication. The returned
 `Sender` and `Receiver` can communicate with the spawned isolate and 
 the spawned isolate is passed a `Sender` and `Receiver` to communicate with the original isolate.

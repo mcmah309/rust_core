@@ -1,5 +1,5 @@
 # RwLock
-
+***
 `RwLock` is used in critical sections to allow multiple concurrent read operations while ensuring that write operations are exclusive.
 Dart being single threaded, means it is less common to need a `RwLock`, but they are still useful e.g. reading and writing to data sources or transactions. `RwLock` uses a fifo model to prevent starvation.
 

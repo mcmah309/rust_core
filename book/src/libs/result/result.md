@@ -1,10 +1,11 @@
 # Result
-
+***
 `Result<T, E>` is the type used for returning and propagating errors. It is an alternative to throwing exceptions. It is a sealed type with the variants, `Ok(T)`, representing success and containing a value, and `Err(E)`, representing error and containing an error value.
 
-To better understand the motivation around the `Result` type refer to this [article].
+To better understand the motivation around the `Result` type refer to this [article](https://mcmah309.github.io/#/blog/the_result_type_in_dart).
 
 ## Example
+***
 By using the `Result` type, there is no web of `try`/`catch` statements to maintain and hidden control flow bugs, all control flow is defined.
 ```dart
 import 'package:rust_core/result.dart';
@@ -55,6 +56,7 @@ Result<String,String> processPayment(String user) {
 ```
 
 ## Chaining
+***
 Effects on a `Result` can be chained in a safe way without
 needing to inspect the type.
 ```dart
@@ -74,6 +76,7 @@ finalResult.match(
 See the [docs] for all methods and extensions.
 
 ## Adding Predictable Control Flow To Legacy Dart Code
+***
 At times, you may need to integrate with legacy code that may throw or code outside your project. To handle these situations you can just wrap the code in a helper function like `guard`
 ```dart
 void main() {
@@ -91,6 +94,7 @@ this message was thrown but was guarded
 ```
 
 ## Dart Equivalent To The Rust "?" Early Return Operator
+***
 In Dart, the Rust "?" operator (Early Return Operator) functionality in `x?`, where `x` is a `Result`, can be 
 accomplished in two ways
 ### into()

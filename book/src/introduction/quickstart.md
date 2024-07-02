@@ -1,6 +1,7 @@
 # Quickstart
 
 ## Setup
+***
 ### Install
 
 rust_core can be install like any other Dart package.
@@ -33,13 +34,13 @@ or in it's entirety
 import 'package:rust_core/rust_core.dart';
 ```
 ## General Notes
-
+***
 All of rust_core's classes and methods are well documented in the [docs](https://pub.dev/documentation/rust_core/latest/), but
 being an implementation of Rust's core library, you can also refer to [Rust core](https://doc.rust-lang.org/beta/core/index.html) if anything is unclear.
 The functionally is the same.
 
 ## The Basics
-
+***
 ### Result and Option
 
 `Result<T, E>` is a sum type used for returning and propagating errors - `Ok` and `Err`.
@@ -118,5 +119,5 @@ expect(list, [1, 2, 10, 4, 5]);
 `Slice` also has <u>a lot</u> of efficient methods for in-place mutation within and between slices - [docs](https://pub.dev/documentation/rust_core/latest/slice/slice-library.html)
 
 ## Whats Next?
-
+***
 Checkout any of the other sections in the book for more details and enjoy!

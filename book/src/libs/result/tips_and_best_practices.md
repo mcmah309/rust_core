@@ -1,6 +1,7 @@
 # Tips and Best Practices
 
 ## How to Never Unwrap Incorrectly
+***
 In Rust, as here, it is possible to unwrap values that should not be unwrapped:
 ```dart
 if (x.isErr()) {
@@ -17,7 +18,7 @@ if (x case Err(:final err)){
 ```
 and vice versa
 ```dart
-if (x case Ok(:final ok){
+if (x case Ok(:final ok)){
     return ok;
 }
 ```
@@ -49,6 +50,7 @@ x.match(
 We can also use the [Early Return Key Notation](result.md#early-return-key-notation), which is a very powerful idiomatic approach.
 
 ## Working with Futures
+***
 When working with `Future`s it is easy to make a mistake like this
 ```dart
 Future.delayed(Duration(seconds: 1)); // Future not awaited
@@ -78,10 +80,12 @@ analyzer:
     avoid_void_async: error
 ```
 ## ToResult and ToResultEager
+***
 In various circumstances you just want a single `Result` for these times, think `toResult()` or in some cases 
 `toResultEager()`. These extension methods have been added to make life easier.
 
 ## Iterable Result
+***
 One of these is on `Iterable<Result<S,F>>`, which can turn into a
 `Result<List<S>,List<F>>`. Also, there is `.toResultEager()` which can turn into a single `Result<List<S>,F>`.
 
@@ -93,6 +97,7 @@ result = [Ok<int,int>(1), Err<int,int>(2), Ok<int,int>(3)].toResultEager();
 expect(result.unwrapErr(), 2);
 ```
 ## Multiple Results of Different Success Types
+***
 Sometimes you need to call multiple functions that return `Result`s of different types. You could write something 
 like this:
 ```dart
@@ -135,6 +140,7 @@ switch(result){
 This also has a `toResult()` method.
 
 ## Pattern Matching vs Early Return Key
+***
 ```dart
 void main(){
   usingTheEarlyReturnKey();

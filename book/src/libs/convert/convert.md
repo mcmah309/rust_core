@@ -1,5 +1,5 @@
 # Convert
-
+***
 ## Infallible
 
 `Infallible` is the error type for errors that can never happen. This can be useful for generic APIs that use Result

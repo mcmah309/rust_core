@@ -1,5 +1,5 @@
 # New To Rust
-
+***
 Welcome to Rust!
 
 Maybe you have heard of Rust and want to see what all the hype is about, maybe you know a little Rust

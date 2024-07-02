@@ -1,8 +1,8 @@
 # rust_core
-
+***
 [![Pub Version](https://img.shields.io/pub/v/rust_core.svg)](https://pub.dev/packages/rust_core)
 [![Dart Package Docs](https://img.shields.io/badge/documentation-pub.dev-blue.svg)](https://pub.dev/documentation/rust_core/latest/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/github/license/mcmah309/path_type)](https://opensource.org/license/apache-2-0)
 [![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/test.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
 
 [rust_core](https://github.com/mcmah309/rust_core) is an implementation of Rust's Core Library in Dart, bringing the power of Rust to Dart!
@@ -10,6 +10,7 @@
 [Rust Core Book 📖](https://mcmah309.github.io/rust_core)
 
 ## Example
+***
 > Goal: Get the index of every "!" in a string not followed by a "?"
 
 **Rust:**
@@ -17,8 +18,8 @@
 use std::iter::Peekable;
 
 fn main() {
-  let mut answer: Vec<usize> = Vec::new();
   let string = "kl!sd!?!";
+  let mut answer: Vec<usize> = Vec::new();
   let mut iter: Peekable<_> = string
       .chars()
       .map_windows(|w: &[char; 2]| *w)
@@ -41,9 +42,9 @@ fn main() {
 import 'package:rust_core/rust_core.dart';
 
 void main() {
-  List<int> answer = [];
   String string = "kl!sd!?!";
-  Peekable<(int index, Arr<String> window)> iter = string
+  List<int> answer = [];
+  Peekable<(int, Arr<String>)> iter = string
       .chars()
       .mapWindows(2, identity)
       .enumerate()
@@ -64,7 +65,7 @@ void main() {
 ```
 
 # Project Goals
-
+***
 rust_core's primary goal is to bring Rust's features and ergonomics to Dart.
 
 To accomplish this, Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a smooth idiomatic language-compatible integration.

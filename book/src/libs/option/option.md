@@ -1,5 +1,5 @@
 # Option
-
+***
 Option represents the union of two types - `Some<T>` and `None`. An `Option<T>` is an extension type of `T?`. Therefore, `Option`
 has zero runtime cost and has one big advantage over `T?`, you can chain null specific operations!
 

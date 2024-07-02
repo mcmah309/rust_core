@@ -157,14 +157,10 @@ main() {
     var list3 = [1, 2, 3, 4, 6];
     var list4 = [1, 2, 3, 4];
     var list5 = [1, 2, 3, 4, 5, 6];
-    expect(
-        list.iter().cmpBy(list2.iter(), (int a, int b) => a.compareTo(b)), 0);
-    expect(
-        list.iter().cmpBy(list3.iter(), (int a, int b) => a.compareTo(b)), -1);
-    expect(
-        list.iter().cmpBy(list4.iter(), (int a, int b) => a.compareTo(b)), 1);
-    expect(
-        list.iter().cmpBy(list5.iter(), (int a, int b) => a.compareTo(b)), -1);
+    expect(list.iter().cmpBy(list2.iter(), (int a, int b) => a.compareTo(b)), 0);
+    expect(list.iter().cmpBy(list3.iter(), (int a, int b) => a.compareTo(b)), -1);
+    expect(list.iter().cmpBy(list4.iter(), (int a, int b) => a.compareTo(b)), 1);
+    expect(list.iter().cmpBy(list5.iter(), (int a, int b) => a.compareTo(b)), -1);
   });
 
   test("eq", () {
@@ -185,18 +181,10 @@ main() {
     var list3 = [1, 2, 3, 4, 6];
     var list4 = [1, 2, 3, 4];
     var list5 = [1, 2, 3, 4, 5, 6];
-    expect(
-        list.iter().eqBy(list2.iter(), (int a, int b) => a.compareTo(b) == 0),
-        true);
-    expect(
-        list.iter().eqBy(list3.iter(), (int a, int b) => a.compareTo(b) == 0),
-        false);
-    expect(
-        list.iter().eqBy(list4.iter(), (int a, int b) => a.compareTo(b) == 0),
-        false);
-    expect(
-        list.iter().eqBy(list5.iter(), (int a, int b) => a.compareTo(b) == 0),
-        false);
+    expect(list.iter().eqBy(list2.iter(), (int a, int b) => a.compareTo(b) == 0), true);
+    expect(list.iter().eqBy(list3.iter(), (int a, int b) => a.compareTo(b) == 0), false);
+    expect(list.iter().eqBy(list4.iter(), (int a, int b) => a.compareTo(b) == 0), false);
+    expect(list.iter().eqBy(list5.iter(), (int a, int b) => a.compareTo(b) == 0), false);
   });
 
   test("filter", () {
@@ -463,15 +451,12 @@ main() {
 
   test("mapWindows", () {
     var list = [1, 2, 3, 4];
-    var mapped =
-        list.iter().mapWindows(2, (window) => window[0] + window[1]).toList();
+    var mapped = list.iter().mapWindows(2, (window) => window[0] + window[1]).toList();
     expect(mapped, [3, 5, 7]);
 
     var list2 = [1, 2, 3, 4, 5];
-    var mapped2 = list2
-        .iter()
-        .mapWindows(3, (window) => window[0] + window[1] + window[2])
-        .toList();
+    var mapped2 =
+        list2.iter().mapWindows(3, (window) => window[0] + window[1] + window[2]).toList();
     expect(mapped2, [6, 9, 12]);
   });
 
@@ -605,13 +590,7 @@ main() {
     final folded = list.iter().tryFold(0, (acc, e) => acc + e);
     expect(folded, Ok(15));
 
-    final list2 = <Result<int, String>>[
-      Ok(1),
-      Ok(2),
-      Ok(3),
-      Err("error"),
-      Ok(5)
-    ];
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Err("error"), Ok(5)];
     final folded2 = list2.iter().tryFold(0, (acc, e) => acc + e);
     expect(folded2, Err("error"));
   });
@@ -641,13 +620,7 @@ main() {
     expect(forEach, Ok<(), String>(()));
     expect(collect, [1, 2, 3, 4, 5]);
 
-    final list2 = <Result<int, String>>[
-      Ok(1),
-      Ok(2),
-      Err("error"),
-      Ok(4),
-      Ok(5)
-    ];
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Err("error"), Ok(4), Ok(5)];
     final collect2 = <int>[];
     final forEach2 = list2.iter().tryForEach((e) {
       collect2.add(e);
@@ -684,13 +657,7 @@ main() {
     final reduced = list.iter().tryReduce((acc, e) => acc + e);
     expect(reduced, Ok(15));
 
-    final list2 = <Result<int, String>>[
-      Ok(1),
-      Ok(2),
-      Ok(3),
-      Err("error"),
-      Ok(5)
-    ];
+    final list2 = <Result<int, String>>[Ok(1), Ok(2), Ok(3), Err("error"), Ok(5)];
     final reduced2 = list2.iter().tryReduce((acc, e) => acc + e);
     expect(reduced2, Err("error"));
   });
@@ -1008,12 +975,10 @@ main() {
     /// Get the index of every "!" in a string not followed by a "?"
     List<int> answer = [];
     String string = "kl!sd!?!";
-    Peekable<(int, int)> iter =
-        string.runes.iter().enumerate().peekable();
+    Peekable<(int, int)> iter = string.runes.iter().enumerate().peekable();
     while (iter.moveNext()) {
       if (iter.current.$2 == "!".codeUnitAt(0) &&
-          (iter.peek().isNone() ||
-              iter.peek().isSomeAnd((e) => e.$2 != "?".codeUnitAt(0)))) {
+          (iter.peek().isNone() || iter.peek().isSomeAnd((e) => e.$2 != "?".codeUnitAt(0)))) {
         answer.add(iter.current.$1);
       }
     }
@@ -1115,20 +1080,17 @@ main() {
 
   test("Use case example 6", () {
     /// Get the index of every "!" in a string not followed by a "?"
-    String string = "kl!sd!?!";
-    Peekable<(int index, Arr<String> window)> iter = string
-        .chars()
-        .mapWindows(2, identity)
-        .enumerate()
-        .peekable();
     List<int> answer = [];
+    String string = "kl!sd!?!";
+    Peekable<(int, Arr<String>)> iter =
+        string.chars().mapWindows(2, identity).enumerate().peekable();
     while (iter.moveNext()) {
-      final (int index, Arr<String> window) = iter.current;
+      final (index, window) = iter.current;
       switch (window) {
         case ["!", "?"]:
           break;
         case ["!", _]:
-          answer.add(iter.current.$1);
+          answer.add(index);
         case [_, "!"] when iter.peek().isNone():
           answer.add(index + 1);
       }

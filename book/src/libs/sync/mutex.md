@@ -1,5 +1,5 @@
 # Mutex
-
+***
 `Mutex` is used to ensure that only one task can perform a critical section of code at a time.
 Dart being single threaded, means it is less common to need a `Mutex`, but they are still useful e.g. reading and writing to data sources or transactions. `Mutex` uses a fifo model to prevent starvation.
 

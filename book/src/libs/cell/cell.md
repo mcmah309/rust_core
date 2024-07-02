@@ -1,5 +1,5 @@
 # Cell
-
+***
 Cell is library of useful wrappers of values (cells). [pub]
 
 [Cell](#cell) - A wrapper around a mutable value.
