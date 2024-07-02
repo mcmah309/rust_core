@@ -1,3 +1,9 @@
+## 1.0.0
+
+ - Stabilize api
+ - rust_core book
+ - Add `isolateChannel` to `sync`
+
 ## 0.5.6
  
  - Add `Unreachable`
