@@ -31,8 +31,7 @@ final class Chain<T> extends RIterator<T> {
     final newSecond = Clone._trackable(_second);
     _first = newFirst;
     _second = newSecond;
-    return Chain(
-        Clone._clone(newFirst), Clone._clone(newSecond))
+    return Chain(Clone._clone(newFirst), Clone._clone(newSecond))
       ..isFirst = isFirst;
   }
 }

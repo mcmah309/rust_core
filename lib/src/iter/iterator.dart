@@ -71,8 +71,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  ArrayChunks<T> arrayChunks(int size) =>
-      ArrayChunks(this, size);
+  ArrayChunks<T> arrayChunks(int size) => ArrayChunks(this, size);
 
   @override
   @pragma("vm:prefer-inline")
@@ -233,8 +232,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f) =>
-      FlatMap<T, U>(this, f);
+  FlatMap<T, U> flatMap<U>(Iterator<U> Function(T) f) => FlatMap<T, U>(this, f);
 
   @override
   @pragma("vm:prefer-inline")
@@ -630,8 +628,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  Zip<T, U> zip<U>(Iterator<U> other) =>
-      Zip<T, U>(this, other);
+  Zip<T, U> zip<U>(Iterator<U> other) => Zip<T, U>(this, other);
 
   //************************************************************************//
   // Iterable: Overriding iterable methods

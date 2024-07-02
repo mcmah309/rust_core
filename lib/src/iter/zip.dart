@@ -28,8 +28,7 @@ final class Zip<T, U> extends RIterator<(T, U)> {
     final newU = Clone._trackable(_iteratorU);
     _iteratorT = newT;
     _iteratorU = newU;
-    return Zip(Clone._clone(newT).iterator,
-        Clone._clone(newU).iterator)
+    return Zip(Clone._clone(newT).iterator, Clone._clone(newU).iterator)
       .._current = _current;
   }
 }

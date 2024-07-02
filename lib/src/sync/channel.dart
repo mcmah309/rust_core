@@ -19,13 +19,11 @@ part 'isolate_channel.dart';
 
 /// The sending-half of [channel].
 abstract class Sender<T> {
-
   void send(T data);
 }
 
 /// The receiving-half of [channel]. [Receiver]s do not close if the [Sender] sends an error.
 abstract class Receiver<T> {
-
   bool get isClosed;
 
   /// Attempts to wait for a value on this receiver, returning [Err] of:

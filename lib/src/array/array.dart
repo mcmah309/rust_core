@@ -19,7 +19,8 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   Arr.empty() : list = const [];
 
   @pragma("vm:prefer-inline")
-  Arr.generate(int length,  T Function(int) generator) : list =  List.generate(length, generator, growable: false);
+  Arr.generate(int length, T Function(int) generator)
+      : list = List.generate(length, generator, growable: false);
 
   @pragma("vm:prefer-inline")
   T operator [](int index) => list[index];

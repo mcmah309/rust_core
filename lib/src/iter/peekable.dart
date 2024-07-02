@@ -49,8 +49,7 @@ final class Peekable<T> extends RIterator<T> {
     final temp = Clone._trackable(_iterator);
     _iterator = temp;
     if (_hasPeaked) {
-      return Peekable(
-          _PrefixedIterator(_peeked, Clone._clone(temp)));
+      return Peekable(_PrefixedIterator(_peeked, Clone._clone(temp)));
     }
     return Peekable(Clone._clone(temp));
   }

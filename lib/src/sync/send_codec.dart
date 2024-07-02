@@ -77,7 +77,8 @@ class ListSizedTCodec<T> implements SendCodec<List<T>> {
   final SendCodec<T> _tCodec;
   final int tSizeInBytes;
 
-  const ListSizedTCodec(this._tCodec, this.tSizeInBytes) : assert(tSizeInBytes > 0);
+  const ListSizedTCodec(this._tCodec, this.tSizeInBytes)
+      : assert(tSizeInBytes > 0);
 
   @override
   List<T> decode(ByteBuffer buffer) {

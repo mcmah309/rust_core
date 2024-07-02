@@ -34,7 +34,7 @@ class IsolateReceiver<T> extends LocalReceiver<T> {
 }
 
 /// [isolateChannel] is used for bi-directional isolate communication. The returned
-/// [Sender] and [Receiver] can communicate with the spawned isolate and 
+/// [Sender] and [Receiver] can communicate with the spawned isolate and
 /// the spawned isolate is passed a [Sender] and [Receiver] to communicate with the original isolate.
 /// Each item `T` sent by a [Sender] will only be seen once by the corresponding [Receiver].
 /// If the [Sender] calls `close` while the [Receiver]'s buffer
@@ -80,7 +80,8 @@ Future<(IsolateSender<T> tx, IsolateReceiver<U> rx)> isolateChannel<T, U>(
     await Future.delayed(Duration.zero);
   }
 
-  final receiver = IsolateReceiver._(fromIsolateCodec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
+  final receiver = IsolateReceiver._(
+      fromIsolateCodec, ReceivePort.fromRawReceivePort(receiveFromIsolate));
   final sender = IsolateSender._(toIsolateCodec, sendToIsolate!);
 
   return (sender, receiver);
@@ -89,6 +90,3 @@ Future<(IsolateSender<T> tx, IsolateReceiver<U> rx)> isolateChannel<T, U>(
 class _CloseSignal {
   const _CloseSignal();
 }
-
-
-

@@ -27,8 +27,7 @@ Result<S, Object> guardResult<S>(Result<S, Object> Function() func) {
 
 /// Async version of [guard]
 @pragma("vm:prefer-inline")
-FutureResult<S, Object> guardAsync<S>(
-    Future<S> Function() func) async {
+FutureResult<S, Object> guardAsync<S>(Future<S> Function() func) async {
   assert(S is! Result, "Use guardAsyncResult instead");
   try {
     return Ok(await func());
