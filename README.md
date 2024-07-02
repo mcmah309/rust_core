@@ -1,5 +1,4 @@
 # rust_core
-***
 [![Pub Version](https://img.shields.io/pub/v/rust_core.svg)](https://pub.dev/packages/rust_core)
 [![Dart Package Docs](https://img.shields.io/badge/documentation-pub.dev-blue.svg)](https://pub.dev/documentation/rust_core/latest/)
 [![License: Apache 2.0](https://img.shields.io/github/license/mcmah309/path_type)](https://opensource.org/license/apache-2-0)
@@ -10,7 +9,6 @@
 [Rust Core Book 📖](https://mcmah309.github.io/rust_core)
 
 ## Example
-***
 > Goal: Get the index of every "!" in a string not followed by a "?"
 
 **Rust:**
