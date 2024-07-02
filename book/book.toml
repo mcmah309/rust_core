@@ -7,3 +7,5 @@ title = "rust_core"
 
 [output.html]
 fold.enable = true
+default-theme = "rust"
+git-repository-url = "https://github.com/mcmah309/rust_core"

@@ -42,12 +42,12 @@ The functionally is the same.
 
 ### Result and Option
 
-`Result<T, E>` is the type used for returning and propagating errors.
+`Result<T, E>` is a sum type used for returning and propagating errors - `Ok` and `Err`.
 
 `Option<T>` represents a value that can be either some value of type `T` (`Some<T>`) or `None`. 
 It is used "in place" of `T?` (implemented as a zero cost extension type of `T?`).
 
-These types can be easily chained with other operations.
+These types can be easily chained with other operations or pattern matched.
 
 ### The Rust `?` Operator and Early Return Key Notion
 
@@ -72,6 +72,16 @@ Result<double, String> func(int x) => Result(($) { // Early Return Key
 
 `Arr` (array) is a compliment to `List`, representing a fixed sized `List`. Having a separate `Arr` type fixes runtime exceptions for trying to grow
 a non-growable `List`. It also has zero runtime cost, as it is an extension type of `List` and is more efficient than a growable `List`. With `Arr`, type intent is clear for maintainers and developers are able think about code performance more critically.
+
+```dart
+var array = Arr(null, 10);
+array = Arr.constant(const [1,2,3,4,5]);
+array = Arr.generate(10, (i) => i);
+for(final entry in array){
+    // do something
+}
+var (slice1, slice2) = array.splitSlice(3);
+```
 
 #### Iter
 rust_core implements the entirety of Rust's stable and unstable [Iterator](https://doc.rust-lang.org/beta/core/iter/trait.Iterator.html) methods.

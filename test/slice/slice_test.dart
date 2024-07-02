@@ -565,8 +565,6 @@ main() {
     Slice<int> slice2 = [1, 2, 3, 4, 5].asSlice();
     slice2.rotateRight(3);
     expect(slice2, [3, 4, 5, 1, 2]);
-
-    print("All rotateRight tests passed!");
   });
 
   test("reverse", () {
