@@ -1,6 +1,6 @@
 # FAQ
 
-## Why Use Rust Core If I Don't Know Rust?
+## Why Use Rust Core Even If I Don't Know Rust?
 ***
 From a language perspective we believe Dart is sadly lacking in a few areas, of which this package solves:
 
