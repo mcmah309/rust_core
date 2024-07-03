@@ -4,6 +4,7 @@
 - [Quickstart](./introduction/quickstart.md)
 - [New To Rust](./introduction/new_to_rust.md)
 - [New To Dart](./introduction/new_to_dart.md)
+- [FAQ](./introduction/FAQ.md)
 
 # Major Libraries
 

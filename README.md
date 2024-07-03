@@ -62,7 +62,7 @@ void main() {
 }
 ```
 
-# Project Goals
+## Project Goals
 rust_core's primary goal is to bring Rust's features and ergonomics to Dart.
 
 To accomplish this, Rust's functionalities are carefully adapted to Dart's paradigms, focusing on a smooth idiomatic language-compatible integration.
