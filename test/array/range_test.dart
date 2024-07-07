@@ -1,5 +1,4 @@
 import 'package:rust_core/array.dart';
-import 'package:rust_core/panic.dart';
 import 'package:test/test.dart';
 
 void main() {

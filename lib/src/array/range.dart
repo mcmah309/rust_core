@@ -1,6 +1,5 @@
 import 'package:rust_core/array.dart';
 import 'package:rust_core/iter.dart';
-import 'package:rust_core/rust_core.dart';
 
 /// An iterator over the range [start..end), where start >= end or start <= end.
 @pragma("vm:prefer-inline")
@@ -15,8 +14,7 @@ Arr<int> rangeArr(int start, int end, {int step = 1}) {
   if (start < end) {
     int length = ((end - start) + step - 1) ~/ step;
     return Arr<int>.generate(length, (index) => start + (index * step));
-  }
-  else {
+  } else {
     int length = ((start - end) + step - 1) ~/ step;
     return Arr<int>.generate(length, (index) => start - (index * step));
   }
