@@ -65,7 +65,8 @@ extension Range2Extension on Range {
 
   @pragma("vm:prefer-inline")
   List<int> collectList({bool growable = true}) {
-    return RIterator.fromIterable(_range($1, $2)).collectList(growable: growable);
+    return RIterator.fromIterable(_range($1, $2))
+        .collectList(growable: growable);
   }
 
   @pragma("vm:prefer-inline")
