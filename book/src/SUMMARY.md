@@ -23,6 +23,7 @@
 # Minor Libraries
 
 - [convert](./libs/convert/convert.md)
+- [ops](./libs/ops/ops.md)
 - [panic](./libs/panic/panic.md)
 
 # Miscellaneous
