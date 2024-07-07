@@ -1,3 +1,8 @@
+## 1.1.0
+
+- Add `rangeArr`
+- Add `Range` extensions
+
 ## 1.0.0
 
  - Stabilize api
