@@ -38,10 +38,6 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   @pragma("vm:prefer-inline")
   T operator [](int index) => list[index];
 
-  static int x() {
-    return 1;
-  }
-
   @pragma("vm:prefer-inline")
   void operator []=(int index, T value) => list[index] = value;
 
