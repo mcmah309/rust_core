@@ -1,7 +1,7 @@
 ## 1.1.0
 
-- Add `rangeArr`
-- Add `Range` extensions
+- Add `Arr.range`
+- Add ops library with `range` and `Range` extensions
 
 ## 1.0.0
 
