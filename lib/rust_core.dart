@@ -7,6 +7,7 @@ export "array.dart";
 export "cell.dart";
 export "convert.dart";
 export "iter.dart";
+export "ops.dart";
 export "option.dart";
 export "panic.dart";
 export "result.dart";
