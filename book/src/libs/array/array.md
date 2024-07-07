@@ -11,3 +11,21 @@ for(final entry in array){
 var (slice1, slice2) = array.splitSlice(3);
 ```
 `Arr`'s allocation will be more efficient than compared to a `List` since it does not reserve additional capacity and allocates the full amount eagerly. Which is important since allocations account for most of the cost of the runtime costs of a List.
+
+## Range
+
+`range` is a convenience function for an iterator over the range `[start..end)`, where `start >= end` or `start <= end`.
+```dart
+for(final x in range(0, 10).stepBy(2)){
+    // code
+}
+// or equivalent
+for(final x in (0, 10).stepBy(2)){
+    // code
+}
+```
+
+`rangeArr` also exists as a more efficient method for when it is known collecting the range is needed.
+```dart
+Arr<int> x = rangeArr(0, 10, step: 2);
+```
