@@ -40,4 +40,14 @@ void main() {
       expect(() => rangeArr(5, 5, step: 0), throwsA(isA<AssertionError>()));
     });
   });
+
+  group('Range extensions', () {
+    test("stepBy", () {
+      List<int> collection = [];
+      for (final x in (5, 10).stepBy(2)) {
+        collection.add(x);
+      }
+      expect(collection, equals([5, 7, 9]));
+    });
+  });
 }
