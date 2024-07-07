@@ -197,8 +197,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
     return RIterator.fromIterable(_filterMapHelper(f));
   }
 
-  Iterable<U> _filterMapHelper<U extends Object>(
-      Option<U> Function(T) f) sync* {
+  Iterable<U> _filterMapHelper<U extends Object>(Option<U> Function(T) f) sync* {
     for (final element in this) {
       final result = f(element);
       if (result.isSome()) {
@@ -496,7 +495,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  Result<Arr<T>, RIterator> nextChunk(int size) {
+  Result<Arr<T>, RIterator<T>> nextChunk(int size) {
     final arr = Arr<T?>(null, size);
     for (var i = 0; i < size; i++) {
       if (!moveNext()) {
@@ -573,8 +572,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> rev() =>
-      RIterator.fromIterable(toList(growable: false).reversed);
+  RIterator<T> rev() => RIterator.fromIterable(toList(growable: false).reversed);
 
   @override
   Option<int> rposition(bool Function(T) f) {
@@ -595,8 +593,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
     return RIterator.fromIterable(_scanHelper(initial, f));
   }
 
-  Iterable<U> _scanHelper<U extends Object>(
-      U initial, Option<U> Function(U, T) f) sync* {
+  Iterable<U> _scanHelper<U extends Object>(U initial, Option<U> Function(U, T) f) sync* {
     var current = initial;
     for (final element in this) {
       final result = f(current, element);
@@ -648,8 +645,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   /// Expands each element of this RIterator into zero or more elements.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
-      RIterator.fromIterable(super.expand(f));
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator.fromIterable(super.expand(f));
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
 
@@ -658,8 +654,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   /// Creates the lazy concatenation of this Iterator and [other]
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> followedBy(Iterable<T> other) =>
-      RIterator.fromIterable(super.followedBy(other));
+  RIterator<T> followedBy(Iterable<T> other) => RIterator.fromIterable(super.followedBy(other));
 
   // void forEach(void Function(T) f) => iterable.forEach(f);
 
@@ -684,8 +679,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   /// Consumes and skips elements while [f] is true and returns the rest.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> skipWhile(bool Function(T) f) =>
-      RIterator.fromIterable(super.skipWhile(f));
+  RIterator<T> skipWhile(bool Function(T) f) => RIterator.fromIterable(super.skipWhile(f));
 
   /// Takes the first [count] elements from the RIterator.
   @override
@@ -695,8 +689,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   /// TTakes the first [count] elements from the RIterator while [f] is true.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> takeWhile(bool Function(T) f) =>
-      RIterator.fromIterable(super.takeWhile(f));
+  RIterator<T> takeWhile(bool Function(T) f) => RIterator.fromIterable(super.takeWhile(f));
 
   // List<T> toList({bool growable = true}) => iterable.toList(growable: growable);
 
@@ -707,8 +700,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   /// Creates an RIterator where all the elements satisfy the predicate [f].
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> where(bool Function(T) f) =>
-      RIterator.fromIterable(super.where(f));
+  RIterator<T> where(bool Function(T) f) => RIterator.fromIterable(super.where(f));
 
   /// Creates an RIterator where all the elements are of Type U.
   @override

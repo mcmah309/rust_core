@@ -1,6 +1,6 @@
 part of 'iterator.dart';
 
-/// Iterface for Rust only methods. Not included is some methods that are already implemented by Dart's Iterable.
+/// Interface for Rust only methods. Not included is some methods that are already implemented by Dart's Iterable.
 abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
   /// If the iterator is empty, returns None. Otherwise, returns the next value wrapped in Some.
   Option<T> next();
@@ -155,7 +155,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 
   /// Returns the next n elements of the iterator as an [Arr],
   /// If there are not enough elements to fill the array then Err is returned containing an iterator over the remaining elements.
-  Result<Arr<T>, RIterator> nextChunk(int size);
+  Result<Arr<T>, RIterator<T>> nextChunk(int size);
 
   /// Returns the nth element of the iterator.
   /// Like most indexing operations, the count starts from zero, so nth(0) returns the first value, nth(1) the second, and so on.
