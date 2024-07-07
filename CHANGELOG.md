@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Remove artifact
+
 ## 1.1.0
 
 - Add `Arr.range`
