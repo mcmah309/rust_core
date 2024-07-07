@@ -22,8 +22,25 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   Arr.generate(int length, T Function(int) generator)
       : list = List.generate(length, generator, growable: false);
 
+  /// An array of [int] in the range [start..end), where start >= end or start <= end. [step] must be positive.
+  @pragma("vm:prefer-inline")
+  static Arr<int> range(int start, int end, {int step = 1}) {
+    assert(step > 0, "'step' must be positive.");
+    if (start < end) {
+      return Arr<int>.generate(((end - start) + step - 1) ~/ step,
+          (index) => start + (index * step));
+    } else {
+      return Arr<int>.generate(((start - end) + step - 1) ~/ step,
+          (index) => start - (index * step));
+    }
+  }
+
   @pragma("vm:prefer-inline")
   T operator [](int index) => list[index];
+
+  static int x() {
+    return 1;
+  }
 
   @pragma("vm:prefer-inline")
   void operator []=(int index, T value) => list[index] = value;

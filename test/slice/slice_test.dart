@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_types_as_parameter_names
 
 import 'package:rust_core/array.dart';
+import 'package:rust_core/ops.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/panic.dart';
 import 'package:rust_core/result.dart';
