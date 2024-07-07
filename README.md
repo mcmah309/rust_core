@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/mcmah309/rust_core/actions/workflows/test.yml/badge.svg)](https://github.com/mcmah309/rust_core/actions)
 
-[rust_core](https://github.com/mcmah309/rust_core) is an implementation of Rust's Core Library in Dart, bringing the power of Rust to Dart!
+[rust_core](https://github.com/mcmah309/rust_core) is a pure Dart implementation of patterns found in Rust's core library, bringing the power of Rust to Dart!
 
 [Rust Core Book 📖](https://mcmah309.github.io/rust_core)
 

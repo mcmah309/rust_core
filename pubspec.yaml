@@ -1,5 +1,5 @@
 name: rust_core
-description: Implementation of Rust's core library in Dart. Types include Result, Option, Cells, Slices, Array, Iterators, and extensions. Facilitates functional programming and error handling.
+description: Pure Dart implementation of patterns in Rust's core library. Types include Result, Option, Cell, Slice, Array, Iterator, etc. Facilitates functional programming and error handling.
 version: 1.0.0
 repository: https://github.com/mcmah309/rust_core
 
