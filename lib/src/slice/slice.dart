@@ -70,8 +70,7 @@ final class Slice<T> implements List<T> {
       for (int i = normalizedStart; i < normalizedEnd; i++) {
         yield getUnchecked(i);
       }
-    }
-    else {
+    } else {
       for (int i = normalizedStart; i > normalizedEnd; i--) {
         yield getUnchecked(i);
       }
@@ -1093,12 +1092,21 @@ final class Slice<T> implements List<T> {
     return this.toList() + other;
   }
 
+  /// Adds [value] to the end of the slice, extending the length of the underlying list and this slice
+  /// by one.
+  /// {@template slice_underlying_manipulation_warning}
+  /// Note, the ranges of other slices will not be effected, therefore use with care as this may shift the underlying data in other slices.
+  /// {@endtemplate}
   @override
   void add(T value) {
-    _list.insert(_end - 1, value);
+    _list.insert(_end, value);
     _end++;
   }
 
+  /// Appends all objects of [iterable] to the end of this slice.
+  /// Extends the length of the underlying list and this slice by the number of objects in [iterable].
+  /// The underlying list must be growable.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void addAll(Iterable<T> iterable) {
     final toAdd = iterable.toArr();
@@ -1114,10 +1122,10 @@ final class Slice<T> implements List<T> {
         if (i < _end) {
           return _list[i];
         }
-        if (i > _end + toAddLength) {
-          return _list[i - toAddLength];
+        if (i < _end + toAddLength) {
+          return toAdd[i - _end];
         }
-        return toAdd[i - _end];
+        return _list[i - toAddLength];
       });
       _list.clear();
       _list.addAll(newList);
@@ -1130,12 +1138,16 @@ final class Slice<T> implements List<T> {
     return this.toList().asMap();
   }
 
+  /// Returns a slice view where the elements are [U].
   @override
   Slice<U> cast<U>() => Slice(_list.cast<U>(), _start, _end);
 
+  /// Clears the underlying data the slice encompasses. This slice's length after will be zero.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void clear() {
-    throw UnimplementedError();
+    _list.removeRange(_start, _end);
+    _end = _start;
   }
 
   @override
@@ -1190,16 +1202,26 @@ final class Slice<T> implements List<T> {
     return -1;
   }
 
+  /// Inserts [element] at position [index] in this slice.
+  /// This increases the length of the underlying list and this slice by one and shifts all objects at or after the index towards the end.
+  /// The underlying list must be growable. The [index] value must be non-negative and no greater than [length].
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void insert(int index, T element) {
-    this[index] = element;
+    if (index > len()) {
+      panic("'index' cannot be greater than the length of the slice.");
+    }
+    if (index < 0) {
+      panic("'index' cannot be negative.");
+    }
+    _list.insert(_start + index, element);
+    _end++;
   }
 
   /// Inserts all objects of [iterable] at position [index] in this slice.
   /// This increases the length of the slice by the length of [iterable] and shifts all later objects towards the end of the slice.
   /// The underlying list must be growable. The [index] value must be non-negative and no greater than [length].
-  /// Note, the ranges of other slices will not be effected, therefore use with care as this may shift the underlying
-  /// data in other slices.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void insertAll(int index, Iterable<T> iterable) {
     final toInsert = iterable.toList();
@@ -1217,32 +1239,22 @@ final class Slice<T> implements List<T> {
 
   @override
   int lastIndexOf(T element, [int? start]) {
-    final (int, T)? result = _list
-        .getRange(_start, _end)
-        .indexed
-        .skip(start ?? 0)
-        .cast<(int, T)?>()
-        .lastWhere((e) => e!.$2 == element, orElse: () => null);
-
-    if (result == null) {
-      return -1;
+    for (final e in _list.getRange(_start, _end).indexed.skip(start ?? 0)) {
+      if (e.$2 == element) {
+        return e.$1;
+      }
     }
-    return result.$1;
+    return -1;
   }
 
   @override
   int lastIndexWhere(bool Function(T element) test, [int? start]) {
-    final (int, T)? result = _list
-        .getRange(_start, _end)
-        .indexed
-        .skip(start ?? 0)
-        .cast<(int, T)?>()
-        .lastWhere((e) => test(e!.$2), orElse: () => null);
-
-    if (result == null) {
-      return -1;
+    for (final e in _list.getRange(_start, _end).indexed.skip(start ?? 0)) {
+      if (test(e.$2)) {
+        return e.$1;
+      }
     }
-    return result.$1;
+    return -1;
   }
 
   @override
@@ -1325,11 +1337,11 @@ final class Slice<T> implements List<T> {
       panic("'start' and 'end' must be positive");
     }
     final normalizedStart = start + _start;
-    if (normalizedStart >= _end) {
+    if (normalizedStart > _end) {
       panic("'start' is out of range.");
     }
-    final normalizedEnd = start + _end;
-    if (normalizedEnd >= _end) {
+    final normalizedEnd = end + _start;
+    if (normalizedEnd > _end) {
       panic("'end' is out of range.");
     }
     return (normalizedStart, normalizedEnd);
