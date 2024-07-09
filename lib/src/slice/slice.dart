@@ -64,18 +64,8 @@ final class Slice<T> implements List<T> {
         (other is List<T> && other.length == _end && _start == 0 && _list == other);
   }
 
-  Iterable<T> call(Range range) sync* {
-    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(range.start, range.end);
-    if (range.isAscending) {
-      for (int i = normalizedStart; i < normalizedEnd; i++) {
-        yield getUnchecked(i);
-      }
-    } else {
-      for (int i = normalizedStart; i > normalizedEnd; i--) {
-        yield getUnchecked(i);
-      }
-    }
-  }
+  @pragma("vm:prefer-inline")
+  Iterable<T> call(Range range) => range.slice(this);
 
   @override
   int get hashCode => _list.hashCode ^ _start.hashCode ^ _end.hashCode;

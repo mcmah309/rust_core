@@ -41,17 +41,8 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   @pragma("vm:prefer-inline")
   void operator []=(int index, T value) => list[index] = value;
 
-  Iterable<T> call(Range range) sync* {
-    if (range.isAscending) {
-      for (int i = range.start; i < range.end; i++) {
-        yield list[i];
-      }
-    } else {
-      for (int i = range.start; i > range.end; i--) {
-        yield list[i];
-      }
-    }
-  }
+  @pragma("vm:prefer-inline")
+  Iterable<T> call(Range range) => range.list(list);
 
   // as_ascii: Will not be implemented, not possible in Dart
   // as_ascii_unchecked_mut: Will not be implemented, not possible in Dart
@@ -59,6 +50,12 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
 
   @pragma("vm:prefer-inline")
   Slice<T> asSlice() => Slice.fromList(list);
+
+  @pragma("vm:prefer-inline")
+  Slice<T> slice([int start = 0, int? end]) {
+    end ??= length;
+    return Slice(this.list, start, end);
+  }
 
   // each_mut: Will not be implemented, not possible in Dart
   // each_ref: Will not be implemented, not possible in Dart
