@@ -134,7 +134,8 @@ class RangeIterator implements Iterator<int> {
   final int end;
   int _current;
 
-  RangeIterator(this.start, this.end) : _current = start >= end ? end - 1 : start - 1;
+  RangeIterator(this.start, this.end)
+      : _current = start >= end ? end - 1 : start - 1;
 
   @override
   int get current => _current;

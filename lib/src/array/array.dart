@@ -7,7 +7,8 @@ import 'package:rust_core/iter.dart';
 /// A fixed-size array, denoted as [T; N] in Rust.
 extension type Arr<T>._(List<T> list) implements Iterable<T> {
   @pragma("vm:prefer-inline")
-  Arr(T defaultVal, int size) : list = List.filled(size, defaultVal, growable: false);
+  Arr(T defaultVal, int size)
+      : list = List.filled(size, defaultVal, growable: false);
 
   @pragma("vm:prefer-inline")
   const Arr.constant(this.list);
@@ -27,11 +28,11 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   static Arr<int> range(int start, int end, {int step = 1}) {
     assert(step > 0, "'step' must be positive.");
     if (start < end) {
-      return Arr<int>.generate(
-          ((end - start) + step - 1) ~/ step, (index) => start + (index * step));
+      return Arr<int>.generate(((end - start) + step - 1) ~/ step,
+          (index) => start + (index * step));
     } else {
-      return Arr<int>.generate(
-          ((start - end) + step - 1) ~/ step, (index) => start - (index * step));
+      return Arr<int>.generate(((start - end) + step - 1) ~/ step,
+          (index) => start - (index * step));
     }
   }
 
@@ -70,7 +71,10 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   /// the second will contain all indices from [N - M, N) (excluding the index N itself).
   (Slice<T>, Slice<T>) rsplitSlice(int index) {
     assert(index >= 0 && index <= list.length, "Index out of bounds");
-    return (Slice(list, 0, list.length - index), Slice(list, list.length - index, list.length));
+    return (
+      Slice(list, 0, list.length - index),
+      Slice(list, list.length - index, list.length)
+    );
   }
 
   // rsplit_array_mut: Will not be implemented, not possible in Dart
@@ -165,14 +169,16 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   // bool every(bool Function(T) f) => list.every(f);
 
   @pragma("vm:prefer-inline")
-  RIterator<U> expand<U>(Iterable<U> Function(T) f) => RIterator(list.expand(f).iterator);
+  RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
+      RIterator(list.expand(f).iterator);
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => list.firstWhere(f, orElse: orElse);
 
   // U fold<U>(U initialValue, U Function(U previousValue, T element) f) => list.fold(initialValue, f);
 
   @pragma("vm:prefer-inline")
-  RIterator<T> followedBy(Iterable<T> other) => RIterator(list.followedBy(other).iterator);
+  RIterator<T> followedBy(Iterable<T> other) =>
+      RIterator(list.followedBy(other).iterator);
 
   // void forEach(void Function(T) f) => list.forEach(f);
 
@@ -190,13 +196,15 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   RIterator<T> skip(int count) => RIterator(list.skip(count).iterator);
 
   @pragma("vm:prefer-inline")
-  RIterator<T> skipWhile(bool Function(T) f) => RIterator(list.skipWhile(f).iterator);
+  RIterator<T> skipWhile(bool Function(T) f) =>
+      RIterator(list.skipWhile(f).iterator);
 
   @pragma("vm:prefer-inline")
   RIterator<T> take(int count) => RIterator(list.take(count).iterator);
 
   @pragma("vm:prefer-inline")
-  RIterator<T> takeWhile(bool Function(T) f) => RIterator(list.takeWhile(f).iterator);
+  RIterator<T> takeWhile(bool Function(T) f) =>
+      RIterator(list.takeWhile(f).iterator);
 
   // List<T> toList({bool growable = true}) => list.toList(growable: growable);
 

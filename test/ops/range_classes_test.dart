@@ -36,7 +36,8 @@ void main() {
 
       var slice = arr.slice(1, 9);
       expect(slice(RangeFrom(5)).take(3).toList(), [6, 7, 8]);
-      expect(() => slice(RangeFrom(-1)).take(5).toList(), throwsA(isA<Panic>()));
+      expect(
+          () => slice(RangeFrom(-1)).take(5).toList(), throwsA(isA<Panic>()));
     });
 
     test('RangeFull', () {
@@ -58,15 +59,18 @@ void main() {
 
       expect(() => arr(RangeInclusive(-1, 4)).toList(), throwsA(isA<Panic>()));
       expect(() => arr(RangeInclusive(3, 1)).toList(), throwsA(isA<Panic>()));
-      expect(() => arr(RangeInclusive(0, -1)).toList(), throwsA(isA<AssertionError>()));
+      expect(() => arr(RangeInclusive(0, -1)).toList(),
+          throwsA(isA<AssertionError>()));
 
       var slice = arr.slice(1, 9);
       expect(slice(RangeInclusive(5, 7)).toList(), [6, 7, 8]);
       expect(() => slice(RangeInclusive(8, 5)).toList(), throwsA(isA<Panic>()));
 
-      expect(() => slice(RangeInclusive(-1, 4)).toList(), throwsA(isA<Panic>()));
+      expect(
+          () => slice(RangeInclusive(-1, 4)).toList(), throwsA(isA<Panic>()));
       expect(() => slice(RangeInclusive(3, 1)).toList(), throwsA(isA<Panic>()));
-            expect(() => slice(RangeInclusive(0, -1)).toList(), throwsA(isA<AssertionError>()));
+      expect(() => slice(RangeInclusive(0, -1)).toList(),
+          throwsA(isA<AssertionError>()));
     });
 
     test('RangeTo', () {
@@ -84,13 +88,15 @@ void main() {
     test('RangeToInclusive', () {
       var arr = Arr.range(0, 10);
       expect(arr(RangeToInclusive(5)).toList(), [0, 1, 2, 3, 4, 5]);
-      expect(() => arr(RangeToInclusive(-1)).toList(), throwsA(isA<AssertionError>()));
+      expect(() => arr(RangeToInclusive(-1)).toList(),
+          throwsA(isA<AssertionError>()));
       expect(() => arr(RangeToInclusive(11)).toList(), throwsA(isA<Panic>()));
 
       var slice = arr.slice(1, 9);
       expect(slice(RangeToInclusive(5)).toList(), [1, 2, 3, 4, 5, 6]);
       expect(() => slice(RangeToInclusive(10)).toList(), throwsA(isA<Panic>()));
-      expect(() => slice(RangeToInclusive(-1)).toList(), throwsA(isA<AssertionError>()));
+      expect(() => slice(RangeToInclusive(-1)).toList(),
+          throwsA(isA<AssertionError>()));
     });
   });
 }
