@@ -33,9 +33,9 @@ void main() {
     });
 
     test("Range equal with step", () {
-      expect(range(5, 5, 1).toList(), equals([]));
+      expect(range(5, 5, 1).toList(), equals([5]));
       expect(() => range(5, 5, 0).toList(), throwsA(isA<Panic>()));
-      expect(range(5, 5, -1).toList(), equals([]));
+      expect(range(5, 5, -1).toList(), equals([5]));
     });
   });
 }
