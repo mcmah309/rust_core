@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_renaming_method_parameters
 
+import 'dart:math';
+
 import 'package:rust_core/option.dart';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/panic.dart';
@@ -35,7 +37,7 @@ final class SliceIterator<T> implements Iterator<T> {
 /// A contiguous sequence of elements in a [List]. Slices are a view into a list without allocating and copying to a new list,
 /// as such, they do not own their own data.
 /// Note: Shrinking the original list can cause the slices range to become invalid, which may cause an exception or unintended behavior.
-final class Slice<T> implements Iterable<T> {
+final class Slice<T> implements List<T> {
   int _start;
   int _end;
   final List<T> _list;
@@ -43,16 +45,14 @@ final class Slice<T> implements Iterable<T> {
   @pragma("vm:prefer-inline")
   Slice(this._list, [this._start = 0, int? end])
       : _end = end ?? _list.length,
-        assert(_start >= 0 && (end == null || end <= _list.length),
-            "Index out of bounds");
+        assert(_start >= 0 && (end == null || end <= _list.length), "Index out of bounds");
 
   @pragma("vm:prefer-inline")
   Slice.fromList(List<T> list) : this(list, 0, list.length);
 
   @pragma("vm:prefer-inline")
   Slice.fromSlice(Slice<T> slice, [int start = 0, int? end])
-      : this(slice._list, slice._start + start,
-            end == null ? slice._end : slice._start + end);
+      : this(slice._list, slice._start + start, end == null ? slice._end : slice._start + end);
 
   @override
   bool operator ==(Object other) {
@@ -60,10 +60,7 @@ final class Slice<T> implements Iterable<T> {
             other._start == _start &&
             other._end == _end &&
             other._list == _list) ||
-        (other is List<T> &&
-            other.length == _end &&
-            _start == 0 &&
-            _list == other);
+        (other is List<T> && other.length == _end && _start == 0 && _list == other);
   }
 
   @override
@@ -120,8 +117,8 @@ final class Slice<T> implements Iterable<T> {
       return Arr.generate(chunkSize, (j) => getUnchecked(i * chunkSize + j));
     });
     final remainderLength = length % chunkSize;
-    var remainder = Arr<T>.generate(
-        remainderLength, (i) => getUnchecked(i + chunks.len() * chunkSize));
+    var remainder =
+        Arr<T>.generate(remainderLength, (i) => getUnchecked(i + chunks.len() * chunkSize));
     return (chunks, remainder);
   }
 
@@ -145,8 +142,7 @@ final class Slice<T> implements Iterable<T> {
     var remainder = Arr<T>.generate(remainderLength, (i) => getUnchecked(i));
     final numOfChunks = length ~/ chunkSize;
     final Arr<Arr<T>> chunks = Arr.generate(numOfChunks, (i) {
-      return Arr.generate(
-          chunkSize, (j) => getUnchecked(remainderLength + i * chunkSize + j));
+      return Arr.generate(chunkSize, (j) => getUnchecked(remainderLength + i * chunkSize + j));
     });
     return (remainder, chunks);
   }
@@ -180,8 +176,7 @@ final class Slice<T> implements Iterable<T> {
   }
 
   /// Binary searches this slice with a key extraction function. See [SliceOnComparableSliceExtension.binarySearch] for more.
-  Result<int, int> binarySearchByKey<K extends Comparable>(
-      K key, K Function(T) keyExtractor) {
+  Result<int, int> binarySearchByKey<K extends Comparable>(K key, K Function(T) keyExtractor) {
     int left = 0;
     int right = length - 1;
 
@@ -263,8 +258,7 @@ final class Slice<T> implements Iterable<T> {
     final length = len();
     final srcLength = src.len();
     if (length != srcLength) {
-      panic(
-          "Slices must be the same length, this is `$length` and src is `$src");
+      panic("Slices must be the same length, this is `$length` and src is `$src");
     }
     for (var i = src._start, j = _start; i < src._end; i++, j++) {
       _list[j] = src._list[i];
@@ -274,17 +268,11 @@ final class Slice<T> implements Iterable<T> {
   /// Copies elements from one part of the slice to another part of itself
   /// The edge conditions can be changes with [sInc] and [eInc].
   /// [sInc] is whether the start is inclusive and [eInc] is whether the end is inclusive.
-  void copyWithin(int start, int end, int dst,
-      {bool sInc = true, bool enInc = false}) {
+  void copyWithin(int start, int end, int dst, {bool sInc = true, bool enInc = false}) {
     if (!sInc) start += 1;
     if (enInc) end += 1;
     final length = len();
-    if (start < 0 ||
-        start >= length ||
-        end < 0 ||
-        end > length ||
-        dst < 0 ||
-        dst >= length) {
+    if (start < 0 || start >= length || end < 0 || end > length || dst < 0 || dst >= length) {
       panic("Index out of bounds");
     }
     if (dst < start) {
@@ -457,8 +445,7 @@ final class Slice<T> implements Iterable<T> {
   /// The [sameBucket] function is passed the to two elements from the slice and must determine if the elements compare equal.
   /// The elements are passed in opposite order from their order in the slice, so if same_bucket(a, b) returns true, a is moved at the end of the slice.
   /// If the slice is sorted, the first returned slice contains no duplicates.
-  (Slice<T> dedup, Slice<T> duplicates) partitionDedupBy(
-      bool Function(T, T) sameBucket) {
+  (Slice<T> dedup, Slice<T> duplicates) partitionDedupBy(bool Function(T, T) sameBucket) {
     final length = len();
     if (length <= 1) {
       return (slice(0, length), slice(0, 0));
@@ -486,8 +473,8 @@ final class Slice<T> implements Iterable<T> {
   /// Returns two slices. The first contains no consecutive repeated elements. The second contains all the duplicates in no specified order.
   /// If the list is sorted, the first returned list contains no duplicates.
   @pragma("vm:prefer-inline")
-  (Slice<T> dedup, Slice<T> duplicates)
-      partitionDedupByKey<K extends Comparable<K>>(K Function(T) key) {
+  (Slice<T> dedup, Slice<T> duplicates) partitionDedupByKey<K extends Comparable<K>>(
+      K Function(T) key) {
     return partitionDedupBy((e0, e1) => key(e0) == key(e1));
   }
 
@@ -620,10 +607,7 @@ final class Slice<T> implements Iterable<T> {
   /// indices from [len - N, len) (excluding the index len itself).
   (Slice<T>, Slice<T>) rsplitAt(int index) {
     assert(index >= 0 && index <= _end - _start, "Index out of bounds");
-    return (
-      Slice(_list, _start, _end - index),
-      Slice(_list, _end - index, _end)
-    );
+    return (Slice(_list, _start, _end - index), Slice(_list, _end - index, _end));
   }
 
 // rsplit_array: Will not implement, would need to allocate another list for the Dart version
@@ -638,8 +622,7 @@ final class Slice<T> implements Iterable<T> {
     var index = _end - 1;
     while (index >= _start) {
       if (pred(_list[index])) {
-        return Some(
-            (Slice(_list, _start, index), Slice(_list, index + 1, _end)));
+        return Some((Slice(_list, _start, index), Slice(_list, index + 1, _end)));
       }
       index--;
     }
@@ -722,10 +705,7 @@ final class Slice<T> implements Iterable<T> {
   /// and the second slice will contain all indices from [N, len) (excluding the index len itself).
   (Slice<T>, Slice<T>) splitAt(int index) {
     assert(index >= 0 && index <= _end - _start, "Index out of bounds");
-    return (
-      Slice(_list, _start, _start + index),
-      Slice(_list, _start + index, _end)
-    );
+    return (Slice(_list, _start, _start + index), Slice(_list, _start + index, _end));
   }
 
 // split_at_mut: Implemented by splitAt
@@ -789,8 +769,7 @@ final class Slice<T> implements Iterable<T> {
     var index = _start;
     while (index < _end) {
       if (pred(_list[index])) {
-        return Some(
-            (Slice(_list, _start, index), Slice(_list, index + 1, _end)));
+        return Some((Slice(_list, _start, index), Slice(_list, index + 1, _end)));
       }
       index++;
     }
@@ -873,8 +852,7 @@ final class Slice<T> implements Iterable<T> {
     final length = len();
     final otherLength = other.len();
     if (length != otherLength) {
-      panic(
-          "Slices must be the same length, this is `$length` and other is `$otherLength");
+      panic("Slices must be the same length, this is `$length` and other is `$otherLength");
     }
     for (var i = 0; i < length; i++) {
       var temp = _list[i + _start];
@@ -964,6 +942,7 @@ final class Slice<T> implements Iterable<T> {
   @pragma("vm:prefer-inline")
   T getUnchecked(int index) => _list[index + _start];
 
+  @override
   void operator []=(int index, T value) {
     RangeError.checkNotNegative(index);
     final n = index + _start;
@@ -991,13 +970,7 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> cast<U>() =>
-      RIterator(_list.getRange(_start, _end).cast<U>().iterator);
-
-  @override
-  @pragma("vm:prefer-inline")
-  bool contains(Object? element) =>
-      _list.getRange(_start, _end).contains(element);
+  bool contains(Object? element) => _list.getRange(_start, _end).contains(element);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1033,8 +1006,7 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  String join([String separator = '']) =>
-      _list.getRange(_start, _end).join(separator);
+  String join([String separator = '']) => _list.getRange(_start, _end).join(separator);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1047,8 +1019,7 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> map<U>(U Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).map(f).iterator);
+  RIterator<U> map<U>(U Function(T) f) => RIterator(_list.getRange(_start, _end).map(f).iterator);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1065,8 +1036,7 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> skip(int count) =>
-      RIterator(_list.getRange(_start, _end).skip(count).iterator);
+  RIterator<T> skip(int count) => RIterator(_list.getRange(_start, _end).skip(count).iterator);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1075,8 +1045,7 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> take(int count) =>
-      RIterator(_list.getRange(_start, _end).take(count).iterator);
+  RIterator<T> take(int count) => RIterator(_list.getRange(_start, _end).take(count).iterator);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1099,6 +1068,255 @@ final class Slice<T> implements Iterable<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> whereType<U>() =>
-      RIterator(_list.getRange(_start, _end).whereType<U>().iterator);
+  RIterator<U> whereType<U>() => RIterator(_list.getRange(_start, _end).whereType<U>().iterator);
+
+  // List<T> implementations
+  //************************************************************************//
+
+  @override
+  List<T> operator +(List<T> other) {
+    return this.toList() + other;
+  }
+
+  @override
+  void add(T value) {
+    _list.insert(_end - 1, value);
+    _end++;
+  }
+
+  @override
+  void addAll(Iterable<T> iterable) {
+    final toAdd = iterable.toArr();
+    final toAddLength = toAdd.length;
+    if (toAddLength == 0) {
+      return;
+    }
+    final listLength = _list.length;
+    if (_end == listLength) {
+      _list.addAll(toAdd);
+    } else {
+      final newList = List.generate(listLength + toAddLength, (i) {
+        if (i < _end) {
+          return _list[i];
+        }
+        if (i > _end + toAddLength) {
+          return _list[i - toAddLength];
+        }
+        return toAdd[i - _end];
+      });
+      _list.clear();
+      _list.addAll(newList);
+    }
+    _end += toAddLength;
+  }
+
+  @override
+  Map<int, T> asMap() {
+    return this.toList().asMap();
+  }
+
+  @override
+  Slice<U> cast<U>() => Slice(_list.cast<U>(), _start, _end);
+
+  @override
+  void clear() {
+    throw UnimplementedError();
+  }
+
+  @override
+  void fillRange(int start, int end, [T? fillValue]) {
+    // Hoist the case to fail eagerly if the user provides an invalid `null`
+    // value (or omits it) when T is a non-nullable type.
+    T value = fillValue as T;
+    final (normalizedStart, normalizedEnd) = _validateAndNormalize(start, end);
+    for (int i = normalizedStart; i < normalizedEnd; i++) {
+      _list[i] = value;
+    }
+  }
+
+  @override
+  set first(T value) {
+    if (_start == _end) {
+      panic("Cannot set 'first' while slice is empty.");
+    }
+    _list[_start] = value;
+  }
+
+  @override
+  Iterable<T> getRange(int start, int end) sync* {
+    final startStart = _start;
+    final startEnd = _end;
+    final (normalizedStart, normalizedEnd) = _validateAndNormalize(start, end);
+    for (int i = normalizedStart; i < normalizedEnd; i++) {
+      yield _list[i];
+      if (_start != startStart || _end != startEnd) {
+        throw ConcurrentModificationError("This slice was modified while yielding entries.");
+      }
+    }
+  }
+
+  @override
+  int indexOf(T element, [int start = 0]) {
+    for (final (index, e) in indexed.skip(start)) {
+      if (e == element) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  @override
+  int indexWhere(bool Function(T element) test, [int start = 0]) {
+    for (final (index, e) in indexed.skip(start)) {
+      if (test(e)) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  @override
+  void insert(int index, T element) {
+    this[index] = element;
+  }
+
+  /// Inserts all objects of [iterable] at position [index] in this slice.
+  /// This increases the length of the slice by the length of [iterable] and shifts all later objects towards the end of the slice.
+  /// The underlying list must be growable. The [index] value must be non-negative and no greater than [length].
+  /// Note, the ranges of other slices will not be effected, therefore use with care as this may shift the underlying
+  /// data in other slices.
+  @override
+  void insertAll(int index, Iterable<T> iterable) {
+    final toInsert = iterable.toList();
+    _list.insertAll(_start + index, toInsert);
+    _end += toInsert.length;
+  }
+
+  @override
+  set last(T value) {
+    if (_start == _end) {
+      panic("Cannot set 'last' while slice is empty.");
+    }
+    _list[_end - 1] = value;
+  }
+
+  @override
+  int lastIndexOf(T element, [int? start]) {
+    final (int, T)? result = _list
+        .getRange(_start, _end)
+        .indexed
+        .skip(start ?? 0)
+        .cast<(int, T)?>()
+        .lastWhere((e) => e!.$2 == element, orElse: () => null);
+
+    if (result == null) {
+      return -1;
+    }
+    return result.$1;
+  }
+
+  @override
+  int lastIndexWhere(bool Function(T element) test, [int? start]) {
+    final (int, T)? result = _list
+        .getRange(_start, _end)
+        .indexed
+        .skip(start ?? 0)
+        .cast<(int, T)?>()
+        .lastWhere((e) => test(e!.$2), orElse: () => null);
+
+    if (result == null) {
+      return -1;
+    }
+    return result.$1;
+  }
+
+  @override
+  set length(int newLength) {
+    panic("Cannot set the 'length' of a slice");
+  }
+
+  @override
+  bool remove(Object? value) {
+    // TODO: implement remove
+    throw UnimplementedError();
+  }
+
+  @override
+  T removeAt(int index) {
+    // TODO: implement removeAt
+    throw UnimplementedError();
+  }
+
+  @override
+  T removeLast() {
+    // TODO: implement removeLast
+    throw UnimplementedError();
+  }
+
+  @override
+  void removeRange(int start, int end) {
+    // TODO: implement removeRange
+  }
+
+  @override
+  void removeWhere(bool Function(T element) test) {
+    // TODO: implement removeWhere
+  }
+
+  @override
+  void replaceRange(int start, int end, Iterable<T> replacements) {
+    // TODO: implement replaceRange
+  }
+
+  @override
+  void retainWhere(bool Function(T element) test) {
+    // TODO: implement retainWhere
+  }
+
+  @override
+  // TODO: implement reversed
+  Iterable<T> get reversed => throw UnimplementedError();
+
+  @override
+  void setAll(int index, Iterable<T> iterable) {
+    // TODO: implement setAll
+  }
+
+  @override
+  void setRange(int start, int end, Iterable<T> iterable, [int skipCount = 0]) {
+    // TODO: implement setRange
+  }
+
+  @override
+  void shuffle([Random? random]) {
+    // TODO: implement shuffle
+  }
+
+  @override
+  void sort([int Function(T a, T b)? compare]) {
+    // TODO: implement sort
+  }
+
+  @override
+  List<T> sublist(int start, [int? end]) {
+    // TODO: implement sublist
+    throw UnimplementedError();
+  }
+
+  //************************************************************************//
+
+  (int normalizedStart, int normalizedEnd) _validateAndNormalize(int start, int end) {
+    if (start < 0 || end < 0) {
+      panic("'start' and 'end' must be positive");
+    }
+    final normalizedStart = start + _start;
+    if (normalizedStart >= _end) {
+      panic("'start' is out of range.");
+    }
+    final normalizedEnd = start + _end;
+    if (normalizedEnd >= _end) {
+      panic("'end' is out of range.");
+    }
+    return (normalizedStart, normalizedEnd);
+  }
 }

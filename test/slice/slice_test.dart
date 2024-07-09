@@ -345,8 +345,7 @@ main() {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.getMany(Arr.constant(const [0, 1, 2])).unwrap(), [1, 2, 3]);
-    expect(slice.getMany(Arr.constant(const [0, 1, 2, 3, 4])).unwrap(),
-        [1, 2, 3, 4, 5]);
+    expect(slice.getMany(Arr.constant(const [0, 1, 2, 3, 4])).unwrap(), [1, 2, 3, 4, 5]);
     expect(slice.getMany(Arr.constant(const [1, 3])).unwrap(), [2, 4]);
     expect(slice.getMany(Arr.constant(const [])).unwrap(), []);
     expect(slice.getMany(Arr.constant(const [0, 1, 2, 3, 4, 5])).unwrapErr(),
@@ -363,8 +362,7 @@ main() {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 0, 5);
     expect(slice.getManyUnchecked(Arr.constant(const [0, 1, 2])), [1, 2, 3]);
-    expect(slice.getManyUnchecked(Arr.constant(const [0, 1, 2, 3, 4])),
-        [1, 2, 3, 4, 5]);
+    expect(slice.getManyUnchecked(Arr.constant(const [0, 1, 2, 3, 4])), [1, 2, 3, 4, 5]);
     expect(slice.getManyUnchecked(Arr.constant(const [1, 3])), [2, 4]);
     expect(slice.getManyUnchecked(Arr.constant(const [])), []);
   });
@@ -457,8 +455,7 @@ main() {
 
   test("partitionDedupBy", () {
     var sliceStr = ["foo", "Foo", "BAZ", "Bar", "bar", "baz", "BAZ"].asSlice();
-    var (dedupStr, duplicatesStr) =
-        sliceStr.partitionDedupBy((a, b) => a.eqIgnoreCase(b));
+    var (dedupStr, duplicatesStr) = sliceStr.partitionDedupBy((a, b) => a.eqIgnoreCase(b));
     expect(dedupStr, ["foo", "BAZ", "Bar", "baz"]);
     expect(duplicatesStr, ["bar", "Foo", "BAZ"]);
 
@@ -683,10 +680,8 @@ main() {
     expect(list.asSlice().rsplitOnce((num) => num == 2).unwrap().$2, [4]);
     expect(list.asSlice().rsplitOnce((num) => num == 0).isNone(), true);
     expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$1, []);
-    expect(
-        list.asSlice().rsplitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
-    expect(
-        list.asSlice().rsplitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
+    expect(list.asSlice().rsplitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
+    expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
     expect(list.asSlice().rsplitOnce((num) => num == 4).unwrap().$2, []);
   });
 
@@ -723,8 +718,7 @@ main() {
     list = [1, 2, 3];
     iter = Slice(list, 0, 0).rsplitn(0, (p0) => true);
     expect(iter.next().isNone(), true);
-    expect(() => Slice(list, 0, 3).rsplitn(-1, (p0) => true),
-        throwsA(isA<Panic>()));
+    expect(() => Slice(list, 0, 3).rsplitn(-1, (p0) => true), throwsA(isA<Panic>()));
   });
 
   test("sortUnstable", () {
@@ -860,10 +854,8 @@ main() {
     expect(list.asSlice().splitOnce((num) => num == 2).unwrap().$2, [3, 2, 4]);
     expect(list.asSlice().splitOnce((num) => num == 0).isNone(), true);
     expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$1, []);
-    expect(
-        list.asSlice().splitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
-    expect(
-        list.asSlice().splitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
+    expect(list.asSlice().splitOnce((num) => num == 1).unwrap().$2, [2, 3, 2, 4]);
+    expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$1, [1, 2, 3, 2]);
     expect(list.asSlice().splitOnce((num) => num == 4).unwrap().$2, []);
   });
 
@@ -900,8 +892,7 @@ main() {
     list = [1, 2, 3];
     iter = Slice(list, 0, 0).splitn(0, (p0) => true);
     expect(iter.next().isNone(), true);
-    expect(
-        () => list.asSlice().splitn(-1, (p0) => true), throwsA(isA<Panic>()));
+    expect(() => list.asSlice().splitn(-1, (p0) => true), throwsA(isA<Panic>()));
   });
 
   test("startsWith", () {
@@ -947,9 +938,7 @@ main() {
     expect(slice.stripPrefix([1, 2, 4].asSlice()).isNone(), true);
     expect(slice.stripPrefix([1, 3].asSlice()).isNone(), true);
     expect(slice.stripPrefix([2].asSlice()).isNone(), true);
-    expect(
-        slice.stripPrefix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(),
-        true);
+    expect(slice.stripPrefix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(), true);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
@@ -978,9 +967,7 @@ main() {
     expect(slice.stripSuffix([1, 2, 4].asSlice()).isNone(), true);
     expect(slice.stripSuffix([1, 3].asSlice()).isNone(), true);
     expect(slice.stripSuffix([2].asSlice()).isNone(), true);
-    expect(
-        slice.stripSuffix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(),
-        true);
+    expect(slice.stripSuffix([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asSlice()).isNone(), true);
 
     list = [1, 2, 3, 4, 5];
     slice = Slice(list, 1, 4);
@@ -1056,5 +1043,52 @@ main() {
     slice = Slice(list, 1, 4);
     expect(() => slice.windows(0), throwsA(isA<Panic>()));
     expect(() => slice.windows(-1), throwsA(isA<Panic>()));
+  });
+
+  group("List tests", () {
+    test("equality", () {
+      //todo
+    });
+
+    test("add", () {
+      //todo
+    });
+
+    test("addAll", () {
+      //todo
+    });
+
+    test("clear", () {
+      //todo
+    });
+
+    test("fillRange", () {
+      //todo
+    });
+
+    test("getRange", () {
+      //todo
+    });
+
+    test("indexOf", () {
+      //todo
+    });
+
+    test("indexWhere", () {
+      //todo
+    });
+
+    test("insertAll", () {
+      //todo
+    });
+
+    test("lastIndexOf", () {
+      //todo
+    });
+
+    test("lastIndexWhere", () {
+      //todo
+    });
+
   });
 }
