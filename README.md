@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/mcmah309/rust_core/master/.github/DR2.svg?sanitize=true" width="300px">
+<img src="https://raw.githubusercontent.com/mcmah309/rust_core/master/.github/DR2.png" width="300px">
 
 [![Pub Version](https://img.shields.io/pub/v/rust_core.svg)](https://pub.dev/packages/rust_core)
 [![Dart Package Docs](https://img.shields.io/badge/documentation-pub.dev-blue.svg)](https://pub.dev/documentation/rust_core/latest/)
