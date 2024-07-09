@@ -65,7 +65,7 @@ final class Slice<T> implements List<T> {
   }
 
   Iterable<T> call(Range range) sync* {
-    final (normalizedStart, normalizedEnd) = _validateAndNormalize(range.start, range.end);
+    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(range.start, range.end);
     if (range.isAscending) {
       for (int i = normalizedStart; i < normalizedEnd; i++) {
         yield getUnchecked(i);
@@ -944,11 +944,7 @@ final class Slice<T> implements List<T> {
   }
 
   T operator [](int index) {
-    RangeError.checkNotNegative(index);
-    final n = index + _start;
-    if (n >= _end) {
-      throw RangeError.range(index, 0, len());
-    }
+    final n = _validateAndNormalize(index);
     return _list[n];
   }
 
@@ -958,11 +954,7 @@ final class Slice<T> implements List<T> {
 
   @override
   void operator []=(int index, T value) {
-    RangeError.checkNotNegative(index);
-    final n = index + _start;
-    if (n >= _end) {
-      throw RangeError.range(index, 0, len());
-    }
+    final n = _validateAndNormalize(index);
     _list[n] = value;
   }
 
@@ -1095,7 +1087,7 @@ final class Slice<T> implements List<T> {
   /// Adds [value] to the end of the slice, extending the length of the underlying list and this slice
   /// by one.
   /// {@template slice_underlying_manipulation_warning}
-  /// Note, the ranges of other slices will not be effected, therefore use with care as this may shift the underlying data in other slices.
+  /// Note, the ranges of other slices on the underlying list will not change, therefore use with care as this may shift the underlying data in other slices.
   /// {@endtemplate}
   @override
   void add(T value) {
@@ -1155,7 +1147,7 @@ final class Slice<T> implements List<T> {
     // Hoist the case to fail eagerly if the user provides an invalid `null`
     // value (or omits it) when T is a non-nullable type.
     T value = fillValue as T;
-    final (normalizedStart, normalizedEnd) = _validateAndNormalize(start, end);
+    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(start, end);
     for (int i = normalizedStart; i < normalizedEnd; i++) {
       _list[i] = value;
     }
@@ -1173,7 +1165,7 @@ final class Slice<T> implements List<T> {
   Iterable<T> getRange(int start, int end) sync* {
     final startStart = _start;
     final startEnd = _end;
-    final (normalizedStart, normalizedEnd) = _validateAndNormalize(start, end);
+    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(start, end);
     for (int i = normalizedStart; i < normalizedEnd; i++) {
       yield _list[i];
       if (_start != startStart || _end != startEnd) {
@@ -1262,79 +1254,187 @@ final class Slice<T> implements List<T> {
     panic("Cannot set the 'length' of a slice");
   }
 
+  /// Removes the first occurrence of [value] from this slice.
+  /// Returns true if [value] was in the slice, false otherwise. The slice must be growable.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   bool remove(Object? value) {
-    // TODO: implement remove
-    throw UnimplementedError();
+    if (value is! T) {
+      return false;
+    }
+    final index = indexOf(value);
+    if (index == -1) {
+      return false;
+    }
+    removeAt(index);
+    return true;
   }
 
+  /// Removes the object at position [index] from this slice.
+  /// This method reduces the length of this slice and the underlying list by one and moves
+  /// all later objects down by one position. Returns the removed value.
+  /// The [index] must be in the range 0 ≤ index < length. The underlying list must be growable.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   T removeAt(int index) {
-    // TODO: implement removeAt
-    throw UnimplementedError();
+    index = _validateAndNormalize(index);
+    final element = _list.removeAt(index);
+    _end--;
+    return element;
   }
 
+  /// Removes and returns the last object in this list. The list must be growable and non-empty.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   T removeLast() {
-    // TODO: implement removeLast
-    throw UnimplementedError();
+    if (isEmpty) {
+      panic("Cannot remove last element from an empty slice.");
+    }
+    final element = _list.removeAt(_end - 1);
+    _end--;
+    return element;
   }
 
+  /// Removes a range of elements from the slice and the underlying list.
+  /// Removes the elements with positions greater than or equal to [start] and less than [end],
+  /// from the slice and underlying list. This reduces the slice and underlying list's length by end - start.
+  /// The provided range, given by [start] and [end], must be valid. A range from [start] to [end]
+  /// is valid if 0 ≤ start ≤ end ≤ [length]. An empty range (with end == start) is valid.
+  /// The list must be growable.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void removeRange(int start, int end) {
-    // TODO: implement removeRange
+    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(start, end);
+    _list.removeRange(normalizedStart, normalizedEnd);
+    _end -= normalizedEnd - normalizedStart;
   }
 
+  /// Removes all objects from this slice and the underlying list that satisfy [test].
+  /// An object o satisfies [test] if test(o) is true. The slice's range shrinks by the number
+  /// of elements removed.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void removeWhere(bool Function(T element) test) {
-    // TODO: implement removeWhere
+    int index = 0;
+    int numRemoved = 0;
+    _list.removeWhere((element) {
+      if (index < _start || index >= _end) {
+        index++;
+        return false;
+      }
+      index++;
+      if (test(element)) {
+        numRemoved++;
+        return true;
+      }
+      return false;
+    });
+    _end -= numRemoved;
   }
 
+  /// Replaces a range of elements with the elements of [replacements].
+  /// Removes the objects in the range from [start] to [end], then inserts the elements of [replacements] at [start].
+  /// This will change the size of this slice by `replacements.length - (end - start)`.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void replaceRange(int start, int end, Iterable<T> replacements) {
-    // TODO: implement replaceRange
+    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(start, end);
+    final replacementsList = replacements.toList(growable: false);
+    _list.replaceRange(normalizedStart, normalizedEnd, replacementsList);
+    final replacementsLength = replacementsList.length;
+    final diff = replacementsLength - (normalizedEnd - normalizedStart);
+    _end += diff;
   }
 
+  /// Removes all objects from this list that fail to satisfy [test].
+  /// An object o satisfies [test] if test(o) is true. The slice's range shrinks by the number
+  /// of elements removed.
+  /// {@macro slice_underlying_manipulation_warning}
   @override
   void retainWhere(bool Function(T element) test) {
-    // TODO: implement retainWhere
+    int index = 0;
+    int numRemoved = 0;
+    _list.retainWhere((element) {
+      if (index < _start || index >= _end) {
+        index++;
+        return true;
+      }
+      index++;
+      if (!test(element)) {
+        numRemoved++;
+        return false;
+      }
+      return true;
+    });
+    _end -= numRemoved;
   }
 
   @override
-  // TODO: implement reversed
-  Iterable<T> get reversed => throw UnimplementedError();
+  Iterable<T> get reversed => _list.getRange(_start, _end).toList(growable: false).reversed;
 
+  /// Overwrites elements with the objects of [iterable].
+  /// The elements of [iterable] are written into this list, starting at position [index].
+  /// This operation does not increase the length of the slice or the underlying list.
+  /// The [index] must be non-negative and no greater than [length].
+  /// The [iterable] must not have more elements than what can fit from [index] to [length].
+  /// If iterable is based on this slice, its values may change during the setAll
   @override
   void setAll(int index, Iterable<T> iterable) {
-    // TODO: implement setAll
+    final (normalizedStart, normalizedEnd) =
+        _validateAndNormalizeRange(index, index + iterable.length);
+    final iterator = iterable.iterator;
+    for (int i = normalizedStart; i < normalizedEnd; i++) {
+      if (!iterator.moveNext()) {
+        return;
+      }
+      _list[i] = iterator.current;
+    }
   }
 
+  /// Writes some elements of [iterable] into a range of this list.
+  /// Copies the objects of [iterable], skipping [skipCount] objects first, into the range from [start],
+  /// inclusive, to [end], exclusive, of this slice.
   @override
   void setRange(int start, int end, Iterable<T> iterable, [int skipCount = 0]) {
-    // TODO: implement setRange
+    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(start, end);
+    final iterator = iterable.skip(skipCount).iterator;
+    for (int i = normalizedStart; i < normalizedEnd; i++) {
+      if (!iterator.moveNext()) {
+        return;
+      }
+      _list[i] = iterator.current;
+    }
   }
 
   @override
   void shuffle([Random? random]) {
-    // TODO: implement shuffle
+    Random rand = random ?? Random();
+    final sliceLength = len();
+    for (int i = _start; i < _end; i++) {
+      final temp = _list[i];
+      final swapWith = _start + rand.nextInt(sliceLength);
+      _list[i] = _list[swapWith];
+      _list[swapWith] = temp;
+    }
   }
 
+  /// Sorts this slice according to the order specified by the [compare] function.
   @override
   void sort([int Function(T a, T b)? compare]) {
-    // TODO: implement sort
+    sortUnstableBy(compare ?? (a, b) => Comparable.compare(a as Comparable, b as Comparable));
   }
 
   @override
   List<T> sublist(int start, [int? end]) {
-    // TODO: implement sublist
-    throw UnimplementedError();
+    final (normalizedStart, normalizedEnd) = _validateAndNormalizeRange(start, end ?? len());
+    return _list.sublist(normalizedStart, normalizedEnd);
   }
 
   //************************************************************************//
 
-  (int normalizedStart, int normalizedEnd) _validateAndNormalize(int start, int end) {
+  (int normalizedStart, int normalizedEnd) _validateAndNormalizeRange(int start, int end) {
     if (start < 0 || end < 0) {
-      panic("'start' and 'end' must be positive");
+      panic("'start' and 'end' must be positive.");
     }
     final normalizedStart = start + _start;
     if (normalizedStart > _end) {
@@ -1345,5 +1445,16 @@ final class Slice<T> implements List<T> {
       panic("'end' is out of range.");
     }
     return (normalizedStart, normalizedEnd);
+  }
+
+  int _validateAndNormalize(int index) {
+    if (index < 0) {
+      panic("'index' must be positive.");
+    }
+    final n = index + _start;
+    if (n >= _end) {
+      panic("'index' is out of slice boundary.");
+    }
+    return n;
   }
 }
