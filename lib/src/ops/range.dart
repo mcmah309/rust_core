@@ -4,120 +4,73 @@ import 'package:rust_core/slice.dart';
 // https://stackoverflow.com/a/60358200
 const int _intMaxValue = 9007199254740991;
 
-sealed class Range implements Iterable<int> {
-  const factory Range(int start, int end) = HalfOpenRange;
-
+sealed class RangeBounds {
   Iterable<T> list<T>(List<T> list);
 
   Iterable<T> slice<T>(Slice<T> slice);
-
-  bool get isAscending;
-  bool get isDescending;
 }
 
-class HalfOpenRangeIterator implements Iterator<int> {
+class RangeIterator implements Iterator<int> {
   final int start;
   final int end;
-  final int _step;
   int _current;
 
-  HalfOpenRangeIterator(this.start, this.end)
-      : _current = start == end
-            ? start
-            : start < end
-                ? start - 1
-                : start + 1,
-        _step = start == end
-            ? 0
-            : start < end
-                ? 1
-                : -1;
+  RangeIterator(this.start, this.end) : _current = start >= end ? end - 1 : start - 1;
 
   @override
   int get current => _current;
 
   @override
   bool moveNext() {
-    if (_current + _step == end) {
+    if (_current + 1 == end) {
       return false;
     }
-    _current += _step;
+    _current++;
     return true;
   }
 }
 
-class HalfOpenRange extends Iterable<int> implements Range {
+/// A (half-open) range bounded inclusively below and exclusively above (start..end).
+/// The range start..end contains all values with start <= x < end. It is empty if start >= end.
+class Range extends Iterable<int> implements RangeBounds {
   final int start;
   final int end;
 
-  const HalfOpenRange(this.start, this.end);
-
-  bool get isAscending => end > start;
-  bool get isDescending => end < start;
+  const Range(this.start, this.end);
 
   @override
-  HalfOpenRangeIterator get iterator => HalfOpenRangeIterator(start, end);
+  RangeIterator get iterator => RangeIterator(start, end);
 
   @override
   Iterable<T> list<T>(List<T> list) sync* {
-    if (end < 0 && start < 0) {
-      panic("Range for list must be positive");
-    }
-    if (isAscending) {
-      for (int i = start; i < end; i++) {
-        yield list[i];
-      }
-    } else {
-      for (int i = start; i > end; i--) {
-        yield list[i];
-      }
+    _checkValidRange(start, end, list.length);
+    for (int i = start; i < end; i++) {
+      yield list[i];
     }
   }
 
   @override
   Iterable<T> slice<T>(Slice<T> slice) sync* {
     final len = slice.len();
-    if (end < 0 || start < 0) {
-      panic("Range for slice must be positive");
-    }
-    if (isAscending) {
-      if (len < end) {
-        panic("Range is out of bounds for slice.");
-      }
-      for (int i = start; i < end; i++) {
-        yield slice.getUnchecked(i);
-      }
-    } else {
-      if (len < start) {
-        panic("Range is out of bounds for slice.");
-      }
-      for (int i = start; i > end; i--) {
-        yield slice.getUnchecked(i);
-      }
+    _checkValidRange(start, end, len);
+    for (int i = start; i < end; i++) {
+      yield slice.getUnchecked(i);
     }
   }
 }
 
-class RangeFrom extends Iterable<int> implements Range {
+class RangeFrom extends Iterable<int> implements RangeBounds {
   final int start;
 
   const RangeFrom(this.start);
 
   @override
-  bool get isAscending => true;
-
-  @override
-  bool get isDescending => false;
-
-  @override
-  Iterator<int> get iterator => HalfOpenRangeIterator(start, _intMaxValue);
+  Iterator<int> get iterator => RangeIterator(start, _intMaxValue);
 
   @override
   Iterable<T> list<T>(List<T> list) sync* {
-    if (start < 0) {
-      panic("'start' for slice must be positive");
-    }
     final len = list.length;
+    _checkStart(start, len);
     for (int i = start; i < len; i++) {
       yield list[i];
     }
@@ -126,18 +79,50 @@ class RangeFrom extends Iterable<int> implements Range {
   @override
   Iterable<T> slice<T>(Slice<T> slice) sync* {
     final len = slice.len();
-    if (start < 0) {
-      panic("'start' for slice must be positive");
-    }
+    _checkStart(start, len);
     for (int i = start; i < len; i++) {
       yield slice.getUnchecked(i);
     }
   }
 }
 
-// class RangeFull extends HalfOpenRange {
-//   RangeFull(super.start, super.end);
-// }
+class RangeFull extends Iterable<int> implements RangeBounds {
+  RangeFull();
+
+  @override
+  Iterator<int> get iterator =>
+      panic("'FullRange' cannot serve as an iterator because it has not starting point.");
+
+  @override
+  Iterable<T> list<T>(List<T> list) => list;
+
+  @override
+  Iterable<T> slice<T>(Slice<T> slice) => slice;
+}
+
+class RangeInclusive extends Range {
+  const RangeInclusive(int start, int end) : super(start, end + 1);
+}
+
+@pragma("vm:prefer-inline")
+void _checkValidRange(int start, int end, int length) {
+  _checkStart(start, length);
+  _checkEnd(start, end, length);
+}
+
+@pragma("vm:prefer-inline")
+void _checkStart(int start, int length) {
+  if (0 > start || start > length) {
+    panic("'start' is not valid");
+  }
+}
+
+@pragma("vm:prefer-inline")
+void _checkEnd(int start, int end, int length) {
+  if (start > end || end > length) {
+    panic("'end' is not valid");
+  }
+}
 
 /// A generator over a range by a step size.
 /// If [end] is not provided, the generated range will be [0..startOrEnd) if [startOrEnd] > 0, and

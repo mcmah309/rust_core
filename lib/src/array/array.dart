@@ -42,7 +42,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   void operator []=(int index, T value) => list[index] = value;
 
   @pragma("vm:prefer-inline")
-  Iterable<T> call(Range range) => range.list(list);
+  Iterable<T> call(RangeBounds range) => range.list(list);
 
   // as_ascii: Will not be implemented, not possible in Dart
   // as_ascii_unchecked_mut: Will not be implemented, not possible in Dart

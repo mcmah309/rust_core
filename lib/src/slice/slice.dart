@@ -65,7 +65,7 @@ final class Slice<T> implements List<T> {
   }
 
   @pragma("vm:prefer-inline")
-  Iterable<T> call(Range range) => range.slice(this);
+  Iterable<T> call(RangeBounds range) => range.slice(this);
 
   @override
   int get hashCode => _list.hashCode ^ _start.hashCode ^ _end.hashCode;

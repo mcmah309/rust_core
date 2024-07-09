@@ -5,37 +5,45 @@ import 'package:test/test.dart';
 
 void main() {
   group('Range', () {
-    test('Range and HalfOpenRange', () {
-      expect(HalfOpenRange(5, 10).toList(), equals([5, 6, 7, 8, 9]));
-      expect(HalfOpenRange(10, 5).toList(), equals([10, 9, 8, 7, 6]));
-      expect(HalfOpenRange(5, 5).toList(), equals([]));
-
+    test('Range', () {
       var arr = Arr.range(0, 10);
-      expect(arr(HalfOpenRange(5, 10)).toList(), [5, 6, 7, 8, 9]);
-      expect(arr(HalfOpenRange(9, 4)).toList(), [9, 8, 7, 6, 5]);
-
-      expect(() => arr(HalfOpenRange(-1, 4)), throwsA(isA<Panic>()));
-
       var slice = arr.slice(1,9);
-      expect(slice(HalfOpenRange(5, 8)).toList(), [6, 7, 8]);
-      expect(slice(HalfOpenRange(8, 5)).toList(), [9, 8, 7]);
-
-      expect(() => slice(HalfOpenRange(-1, 4)), throwsA(isA<Panic>()));
-
 
       expect(Range(5, 10).toList(), equals([5, 6, 7, 8, 9]));
-      expect(Range(10, 5).toList(), equals([10, 9, 8, 7, 6]));
+      expect(Range(10, 5).toList(), equals([]));
       expect(Range(5, 5).toList(), equals([]));
 
       expect(arr(Range(5, 10)).toList(), [5, 6, 7, 8, 9]);
-      expect(arr(Range(9, 4)).toList(), [9, 8, 7, 6, 5]);
+      expect(() => arr(Range(9, 4)).toList(), throwsA(isA<Panic>()));
 
-      expect(() => arr(Range(-1, 4)), throwsA(isA<Panic>()));
+      expect(() => arr(Range(-1, 4)).toList(), throwsA(isA<Panic>()));
+      expect(() => arr(Range(3, 1)).toList(), throwsA(isA<Panic>()));
 
       expect(slice(Range(5, 8)).toList(), [6, 7, 8]);
-      expect(slice(Range(8, 5)).toList(), [9, 8, 7]);
+      expect(() => slice(Range(8, 5)).toList(), throwsA(isA<Panic>()));
 
-      expect(() => slice(Range(-1, 4)), throwsA(isA<Panic>()));
+      expect(() => slice(Range(-1, 4)).toList(), throwsA(isA<Panic>()));
+      expect(() => slice(Range(3, 1)).toList(), throwsA(isA<Panic>()));
+    });
+
+    test('RangeInclusive', () {
+      expect(RangeInclusive(5, 9).toList(), equals([5, 6, 7, 8, 9]));
+      expect(RangeInclusive(10, 5).toList(), equals([]));
+      expect(RangeInclusive(5, 5).toList(), equals([5]));
+
+      var arr = Arr.range(0, 10);
+      expect(arr(RangeInclusive(5, 9)).toList(), [5, 6, 7, 8, 9]);
+      expect(() => arr(RangeInclusive(9, 4)).toList(), throwsA(isA<Panic>()));
+
+      expect(() => arr(RangeInclusive(-1, 4)).toList(), throwsA(isA<Panic>()));
+      expect(() => arr(RangeInclusive(3, 1)).toList(), throwsA(isA<Panic>()));
+
+      var slice = arr.slice(1,9);
+      expect(slice(RangeInclusive(5, 7)).toList(), [6, 7, 8]);
+      expect(() => slice(RangeInclusive(8, 5)).toList(), throwsA(isA<Panic>()));
+
+      expect(() => slice(RangeInclusive(-1, 4)).toList(), throwsA(isA<Panic>()));
+      expect(() => slice(RangeInclusive(3, 1)).toList(), throwsA(isA<Panic>()));
     });
 
     test('RangeFrom', () {
