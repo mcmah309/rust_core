@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:rust_core/ops.dart';
 import 'package:rust_core/option.dart';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/panic.dart';
@@ -61,6 +62,20 @@ final class Slice<T> implements List<T> {
             other._end == _end &&
             other._list == _list) ||
         (other is List<T> && other.length == _end && _start == 0 && _list == other);
+  }
+
+  Iterable<T> call(Range range) sync* {
+    final (normalizedStart, normalizedEnd) = _validateAndNormalize(range.start, range.end);
+    if (range.isAscending) {
+      for (int i = normalizedStart; i < normalizedEnd; i++) {
+        yield getUnchecked(i);
+      }
+    }
+    else {
+      for (int i = normalizedStart; i > normalizedEnd; i--) {
+        yield getUnchecked(i);
+      }
+    }
   }
 
   @override
