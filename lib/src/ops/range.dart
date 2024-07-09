@@ -140,7 +140,8 @@ class RangeFrom extends Iterable<int> implements Range {
 // }
 
 /// A generator over a range by a step size.
-/// If [end] is not provided, range will be [0..startOrEnd), where [startOrEnd] can be positive or negative.
+/// If [end] is not provided, the generated range will be [0..startOrEnd) if [startOrEnd] > 0, and
+/// nothing is generated otherwise.
 /// If [step] is not provided, step will be `-1` if `0 > startOrEnd` and `1` if `0 < startOrEnd`.
 /// For reference, it works the same as the python `range` function.
 /// ```dart
@@ -163,11 +164,6 @@ Iterable<int> range(int startOrEnd, [int? end, int? step]) sync* {
         yield current;
         current++;
       } while (current < startOrEnd);
-    } else {
-      while (current > startOrEnd) {
-        yield current;
-        current--;
-      }
     }
     return;
   }
@@ -178,7 +174,7 @@ Iterable<int> range(int startOrEnd, [int? end, int? step]) sync* {
     if (step == null) {
       step = 1;
     } else if (step < 0) {
-      panic("'step' needs to be positive when start < end");
+      return;
     }
     do {
       yield startOrEnd;
@@ -188,7 +184,7 @@ Iterable<int> range(int startOrEnd, [int? end, int? step]) sync* {
     if (step == null) {
       step = -1;
     } else if (step > 0) {
-      panic("'step' needs to be negative when start > end");
+      return;
     }
     while (startOrEnd > end) {
       yield startOrEnd;
