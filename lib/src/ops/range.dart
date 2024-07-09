@@ -5,9 +5,9 @@ import 'package:rust_core/slice.dart';
 const int _intMaxValue = 9007199254740991;
 
 sealed class RangeBounds {
-  Iterable<T> list<T>(List<T> list);
+  Slice<T> list<T>(List<T> list);
 
-  Iterable<T> slice<T>(Slice<T> slice);
+  Slice<T> slice<T>(Slice<T> slice);
 }
 
 sealed class IterableRangeBounds implements Iterable<int>, RangeBounds {}
@@ -24,20 +24,16 @@ class Range extends Iterable<int> implements IterableRangeBounds {
   RangeIterator get iterator => RangeIterator(start, end);
 
   @override
-  Iterable<T> list<T>(List<T> list) sync* {
+  Slice<T> list<T>(List<T> list) {
     _checkValidRange(start, end, list.length);
-    for (int i = start; i < end; i++) {
-      yield list[i];
-    }
+    return Slice(list, start, end);
   }
 
   @override
-  Iterable<T> slice<T>(Slice<T> slice) sync* {
+  Slice<T> slice<T>(Slice<T> slice) {
     final len = slice.len();
     _checkValidRange(start, end, len);
-    for (int i = start; i < end; i++) {
-      yield slice.getUnchecked(i);
-    }
+    return slice.slice(start, end);
   }
 }
 
@@ -53,21 +49,17 @@ class RangeFrom extends Iterable<int> implements IterableRangeBounds {
   Iterator<int> get iterator => RangeIterator(start, _intMaxValue);
 
   @override
-  Iterable<T> list<T>(List<T> list) sync* {
+  Slice<T> list<T>(List<T> list) {
     final len = list.length;
     _checkStart(start, len);
-    for (int i = start; i < len; i++) {
-      yield list[i];
-    }
+    return Slice(list, start);
   }
 
   @override
-  Iterable<T> slice<T>(Slice<T> slice) sync* {
+  Slice<T> slice<T>(Slice<T> slice) {
     final len = slice.len();
     _checkStart(start, len);
-    for (int i = start; i < len; i++) {
-      yield slice.getUnchecked(i);
-    }
+    return slice.slice(start);
   }
 }
 
@@ -77,10 +69,10 @@ class RangeFull implements RangeBounds {
   const RangeFull();
 
   @override
-  Iterable<T> list<T>(List<T> list) => list;
+  Slice<T> list<T>(List<T> list) => list.asSlice();
 
   @override
-  Iterable<T> slice<T>(Slice<T> slice) => slice;
+  Slice<T> slice<T>(Slice<T> slice) => slice;
 }
 
 /// A range bounded inclusively below and above (start..=end).
@@ -100,21 +92,17 @@ class RangeTo implements RangeBounds {
   const RangeTo(this.end);
 
   @override
-  Iterable<T> list<T>(List<T> list) sync* {
+  Slice<T> list<T>(List<T> list) {
     final len = list.length;
     _checkEnd(0, end, len);
-    for (int i = 0; i < end; i++) {
-      yield list[i];
-    }
+    return Slice(list, 0, end);
   }
 
   @override
-  Iterable<T> slice<T>(Slice<T> slice) sync* {
+  Slice<T> slice<T>(Slice<T> slice) {
     final len = slice.len();
     _checkEnd(0, end, len);
-    for (int i = 0; i < end; i++) {
-      yield slice.getUnchecked(i);
-    }
+    return slice.slice(0, end);
   }
 }
 
