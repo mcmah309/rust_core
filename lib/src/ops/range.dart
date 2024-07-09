@@ -1,7 +1,7 @@
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/panic.dart';
 
-/// A generator over the range by step.
+/// A generator over a range by a step size.
 /// If [end] is not provided, range will be [0..startOrEnd), where [startOrEnd] can be positive or negative.
 /// If [step] is not provided, step will be `-1` if `0 > startOrEnd` and `1` if `0 < startOrEnd`.
 /// For reference, it works the same as the python `range` function.
