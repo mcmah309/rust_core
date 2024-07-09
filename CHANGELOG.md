@@ -1,3 +1,7 @@
+## 1.1.2
+
+- Project logo
+
 ## 1.1.1
 
 - Remove artifact
