@@ -10,29 +10,11 @@ sealed class RangeBounds {
   Iterable<T> slice<T>(Slice<T> slice);
 }
 
-class RangeIterator implements Iterator<int> {
-  final int start;
-  final int end;
-  int _current;
-
-  RangeIterator(this.start, this.end) : _current = start >= end ? end - 1 : start - 1;
-
-  @override
-  int get current => _current;
-
-  @override
-  bool moveNext() {
-    if (_current + 1 == end) {
-      return false;
-    }
-    _current++;
-    return true;
-  }
-}
+sealed class IterableRangeBounds implements Iterable<int>, RangeBounds {}
 
 /// A (half-open) range bounded inclusively below and exclusively above (start..end).
-/// The range start..end contains all values with start <= x < end. It is empty if start >= end.
-class Range extends Iterable<int> implements RangeBounds {
+/// The range contains all values with start <= x < end. It is empty if start >= end.
+class Range extends Iterable<int> implements IterableRangeBounds {
   final int start;
   final int end;
 
@@ -59,7 +41,10 @@ class Range extends Iterable<int> implements RangeBounds {
   }
 }
 
-class RangeFrom extends Iterable<int> implements RangeBounds {
+/// A range only bounded inclusively below (start..).
+/// Contains all values with x >= start.
+/// Note: This will not overflow, the last value yielded will be the largest possible int [_intMaxValue].
+class RangeFrom extends Iterable<int> implements IterableRangeBounds {
   final int start;
 
   const RangeFrom(this.start);
@@ -86,12 +71,10 @@ class RangeFrom extends Iterable<int> implements RangeBounds {
   }
 }
 
-class RangeFull extends Iterable<int> implements RangeBounds {
-  RangeFull();
-
-  @override
-  Iterator<int> get iterator =>
-      panic("'FullRange' cannot serve as an iterator because it has not starting point.");
+/// An unbounded range (..).
+/// RangeFull is used as a slicing index, it cannot be used as an Iterable because it doesn’t have a starting point.
+class RangeFull implements RangeBounds {
+  const RangeFull();
 
   @override
   Iterable<T> list<T>(List<T> list) => list;
@@ -100,8 +83,70 @@ class RangeFull extends Iterable<int> implements RangeBounds {
   Iterable<T> slice<T>(Slice<T> slice) => slice;
 }
 
+/// A range bounded inclusively below and above (start..=end).
+/// Contains all values with x >= start and x <= end. It is empty unless start <= end.
 class RangeInclusive extends Range {
-  const RangeInclusive(int start, int end) : super(start, end + 1);
+  const RangeInclusive(int start, int end)
+      : assert(end != -1),
+        super(start, end + 1);
+}
+
+/// A range only bounded exclusively above (..end).
+/// The RangeTo ..end contains all values with x < end.
+/// It cannot be used as an Iterable because it doesn’t have a starting point.
+class RangeTo implements RangeBounds {
+  final int end;
+
+  const RangeTo(this.end);
+
+  @override
+  Iterable<T> list<T>(List<T> list) sync* {
+    final len = list.length;
+    _checkEnd(0, end, len);
+    for (int i = 0; i < end; i++) {
+      yield list[i];
+    }
+  }
+
+  @override
+  Iterable<T> slice<T>(Slice<T> slice) sync* {
+    final len = slice.len();
+    _checkEnd(0, end, len);
+    for (int i = 0; i < end; i++) {
+      yield slice.getUnchecked(i);
+    }
+  }
+}
+
+/// A range only bounded inclusively above (..=end).
+/// The RangeToInclusive ..=end contains all values with x <= end.
+/// It cannot serve as an Iterable because it doesn’t have a starting point.
+class RangeToInclusive extends RangeTo {
+  const RangeToInclusive(int end)
+      : assert(end != -1),
+        super(end + 1);
+}
+
+//************************************************************************//
+
+class RangeIterator implements Iterator<int> {
+  final int start;
+  final int end;
+  int _current;
+
+  RangeIterator(this.start, this.end) : _current = start >= end ? end - 1 : start - 1;
+
+  @override
+  int get current => _current;
+
+  @override
+  bool moveNext() {
+    if (_current + 1 == end) {
+      return false;
+    }
+    _current++;
+    return true;
+  }
 }
 
 @pragma("vm:prefer-inline")
@@ -124,6 +169,8 @@ void _checkEnd(int start, int end, int length) {
   }
 }
 
+//************************************************************************//
+
 /// A generator over a range by a step size.
 /// If [end] is not provided, the generated range will be [0..startOrEnd) if [startOrEnd] > 0, and
 /// nothing is generated otherwise.
@@ -134,8 +181,8 @@ void _checkEnd(int start, int end, int length) {
 /// range(start, end);
 /// range(start, end, step);
 /// ```
-// Dev Note: inlined for parameter optimization
-@pragma("vm:prefer-inline")
+// // Dev Note: inlined for parameter optimization
+// @pragma("vm:prefer-inline")
 Iterable<int> range(int startOrEnd, [int? end, int? step]) sync* {
   assert(!(end == null && step != null),
       "'step' cannot be given if 'end' is null. Step will be ignored in release mode.");
