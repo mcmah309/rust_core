@@ -24,6 +24,9 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   @pragma("vm:prefer-inline")
   RIterator.fromIterable(Iterable<T> iterable) : _wIterator = iterable.iterator;
 
+  @pragma("vm:prefer-inline")
+  RIterator.empty() : _wIterator = <T>[].iterator;
+
   RIterator._late();
 
   @override
