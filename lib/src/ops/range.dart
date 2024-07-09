@@ -1,17 +1,16 @@
 import 'package:rust_core/array.dart';
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/option.dart';
+import 'package:rust_core/panic.dart';
 import 'package:rust_core/result.dart';
 
 /// An iterator over the range [start..end), where start >= end or start <= end.
 @pragma("vm:prefer-inline")
-RIterator<int> range(int start, int end) {
-  return RIterator.fromIterable(_range(start, end));
+RIterator<int> range(int start, int end, [int? step]) {
+  return RIterator.fromIterable(_rangeWithStep(start, end, step));
 }
 
-typedef Range = (int, int);
-
-extension Range2Extension on Range {
+extension Range2Extension on (int, int) {
   /// An iterator over the range [$1..$2), where $1 >= $2 or $1 <= $2.
   @pragma("vm:prefer-inline")
   RIterator<int> range() {
@@ -234,13 +233,49 @@ extension Range2Extension on Range {
 
 @pragma("vm:prefer-inline")
 Iterable<int> _range(int start, int end) sync* {
-  final step = start < end ? 1 : -1;
   if (start < end) {
+    final step = 1;
     do {
       yield start;
       start += step;
     } while (start < end);
   } else {
+    final step = -1;
+    while (end < start) {
+      yield start;
+      start += step;
+    }
+  }
+}
+
+@pragma("vm:prefer-inline")
+Iterable<int> _rangeWithStep(int start, int end, int? stepArg) sync* {
+  if (start < end) {
+    final int step;
+    if(stepArg == null){
+      step = 1;
+    }
+    else {
+      if(stepArg <= 0){
+        panic("'step' needs to be positive when start < end");
+      }
+      step = stepArg;
+    }
+    do {
+      yield start;
+      start += step;
+    } while (start < end);
+  } else {
+    final int step;
+    if(stepArg == null){
+      step = -1;
+    }
+    else {
+      if(stepArg >= 0 && end < start){
+        panic("'step' needs to be negative when start > end");
+      }
+      step = stepArg;
+    }
     while (end < start) {
       yield start;
       start += step;
