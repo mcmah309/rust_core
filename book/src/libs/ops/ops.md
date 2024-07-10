@@ -2,17 +2,32 @@
 
 ## Range
 
-## Range Class
+## RangeBounds
 
-TDB
+The `RangeBounds` have two uses:
+1. `RangeBounds` can be used to get a `Slice` of an `Arr`, `Slice`, or `List`.
+```dart
+void func(RangeBounds bounds) {
+    Arr<int> arr = Arr.range(0, 10);
+    Slice<int> slice = arr(bounds);
+    expect(slice, equals([4, 5, 6, 7, 8, 9]));
+}
 
-### range function
+func(const RangeFrom(4));
+```
+The variants are `Range`, `RangeFrom`, `RangeFull`, `RangeInclusive`, `RangeTo`, and `RangeToInclusive`.
 
-`range` is a convenience function that works the same as the python `range` function, which is similar to Rust's `Range`
-struct. In more detail, 
-`range` is a generator over a range by a step size.
-If `end` is not provided, range will be `0..startOrEnd`, where `startOrEnd` can be positive or negative.
-If `step` is not provided, step will be `-1` if `0 > startOrEnd` and `1` if `0 < startOrEnd`.
+2. `RangeBounds` that also implement `IterableRangeBounds` can be iterated over as a generator.
+```dart
+for(int x in const Range(5, 10)){ // 5, 6, 7, 8, 9
+    // code
+}
+```
+
+### `range` Function
+
+`range` is a convenience function that works the same as the python `range` function.
+struct.
 ```dart
 range(end); // == range(0,end);
 range(start, end);
