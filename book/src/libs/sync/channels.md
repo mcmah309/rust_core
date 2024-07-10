@@ -136,6 +136,7 @@ is not empty, the `Receiver` will still yield the remaining items in the buffer 
 Types that can be sent over a `SendPort`, as defined [here](https://api.flutter.dev/flutter/dart-isolate/SendPort/send.html),
 are allow to be sent between isolates. Otherwise a `toIsolateCodec` and/or a `fromIsolateCodec` can be passed
 to encode and decode the messages.
+> Note: Dart does not support isolates on web. Therefore, if your compilation target is web, you cannot use `isolateChannel`.
 
 ### Examples
 
