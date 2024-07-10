@@ -7,6 +7,9 @@ const int _intMaxValue = 9007199254740991;
 sealed class RangeBounds {
   /// Creates a slice from [list] based on this range.
   Slice<T> slice<T>(List<T> list);
+
+  /// Returns true if [val] is contained in this range.
+  bool contains(int val);
 }
 
 sealed class IterableRangeBounds implements Iterable<int>, RangeBounds {}
@@ -27,6 +30,10 @@ class Range extends Iterable<int> implements IterableRangeBounds {
     _checkValidRange(start, end, list.length);
     return list.slice(start, end);
   }
+
+  @override
+  bool contains(Object? element) =>
+      start < end && element is int && start <= element && element < end;
 }
 
 /// A range only bounded inclusively below (start..).
@@ -46,6 +53,9 @@ class RangeFrom extends Iterable<int> implements IterableRangeBounds {
     _checkStart(start, len);
     return list.slice(start);
   }
+
+  @override
+  bool contains(Object? element) => element is int && start <= element;
 }
 
 /// An unbounded range (..).
@@ -55,6 +65,9 @@ class RangeFull implements RangeBounds {
 
   @override
   Slice<T> slice<T>(List<T> list) => list.asSlice();
+
+  @override
+  bool contains(int val) => true;
 }
 
 /// A range bounded inclusively below and above (start..=end).
@@ -79,6 +92,9 @@ class RangeTo implements RangeBounds {
     _checkEnd(0, end, len);
     return list.slice(0, end);
   }
+
+  @override
+  bool contains(int val) => val < end;
 }
 
 /// A range only bounded inclusively above (..=end).
