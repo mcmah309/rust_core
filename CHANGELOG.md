@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Fix web compatibility for pub.dev
+
 ## 1.2.0
 
 - Add `RangeBounds` classes
