@@ -1,3 +1,7 @@
+## 1.2.2
+
+- Update project logo
+
 ## 1.2.1
 
 - Fix web compatibility for pub.dev
