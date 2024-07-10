@@ -109,6 +109,7 @@ void main() {
 
       func(const RangeFrom(4));
 
+      // ignore: unused_local_variable
       for (int x in const Range(5, 10)) {
         // code
       }
