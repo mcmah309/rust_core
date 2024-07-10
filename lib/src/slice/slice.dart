@@ -978,6 +978,11 @@ final class Slice<T> implements List<T> {
   void setUnchecked(int index, T value) => _list[index + _start] = value;
 
   @pragma("vm:prefer-inline")
+  Slice<T> asSlice() {
+    return this;
+  }
+
+  @pragma("vm:prefer-inline")
   Slice<T> slice([int start = 0, int? end]) {
     return Slice.fromSlice(this, start, end);
   }
