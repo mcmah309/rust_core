@@ -1,5 +1,7 @@
+@TestOn('vm')
+
 import 'package:rust_core/ops.dart';
-import 'package:rust_core/src/result/result.dart';
+import 'package:rust_core/result.dart';
 import 'package:rust_core/sync.dart';
 import 'package:test/test.dart';
 

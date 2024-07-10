@@ -1,4 +1,9 @@
-part of 'channel.dart';
+import 'dart:async';
+import 'dart:isolate';
+import 'dart:typed_data';
+
+import 'channel.dart';
+import 'send_codec.dart';
 
 Finalizer<SendPort> _sendFinalizer = Finalizer((sPort) {
   sPort.send(const _CloseSignal());
@@ -33,9 +38,11 @@ class IsolateSender<T> extends Sender<T> {
   void close() => _sPort.send(const _CloseSignal());
 }
 
-class IsolateReceiver<T> extends _ReceiverImpl<T> {
+// ignore: deprecated_member_use_from_same_package
+class IsolateReceiver<T> extends ReceiverImpl<T> {
   IsolateReceiver._(SendCodec<T>? codec, ReceivePort rPort)
-      : super._(
+      // ignore: deprecated_member_use_from_same_package
+      : super.internal(
             rPort
                 .map((data) {
                   if (data is _CloseSignal) {

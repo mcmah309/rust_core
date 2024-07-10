@@ -1,3 +1,5 @@
+@TestOn('vm')
+
 import 'package:rust_core/sync.dart';
 import 'package:test/test.dart';
 

@@ -1,12 +1,7 @@
 import 'dart:async';
-import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:rust_core/iter.dart';
 import 'package:rust_core/result.dart';
-import 'package:rust_core/sync.dart';
-
-part 'isolate_channel.dart';
 
 /// Creates a new channel, returning the [Sender] and [LocalClosableReceiver]. Each item [T] sent by the [Sender]
 /// will only be seen once by the [LocalClosableReceiver]. Even if the [Sender] calls [close] while the [LocalClosableReceiver]s buffer
@@ -84,15 +79,18 @@ class LocalSender<T> implements Sender<T> {
 }
 
 /// [Receiver] for a single isolate.
-class LocalReceiver<T> extends _ReceiverImpl<T> {
+// ignore: deprecated_member_use_from_same_package
+class LocalReceiver<T> extends ReceiverImpl<T> {
   LocalReceiver._(Stream<T> stream, Future Function() close)
-      : super._(stream, close);
+      // ignore: deprecated_member_use_from_same_package
+      : super.internal(stream, close);
 
   /// Stops any more messages from being sent.
   Future close() => _onDone.call();
 }
 
-class _ReceiverImpl<T> implements Receiver<T> {
+@Deprecated("Internal. Do not use, this exposed for compatibility with web.")
+class ReceiverImpl<T> implements Receiver<T> {
   late final StreamSubscription<T> _streamSubscription;
   final Future Function() _onDone;
   final List<Result<T, Object>> _buffer = [];
@@ -105,7 +103,8 @@ class _ReceiverImpl<T> implements Receiver<T> {
   @override
   bool get isBufferEmpty => _buffer.isEmpty;
 
-  _ReceiverImpl._(Stream<T> stream, this._onDone) {
+  @Deprecated("Internal. Do not use, this exposed for compatibility with web.")
+  ReceiverImpl.internal(Stream<T> stream, this._onDone) {
     _streamSubscription = stream.listen((data) {
       assert(!_isClosed);
       _buffer.add(Ok(data));

@@ -1,5 +1,4 @@
 import 'dart:async';
-// import 'dart:io';
 
 import 'package:rust_core/sync.dart';
 import 'package:test/test.dart';
