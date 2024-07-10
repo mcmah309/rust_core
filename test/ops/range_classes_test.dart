@@ -1,10 +1,11 @@
 import 'package:rust_core/ops.dart';
 import 'package:rust_core/panic.dart';
 import 'package:rust_core/array.dart';
+import 'package:rust_core/slice.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Range', () {
+  group('RangeBounds', () {
     test('Range', () {
       var arr = Arr.range(0, 10);
       var slice = arr.slice(1, 9);
@@ -97,6 +98,20 @@ void main() {
       expect(() => slice(RangeToInclusive(10)).toList(), throwsA(isA<Panic>()));
       expect(() => slice(RangeToInclusive(-1)).toList(),
           throwsA(isA<AssertionError>()));
+    });
+
+    test('Range Bounds example', () {
+      void func(RangeBounds bounds) {
+        Arr<int> arr = Arr.range(0, 10);
+        Slice<int> slice = arr(bounds);
+        expect(slice, equals([4, 5, 6, 7, 8, 9]));
+      }
+
+      func(const RangeFrom(4));
+
+      for (int x in const Range(5, 10)) {
+        // code
+      }
     });
   });
 }
