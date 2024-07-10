@@ -1,3 +1,9 @@
+## 1.2.0
+
+- Add `RangeBounds` classes
+- Improve `range` function
+- Add `Slice` now implements `List`
+
 ## 1.1.2
 
 - Project logo
