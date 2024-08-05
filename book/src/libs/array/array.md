@@ -9,6 +9,8 @@ array = Arr.range(0, 10, step: 2);
 for(final entry in array){
     // do something
 }
+var entry = array[2];
+var list = array.list;
 var (slice1, slice2) = array.splitSlice(3);
 ```
 `Arr`'s allocation will be more efficient than compared to a `List` since it does not reserve additional capacity and allocates the full amount eagerly. Which is important since allocations account for most of the cost of the runtime costs of a List.
