@@ -42,7 +42,7 @@ abstract interface class _RIterator<T> implements Iterator<T>, Iterable<T> {
 
 // collect: Implemented by extensions
 
-  List<T> collectList({bool growable = true});
+  List<T> collectList();
 
   Set<T> collectSet();
 

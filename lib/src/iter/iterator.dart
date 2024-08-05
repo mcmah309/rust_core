@@ -109,7 +109,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  List<T> collectList({bool growable = true}) {
+  List<T> collectList() {
     final list = <T>[];
     while (moveNext()) {
       list.add(current);

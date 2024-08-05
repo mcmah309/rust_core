@@ -9,7 +9,7 @@ part of 'iterator.dart';
 /// Due to this, modifications of the original iterable may have
 /// unintentional behavior on the cloned iterator. i.e. the first encounter of an object during iteration will be the one
 /// seen by the derived [RIterator] and all other subsequent [Clone]s.
-/// Therefore if createing a [Clone] do not modify the original
+/// Therefore if creating a [Clone] do not modify the original
 /// collection the passed in [RIterator] is based on.
 final class Clone<T> extends RIterator<T> {
   final List<T> _trackedValues;
@@ -24,7 +24,7 @@ final class Clone<T> extends RIterator<T> {
     rIterator._wIterator = _iterator;
   }
 
-  /// Clone of the iterator. Creates a seperate [Clone] which will not affect the original.
+  /// Clone of the iterator. Creates a separate [Clone] which will not affect the original.
   Clone._clone(Clone<T> iterator)
       : _iterator = iterator._iterator,
         _trackedValues = iterator._trackedValues,
