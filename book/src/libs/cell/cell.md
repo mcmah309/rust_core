@@ -8,6 +8,8 @@ Cell is library of useful wrappers of values (cells). [pub]
 
 [LazyCell](#lazycell) - A value which is initialized on the first access.
 
+[AsyncLazyCell](#lazycell) - A value which is asynchronously initialized on the first access.
+
 
 ## Cell
 A wrapper around a mutable value. Useful for mimicking references and wrapping primitives. Extensions exist for 
@@ -50,6 +52,24 @@ final firstCall = lazyCell();
 expect(callCount, equals(1));
 expect(firstCall, equals(20));
 final secondCall = lazyCell();
+expect(callCount, equals(1));
+expect(secondCall, equals(20));
+```
+The base type for all `LazyCell`s is `NullableLazyCell`.
+
+## AsyncLazyCell
+A value which is asynchronously initialized on the first access.
+
+```dart
+int callCount = 0;
+final lazyCell = AsyncLazyCell<int>(() async {
+  callCount++;
+  return 20;
+});
+final firstCall = await lazyCell.force();
+expect(callCount, equals(1));
+expect(firstCall, equals(20));
+final secondCall = await lazyCell.force();
 expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```

@@ -13,6 +13,7 @@ class AsyncNullableLazyCell<T> {
 
   AsyncNullableLazyCell(this._func);
 
+  /// Lazily evaluates the function passed into the constructor.
   @pragma("vm:prefer-inline")
   Future<T> force() async {
     if (_isSet) {
