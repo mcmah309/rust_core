@@ -12,10 +12,10 @@ import 'package:rust_core/result.dart';
 
 void main() {
   final result = processOrder("Bob", 2);
-  result.match(
-    ok: (value) => print("Success: $value"),
-    err: (error) => print("Error: $error"),
-  );
+  switch(result) {
+    Ok(:var ok) => print("Success: $ok"),
+    Err(:var err) => print("Error: $err"),
+  };
 }
 
 Result<String, String> processOrder(String user, int orderNumber) {
