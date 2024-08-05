@@ -13,6 +13,10 @@ class NullableLazyCell<T> {
   NullableLazyCell(this._func);
 
   /// Lazily evaluates the function passed into the constructor.
+  @pragma("vm:prefer-inline")
+  T force() => call();
+
+  /// Lazily evaluates the function passed into the constructor.
   T call() {
     if (_isSet) {
       return _val!;

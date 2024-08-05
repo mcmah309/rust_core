@@ -13,6 +13,10 @@ class NonNullableLazyCell<T extends Object> implements LazyCell<T> {
 
   @override
   @pragma("vm:prefer-inline")
+  T force() => call();
+
+  @override
+  @pragma("vm:prefer-inline")
   T call() {
     if (_val == null) {
       _val = _func();

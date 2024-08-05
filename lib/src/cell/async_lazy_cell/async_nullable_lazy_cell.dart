@@ -13,7 +13,6 @@ class AsyncNullableLazyCell<T> {
 
   AsyncNullableLazyCell(this._func);
 
-  @override
   @pragma("vm:prefer-inline")
   Future<T> force() async {
     if (_isSet) {
