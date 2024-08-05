@@ -73,6 +73,6 @@ final secondCall = await lazyCell.force();
 expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```
-The base type for all `LazyCell`s is `NullableLazyCell`.
+The base type for all `AsyncLazyCell`s is `AsyncNullableLazyCell`.
 
 [pub]:https://pub.dev/documentation/rust_core/latest/cell/cell-library.html
