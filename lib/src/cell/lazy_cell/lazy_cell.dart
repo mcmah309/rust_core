@@ -8,7 +8,4 @@ import 'package:rust_core/cell.dart';
 abstract interface class LazyCell<T extends Object>
     implements NullableLazyCell<T> {
   factory LazyCell(T Function() func) = NonNullableLazyCell;
-
-  const factory LazyCell.constant(T Function() func, Object id) =
-      ConstNonNullableLazyCell;
 }

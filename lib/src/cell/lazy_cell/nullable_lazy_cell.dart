@@ -12,9 +12,6 @@ class NullableLazyCell<T> {
 
   NullableLazyCell(this._func);
 
-  const factory NullableLazyCell.constant(T Function() func, Object id) =
-      ConstNullableLazyCell;
-
   /// Lazily evaluates the function passed into the constructor.
   T call() {
     if (_isSet) {

@@ -15,8 +15,6 @@ class NullableOnceCell<T> {
 
   NullableOnceCell.withValue(this._val) : _isSet = true;
 
-  const factory NullableOnceCell.constant(Object id) = ConstNullableOnceCell;
-
   /// Gets the underlying value, returns null if the cell is empty
   @pragma("vm:prefer-inline")
   T? getOrNull() {

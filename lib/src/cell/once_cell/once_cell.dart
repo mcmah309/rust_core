@@ -11,8 +11,6 @@ abstract interface class OnceCell<T extends Object>
     implements NullableOnceCell<T> {
   factory OnceCell() = NonNullableOnceCell;
 
-  const factory OnceCell.constant(Object id) = ConstNonNullableOnceCell;
-
   factory OnceCell.withValue(T val) = NonNullableOnceCell.withValue;
 
   /// Gets the reference to the underlying value.
