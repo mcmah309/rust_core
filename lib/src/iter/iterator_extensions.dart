@@ -147,8 +147,7 @@ extension IteratorOptionExtension<T extends Object> on Iter<Option<T>> {
   }
 }
 
-extension IteratorResultExtension<T, E extends Object>
-    on Iter<Result<T, E>> {
+extension IteratorResultExtension<T, E extends Object> on Iter<Result<T, E>> {
   /// Transforms an iterator into a collection, short circuiting if a Err is encountered.
   Result<List<T>, E> tryCollect() {
     final result = <T>[];
@@ -293,8 +292,7 @@ extension IteratorOnIteratorTUExtension<T, U> on Iter<(T, U)> {
 //************************************************************************//
 
 /// Overrides built in extension methods on nullable [Iterable].
-extension NullableIterableExtensionsOverrides<T extends Object>
-    on Iter<T?> {
+extension NullableIterableExtensionsOverrides<T extends Object> on Iter<T?> {
   /// Returns an Iter over the non-null elements of this iterator.
   Iter<T> nonNulls() =>
       Iter.fromIterable(NullableIterableExtensions(this).nonNulls);

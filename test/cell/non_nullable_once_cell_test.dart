@@ -4,7 +4,6 @@ import 'package:rust_core/result.dart';
 import 'package:test/test.dart';
 
 void main() {
-
   group('NonNullableOnceCell Tests', () {
     NonNullableOnceCell<int> cell;
 

@@ -579,8 +579,7 @@ class Iter<T> extends Iterable<T> implements Iterator<T>, _Iter<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  Iter<T> rev() =>
-      Iter.fromIterable(toList(growable: false).reversed);
+  Iter<T> rev() => Iter.fromIterable(toList(growable: false).reversed);
 
   @override
   Option<int> rposition(bool Function(T) f) {
@@ -713,8 +712,7 @@ class Iter<T> extends Iterable<T> implements Iterator<T>, _Iter<T> {
   /// Creates an Iter where all the elements satisfy the predicate [f].
   @override
   @pragma("vm:prefer-inline")
-  Iter<T> where(bool Function(T) f) =>
-      Iter.fromIterable(super.where(f));
+  Iter<T> where(bool Function(T) f) => Iter.fromIterable(super.where(f));
 
   /// Creates an Iter where all the elements are of Type U.
   @override

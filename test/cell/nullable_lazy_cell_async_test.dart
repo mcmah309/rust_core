@@ -22,7 +22,8 @@ void main() {
       expect(callCount, equals(1));
     });
 
-    test('Subsequent calls return the same value without reinitializing', () async {
+    test('Subsequent calls return the same value without reinitializing',
+        () async {
       lazyCell = NullableLazyCellAsync<int?>(initFunc);
       var firstCall = await lazyCell.force();
       expect(callCount, equals(1));

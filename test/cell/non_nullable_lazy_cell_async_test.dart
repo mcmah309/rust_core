@@ -13,7 +13,6 @@ Future<int?> initFuncNull() async {
 }
 
 void main() {
-
   group('NonNullableLazyCellAsync Tests', () {
     setUp(() {
       callCount = 0;
@@ -27,7 +26,8 @@ void main() {
       expect(callCount, equals(1));
     });
 
-    test('Subsequent calls return the same value without reinitializing', () async {
+    test('Subsequent calls return the same value without reinitializing',
+        () async {
       var lazyCell = NonNullableLazyCellAsync<int>(initFunc);
       var firstCall = await lazyCell.force();
       expect(callCount, equals(1));

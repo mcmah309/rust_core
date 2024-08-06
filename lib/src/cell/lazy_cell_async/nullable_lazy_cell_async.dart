@@ -56,6 +56,8 @@ class NullableLazyCellAsync<T> {
 
   @override
   String toString() {
-    return (_isSet ? "Initialized $runtimeType($_val)" : "Uninitialized $runtimeType");
+    return (_isSet
+        ? "Initialized $runtimeType($_val)"
+        : "Uninitialized $runtimeType");
   }
 }

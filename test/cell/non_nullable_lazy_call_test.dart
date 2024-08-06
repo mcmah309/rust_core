@@ -13,7 +13,6 @@ int? initFuncNull() {
 }
 
 void main() {
-
   group('NonNullableLazyCell Tests', () {
     setUp(() {
       callCount = 0;

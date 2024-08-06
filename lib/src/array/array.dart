@@ -169,8 +169,7 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   // bool every(bool Function(T) f) => list.every(f);
 
   @pragma("vm:prefer-inline")
-  Iter<U> expand<U>(Iterable<U> Function(T) f) =>
-      Iter(list.expand(f).iterator);
+  Iter<U> expand<U>(Iterable<U> Function(T) f) => Iter(list.expand(f).iterator);
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => list.firstWhere(f, orElse: orElse);
 
@@ -196,15 +195,13 @@ extension type Arr<T>._(List<T> list) implements Iterable<T> {
   Iter<T> skip(int count) => Iter(list.skip(count).iterator);
 
   @pragma("vm:prefer-inline")
-  Iter<T> skipWhile(bool Function(T) f) =>
-      Iter(list.skipWhile(f).iterator);
+  Iter<T> skipWhile(bool Function(T) f) => Iter(list.skipWhile(f).iterator);
 
   @pragma("vm:prefer-inline")
   Iter<T> take(int count) => Iter(list.take(count).iterator);
 
   @pragma("vm:prefer-inline")
-  Iter<T> takeWhile(bool Function(T) f) =>
-      Iter(list.takeWhile(f).iterator);
+  Iter<T> takeWhile(bool Function(T) f) => Iter(list.takeWhile(f).iterator);
 
   // List<T> toList({bool growable = true}) => list.toList(growable: growable);
 
