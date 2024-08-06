@@ -69,7 +69,7 @@ final lazyCell = LazyCellAsync<int>(() async {
 final firstCall = await lazyCell.force();
 expect(callCount, equals(1));
 expect(firstCall, equals(20));
-final secondCall = lazyCell(); // Could also call `lazyCell.force()` again.
+final secondCall = lazyCell(); // Could also call `await lazyCell.force()` again.
 expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```
