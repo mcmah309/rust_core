@@ -15,7 +15,8 @@ Iter<int> filtered = list.iter().filterMap((e) {
 expect(filtered, [4, 8]);
 ```
 
-`Iter` can be iterated like an `Iterable` and is consumed like an `Iterator`.
+`Iter` can be retrieved by calling `iter()` on an `Iterable` or an `Iterator`. `Iter` can be iterated
+ like an `Iterable` or `Iterator`, and is consumed like an `Iterator`.
 ```dart
 List<int> list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 Iter<int> iter = list.iter();
@@ -38,6 +39,9 @@ while(iter.moveNext()){
 expect(collect, [4, 16, 6, 7, 64, 81]);
 expect(iter,[]);
 ```
+
+`Iter` contains many more useful methods than the base Dart `Iterable` class and works in all places you
+would reach for an `Iterator` - [pub.dev](https://pub.dev/documentation/rust_core/latest/iter/iter-library.html)
 
 ## Dart vs Rust Example
 Goal: Get the index of every "!" in a string not followed by a "?"
