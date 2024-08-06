@@ -25,6 +25,7 @@
 - [convert](./libs/convert/convert.md)
 - [ops](./libs/ops/ops.md)
 - [panic](./libs/panic/panic.md)
+- [vec](./libs/vec/vec.md)
 
 # Miscellaneous
 
