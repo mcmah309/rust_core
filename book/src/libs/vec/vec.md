@@ -36,8 +36,8 @@ void main() {
   vec.resize(10, 0);
   print(vec); // [1, 99, 6, 4, 5, 0, 0, 0, 0, 0]
 
-  RIterator<int> iterator = vec.extractIf((element) => element % 2 == 0);
-  Vec<int> extracted = iterator.collectVec();
+  Iter<int> iter = vec.extractIf((element) => element % 2 == 0);
+  Vec<int> extracted = iter.collectVec();
   print(extracted); // [6, 4, 0, 0, 0, 0, 0]
   print(vec); // [1, 99, 5]
 
