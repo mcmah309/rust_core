@@ -1,3 +1,10 @@
+## 1.3.0
+
+- Add `LazyCellAsync`
+- Add `Vec`
+- Rename `RIterator` to `Iter`, deprecate `RIterator`
+- Improve docs
+
 ## 1.2.2
 
 - Update project logo
