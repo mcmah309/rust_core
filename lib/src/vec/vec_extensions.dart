@@ -1,4 +1,5 @@
 import 'vec.dart';
+import 'package:rust_core/array.dart';
 
 extension VecOnIterableExtension<T> on Iterable<T> {
   @pragma('vm:prefer-inline')
@@ -20,5 +21,12 @@ extension VecOnListListExtension<T> on List<List<T>> {
   @pragma('vm:prefer-inline')
   Vec<T> flatten() {
     return expand((element) => element).toList();
+  }
+}
+
+extension VecOnArrExtension<T> on Arr<T> {
+  @pragma('vm:prefer-inline')
+  Vec<T> asVec() {
+    return list;
   }
 }
