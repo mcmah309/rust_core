@@ -5,7 +5,7 @@ import 'package:rust_core/cell.dart';
 /// Equality: Cells are equal if they have the same evaluated value or are unevaluated.
 ///
 /// Hash: Cells hash to their evaluated value or hash the same if unevaluated.
-abstract interface class AsyncLazyCell<T extends Object>
-    implements AsyncNullableLazyCell<T> {
-  factory AsyncLazyCell(Future<T> Function() func) = AsyncNonNullableLazyCell;
+abstract interface class LazyCellAsync<T extends Object>
+    implements NullableLazyCellAsync<T> {
+  factory LazyCellAsync(Future<T> Function() func) = NonNullableLazyCellAsync;
 }

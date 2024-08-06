@@ -1,6 +1,6 @@
 # Cell
 ***
-Cell is library of useful wrappers of values (cells). [pub]
+Cell is library of useful wrappers of values (cells) - [pub.dev](https://pub.dev/documentation/rust_core/latest/cell/cell-library.html).
 
 [Cell](#cell) - A wrapper around a mutable value.
 
@@ -8,7 +8,7 @@ Cell is library of useful wrappers of values (cells). [pub]
 
 [LazyCell](#lazycell) - A value which is initialized on the first access.
 
-[AsyncLazyCell](#lazycell) - A value which is asynchronously initialized on the first access.
+[LazyCellAsync](#lazycellasync) - A value which is asynchronously initialized on the first access.
 
 
 ## Cell
@@ -57,22 +57,20 @@ expect(secondCall, equals(20));
 ```
 The base type for all `LazyCell`s is `NullableLazyCell`.
 
-## AsyncLazyCell
+## LazyCellAsync
 A value which is asynchronously initialized on the first access.
 
 ```dart
 int callCount = 0;
-final lazyCell = AsyncLazyCell<int>(() async {
+final lazyCell = LazyCellAsync<int>(() async {
   callCount++;
   return 20;
 });
 final firstCall = await lazyCell.force();
 expect(callCount, equals(1));
 expect(firstCall, equals(20));
-final secondCall = await lazyCell.force();
+final secondCall = lazyCell(); // Could also call `lazyCell.force()` again.
 expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```
-The base type for all `AsyncLazyCell`s is `AsyncNullableLazyCell`.
-
-[pub]:https://pub.dev/documentation/rust_core/latest/cell/cell-library.html
+The base type for all `LazyCellAsync`s is `NullableLazyCellAsync`.

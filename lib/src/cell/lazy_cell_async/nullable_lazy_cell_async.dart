@@ -1,17 +1,17 @@
 import 'package:rust_core/cell.dart';
 import 'package:rust_core/panic.dart';
 
-/// A value which is asynchronously initialized on the first access. Nullable implementation of [AsyncLazyCell]
+/// A value which is asynchronously initialized on the first access. Nullable implementation of [LazyCellAsync]
 ///
 /// Equality: Cells are equal if they have the same evaluated value or are unevaluated.
 ///
 /// Hash: Cells hash to their evaluated value or hash the same if unevaluated.
-class AsyncNullableLazyCell<T> {
+class NullableLazyCellAsync<T> {
   late final T _val;
   final Future<T> Function() _func;
   bool _isSet = false;
 
-  AsyncNullableLazyCell(this._func);
+  NullableLazyCellAsync(this._func);
 
   /// Lazily evaluates the function passed into the constructor.
   @pragma("vm:prefer-inline")
@@ -49,7 +49,7 @@ class AsyncNullableLazyCell<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is AsyncNullableLazyCell &&
+    return other is NullableLazyCellAsync &&
         ((isEvaluated() && other.isEvaluated() && this() == other()) ||
             (!isEvaluated() && !other.isEvaluated()));
   }

@@ -14,13 +14,13 @@ Future<int?> initFuncNull() async {
 
 void main() {
 
-  group('AsyncNonNullableLazyCell Tests', () {
+  group('NonNullableLazyCellAsync Tests', () {
     setUp(() {
       callCount = 0;
     });
 
     test('Value is lazily initialized', () async {
-      var lazyCell = AsyncNonNullableLazyCell<int>(initFunc);
+      var lazyCell = NonNullableLazyCellAsync<int>(initFunc);
       expect(callCount, equals(0));
       var value = await lazyCell.force();
       expect(value, equals(10));
@@ -28,7 +28,7 @@ void main() {
     });
 
     test('Subsequent calls return the same value without reinitializing', () async {
-      var lazyCell = AsyncNonNullableLazyCell<int>(initFunc);
+      var lazyCell = NonNullableLazyCellAsync<int>(initFunc);
       var firstCall = await lazyCell.force();
       expect(callCount, equals(1));
 
@@ -38,8 +38,8 @@ void main() {
     });
 
     test('Equality and hashCode', () async {
-      var lazyCell1 = AsyncNonNullableLazyCell<int>(initFunc);
-      var lazyCell2 = AsyncNonNullableLazyCell<int>(initFunc);
+      var lazyCell1 = NonNullableLazyCellAsync<int>(initFunc);
+      var lazyCell2 = NonNullableLazyCellAsync<int>(initFunc);
 
       expect(lazyCell1, equals(lazyCell2));
       expect(lazyCell2.hashCode, equals(lazyCell2.hashCode));
@@ -54,7 +54,7 @@ void main() {
 
   test("LazyCell", () async {
     int callCount = 0;
-    final lazyCell = AsyncLazyCell<int>(() async {
+    final lazyCell = LazyCellAsync<int>(() async {
       callCount++;
       return 20;
     });
