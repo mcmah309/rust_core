@@ -94,11 +94,11 @@ final class Slice<T> implements List<T> {
   /// Returns an iterator over all contiguous windows of length size. The windows overlap.
   /// If the array is shorter than size, the iterator returns no values.
   /// Panics if size is zero or less.
-  RIterator<Arr<T>> arrayWindows(int size) {
+  Iter<Arr<T>> arrayWindows(int size) {
     if (size <= 0) {
       panic("window size must be non-zero");
     }
-    return RIterator.fromIterable(_arrayWindowsHelper(size));
+    return Iter.fromIterable(_arrayWindowsHelper(size));
   }
 
   Iterable<Arr<T>> _arrayWindowsHelper(int size) sync* {
@@ -213,8 +213,8 @@ final class Slice<T> implements List<T> {
   /// using the predicate to separate them.
   /// `[1, 1, 1, 3, 3]` => `[[1, 1, 1], [3, 3]]` for `(a, b) => a == b`
   /// The predicate is called for every pair of consecutive elements.
-  RIterator<Slice<T>> chunkBy(bool Function(T, T) compare) {
-    return RIterator(_chunkByHelper(compare).iterator);
+  Iter<Slice<T>> chunkBy(bool Function(T, T) compare) {
+    return Iter(_chunkByHelper(compare).iterator);
   }
 
   Iterable<Slice<T>> _chunkByHelper(bool Function(T, T) compare) sync* {
@@ -234,8 +234,8 @@ final class Slice<T> implements List<T> {
   /// The chunks are slices and do not overlap. If [chunkSize] does not divide the length of the slice,
   /// then the last chunk will not have length chunkSize.
   /// Panics if [chunkSize] is 0 or less.
-  RIterator<Slice<T>> chunks(int n) {
-    return RIterator.fromIterable(_chunksHelper(n));
+  Iter<Slice<T>> chunks(int n) {
+    return Iter.fromIterable(_chunksHelper(n));
   }
 
   @pragma("vm:prefer-inline")
@@ -256,7 +256,7 @@ final class Slice<T> implements List<T> {
     }
   }
 
-// chunks_exact: // todo, need to create an RIterator class that has `remainder()` method
+// chunks_exact: // todo, need to create an Iter class that has `remainder()` method
 // chunks_exact_mut: Will not implement, covered by chunks_exact
 // chunks_mut: Will not implement, covered by chunks
 // clone_from_slice: Will not implement, not possible in Dart
@@ -420,7 +420,7 @@ final class Slice<T> implements List<T> {
     return true;
   }
 
-  RIterator<T> iter() => RIterator<T>.fromIterable(this);
+  Iter<T> iter() => Iter<T>.fromIterable(this);
 
 // iter_mut: Will not implement, mut the same as iter
 
@@ -522,8 +522,8 @@ final class Slice<T> implements List<T> {
   /// The chunks are slices and do not overlap. If chunk_size does not divide the length of the slice,
   /// then the last chunk will not have length [chunkSize].
   /// Panics if [chunkSize] is less than or equal to zero
-  RIterator<Slice<T>> rchunks(int chunkSize) {
-    return RIterator.fromIterable(_rchunksHelper(chunkSize));
+  Iter<Slice<T>> rchunks(int chunkSize) {
+    return Iter.fromIterable(_rchunksHelper(chunkSize));
   }
 
   @pragma("vm:prefer-inline")
@@ -543,7 +543,7 @@ final class Slice<T> implements List<T> {
     }
   }
 
-// rchunks_exact: // todo, need to create an RIterator class that has `remainder()` method
+// rchunks_exact: // todo, need to create an Iter class that has `remainder()` method
 // rchunks_exact_mut: Will not implement, covered by rchunks_exact
 // rchunks_mut: Will not implement, covered by rchunks
 
@@ -604,8 +604,8 @@ final class Slice<T> implements List<T> {
   /// Returns an iterator over slices separated by elements that match pred,
   /// starting at the end of the slice and working backwards.
   /// The matched element is not contained in the slices.
-  RIterator<Slice<T>> rsplit(bool Function(T) pred) {
-    return RIterator(_rSplitHelper(pred).iterator);
+  Iter<Slice<T>> rsplit(bool Function(T) pred) {
+    return Iter(_rSplitHelper(pred).iterator);
   }
 
   Iterable<Slice<T>> _rSplitHelper(bool Function(T) pred) sync* {
@@ -655,11 +655,11 @@ final class Slice<T> implements List<T> {
   /// Returns an iterator over slices separated by elements that match pred, limited to returning at most n items, starting from the end.
   /// The matched element is not contained in the slices.
   /// The last element returned, if any, will contain the remainder of the slice.
-  RIterator<Slice<T>> rsplitn(int n, bool Function(T) pred) {
+  Iter<Slice<T>> rsplitn(int n, bool Function(T) pred) {
     if (n < 0) {
       panic("'n' cannot be negative");
     }
-    return RIterator(_rsplitnHelper(n, pred).iterator);
+    return Iter(_rsplitnHelper(n, pred).iterator);
   }
 
   @pragma("vm:prefer-inline")
@@ -701,8 +701,8 @@ final class Slice<T> implements List<T> {
 
   /// Returns an iterator over subslices separated by elements that match pred.
   /// The matched element is not contained in the subslices. see [splitInclusive] also.
-  RIterator<Slice<T>> split(bool Function(T) pred) {
-    return RIterator(_splitHelper(pred).iterator);
+  Iter<Slice<T>> split(bool Function(T) pred) {
+    return Iter(_splitHelper(pred).iterator);
   }
 
   /// Returns an iterator over subslices separated by elements that match pred.
@@ -754,8 +754,8 @@ final class Slice<T> implements List<T> {
 
   /// Returns an iterator over subslices separated by elements that match pred.
   /// The matched element is contained in the end of the previous subslice as a terminator. see [split] also.
-  RIterator<Slice<T>> splitInclusive(bool Function(T) pred) {
-    return RIterator(_splitInclusiveHelper(pred).iterator);
+  Iter<Slice<T>> splitInclusive(bool Function(T) pred) {
+    return Iter(_splitInclusiveHelper(pred).iterator);
   }
 
   Iterable<Slice<T>> _splitInclusiveHelper(bool Function(T) pred) sync* {
@@ -807,11 +807,11 @@ final class Slice<T> implements List<T> {
   /// e.g. n == 1 will return the whole slice.
   /// The matched element is not contained in the subslices.
   /// The last element returned, if any, will contain the remainder of the slice.
-  RIterator<Slice<T>> splitn(int n, bool Function(T) pred) {
+  Iter<Slice<T>> splitn(int n, bool Function(T) pred) {
     if (n < 0) {
       panic("'n' cannot be negative");
     }
-    return RIterator(_splitnHelper(n, pred).iterator);
+    return Iter(_splitnHelper(n, pred).iterator);
   }
 
   @pragma("vm:prefer-inline")
@@ -942,11 +942,11 @@ final class Slice<T> implements List<T> {
   /// Returns an iterator of slices of this slice over all contiguous windows of length size. The windows overlap.
   /// If the slice is shorter than size, the iterator returns no values.
   /// Panics if size is zero or less.
-  RIterator<Slice<T>> windows(int size) {
+  Iter<Slice<T>> windows(int size) {
     if (size <= 0) {
       panic("window size must be non-zero");
     }
-    return RIterator.fromIterable(_windowsHelper(size));
+    return Iter.fromIterable(_windowsHelper(size));
   }
 
   Iterable<Slice<T>> _windowsHelper(int size) sync* {
@@ -1009,8 +1009,8 @@ final class Slice<T> implements List<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).expand(f).iterator);
+  Iter<U> expand<U>(Iterable<U> Function(T) f) =>
+      Iter(_list.getRange(_start, _end).expand(f).iterator);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1024,8 +1024,8 @@ final class Slice<T> implements List<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> followedBy(Iterable<T> other) =>
-      RIterator(_list.getRange(_start, _end).followedBy(other).iterator);
+  Iter<T> followedBy(Iterable<T> other) =>
+      Iter(_list.getRange(_start, _end).followedBy(other).iterator);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1047,8 +1047,8 @@ final class Slice<T> implements List<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> map<U>(U Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).map(f).iterator);
+  Iter<U> map<U>(U Function(T) f) =>
+      Iter(_list.getRange(_start, _end).map(f).iterator);
 
   @override
   @pragma("vm:prefer-inline")
@@ -1065,23 +1065,23 @@ final class Slice<T> implements List<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> skip(int count) =>
-      RIterator(_list.getRange(_start, _end).skip(count).iterator);
+  Iter<T> skip(int count) =>
+      Iter(_list.getRange(_start, _end).skip(count).iterator);
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> skipWhile(bool Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).skipWhile(f).iterator);
+  Iter<T> skipWhile(bool Function(T) f) =>
+      Iter(_list.getRange(_start, _end).skipWhile(f).iterator);
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> take(int count) =>
-      RIterator(_list.getRange(_start, _end).take(count).iterator);
+  Iter<T> take(int count) =>
+      Iter(_list.getRange(_start, _end).take(count).iterator);
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> takeWhile(bool Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).takeWhile(f).iterator);
+  Iter<T> takeWhile(bool Function(T) f) =>
+      Iter(_list.getRange(_start, _end).takeWhile(f).iterator);
 
   /// [growable] is ignore, always returns a growable list.
   @override
@@ -1094,13 +1094,13 @@ final class Slice<T> implements List<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> where(bool Function(T) f) =>
-      RIterator(_list.getRange(_start, _end).where(f).iterator);
+  Iter<T> where(bool Function(T) f) =>
+      Iter(_list.getRange(_start, _end).where(f).iterator);
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> whereType<U>() =>
-      RIterator(_list.getRange(_start, _end).whereType<U>().iterator);
+  Iter<U> whereType<U>() =>
+      Iter(_list.getRange(_start, _end).whereType<U>().iterator);
 
   // List<T> implementations
   //************************************************************************//

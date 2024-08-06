@@ -148,13 +148,13 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
     }
   }
 
-  /// Returns an RIterator over the possibly contained value.
+  /// Returns an Iter over the possibly contained value.
   @pragma("vm:prefer-inline")
-  RIterator<T> iter() {
+  Iter<T> iter() {
     if (v == null) {
-      return RIterator(<T>[].iterator);
+      return Iter(<T>[].iterator);
     } else {
-      return RIterator([v!].iterator);
+      return Iter([v!].iterator);
     }
   }
 
@@ -386,8 +386,8 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
   }
 
   @pragma("vm:prefer-inline")
-  RIterator<T> iter() {
-    return RIterator([v].iterator);
+  Iter<T> iter() {
+    return Iter([v].iterator);
   }
 
   @pragma("vm:prefer-inline")
@@ -534,8 +534,8 @@ extension NoneMethodsExtension on _None {
   }
 
   @pragma("vm:prefer-inline")
-  RIterator<_None> iter() {
-    return RIterator((const <_None>[]).iterator);
+  Iter<_None> iter() {
+    return Iter((const <_None>[]).iterator);
   }
 
   @pragma("vm:prefer-inline")

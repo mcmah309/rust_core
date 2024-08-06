@@ -91,7 +91,7 @@ extension FutureResultExtension<S, F extends Object> on FutureResult<S, F> {
   //************************************************************************//
 
   @pragma("vm:prefer-inline")
-  Future<RIterator<S>> iter() {
+  Future<Iter<S>> iter() {
     return then((result) => result.iter());
   }
 

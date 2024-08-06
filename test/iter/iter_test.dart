@@ -209,7 +209,7 @@ main() {
 
   test("filterMap", () {
     var list = [1, 2, 3, 4, 5];
-    final RIterator<int> filtered = list.iter().filterMap((e) {
+    final Iter<int> filtered = list.iter().filterMap((e) {
       if (e % 2 == 0) {
         return Some<int>(e * 2);
       }
@@ -454,7 +454,7 @@ main() {
 
   test("mapWhile", () {
     var list = [1, 2, 3, 4, 5];
-    RIterator<int> mapped = list.iter().mapWhile((e) {
+    Iter<int> mapped = list.iter().mapWhile((e) {
       if (e < 4) {
         return Some(e);
       }
@@ -527,11 +527,11 @@ main() {
 
   test("scan", () {
     var list = [1, 2, 3, 4, 5];
-    RIterator<int> scanned = list.iter().scan(0, (acc, e) => Some(acc + e));
+    Iter<int> scanned = list.iter().scan(0, (acc, e) => Some(acc + e));
     expect(scanned, [1, 3, 6, 10, 15]);
 
     var list2 = [1, 2, 3, 4, 5];
-    RIterator<int> scanned2 = list2.iter().scan(0, (acc, e) {
+    Iter<int> scanned2 = list2.iter().scan(0, (acc, e) {
       if (e < 4) {
         return Some(acc + e);
       }
@@ -785,35 +785,35 @@ main() {
   test("Can take slice", () {
     var list = [1, 2, 3, 4, 5];
     var slice = Slice(list, 1, 3);
-    var iter = RIterator<int>(slice.iterator);
-    iter = RIterator(slice.iterator);
-    RIterator<int> iter2 = RIterator(slice.iterator);
+    var iter = Iter<int>(slice.iterator);
+    iter = Iter(slice.iterator);
+    Iter<int> iter2 = Iter(slice.iterator);
     expect(slice, [2, 3]);
     expect(iter, [2, 3]);
     expect(iter2, [2, 3]);
   });
 
-  test("RIterator is a union of Iterable and Iterator", () {
+  test("Iter is a union of Iterable and Iterator", () {
     final list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    final rIterator = list.iter();
+    final iter = list.iter();
     final collect = [];
-    for (final e in rIterator.take(5).map((e) => e * e)) {
+    for (final e in iter.take(5).map((e) => e * e)) {
       if (e.isEven) {
         collect.add(e);
       }
     }
     expect(collect, [4, 16]);
-    Option<int> next = rIterator.next();
+    Option<int> next = iter.next();
     expect(next, Some(6));
     collect.add(next.unwrap());
-    next = rIterator.next();
+    next = iter.next();
     collect.add(next.unwrap());
     expect(next, Some(7));
-    while (rIterator.moveNext()) {
-      collect.add(rIterator.current * rIterator.current);
+    while (iter.moveNext()) {
+      collect.add(iter.current * iter.current);
     }
     expect(collect, [4, 16, 6, 7, 64, 81]);
-    expect(rIterator, []);
+    expect(iter, []);
   });
 
   test("clone with peek", () {
@@ -996,7 +996,7 @@ main() {
   test("Use case example 1", () {
     /// Extract continuous strings that are 3 long inside brackets '{' '}'
     String string = "jfsdjf{abcdefgh}sda;fj";
-    RIterator<String> strings = string.runes
+    Iter<String> strings = string.runes
         .iter()
         .skipWhile((e) => e != "{".codeUnitAt(0))
         .skip(1)
@@ -1076,7 +1076,7 @@ main() {
   test("Use case example 5", () {
     /// Extract strings that are 3 long inside brackets '{' '}' and are not apart of other strings
     String string = "jfsdjf{abcdefgh}sda;fj";
-    RIterator<String> strings = string.runes
+    Iter<String> strings = string.runes
         .iter()
         .skipWhile((e) => e != "{".codeUnitAt(0))
         .skip(1)

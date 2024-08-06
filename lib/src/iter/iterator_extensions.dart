@@ -3,22 +3,22 @@
 part of 'iterator.dart';
 
 extension IterableExtension<T> on Iterable<T> {
-  /// Returns an [RIterator] over the [Iterable].
+  /// Returns an [Iter] over the [Iterable].
   @pragma("vm:prefer-inline")
-  RIterator<T> iter() => RIterator<T>(iterator);
+  Iter<T> iter() => Iter<T>(iterator);
 }
 
 extension IteratorExtension<T> on Iterator<T> {
-  /// Returns an [RIterator] for this [Iterator].
+  /// Returns an [Iter] for this [Iterator].
   @pragma("vm:prefer-inline")
-  RIterator<T> iter() => RIterator<T>(this);
+  Iter<T> iter() => Iter<T>(this);
 }
 
-extension IteratorOnIteratorIterable<T> on RIterator<Iterable<T>> {
+extension IteratorOnIteratorIterable<T> on Iter<Iterable<T>> {
   /// Flatten an iterator of iterators into a single iterator.
   @pragma("vm:prefer-inline")
-  RIterator<T> flatten() {
-    return RIterator(_flattenHelper().iterator);
+  Iter<T> flatten() {
+    return Iter(_flattenHelper().iterator);
   }
 
   Iterable<T> _flattenHelper() sync* {
@@ -30,7 +30,7 @@ extension IteratorOnIteratorIterable<T> on RIterator<Iterable<T>> {
   }
 }
 
-extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
+extension IteratorComparable<U, T extends Comparable<U>> on Iter<T> {
   /// Lexicographically compares the elements of this Iterator with those of another.
   /// Less = -1
   /// Equal = 0
@@ -87,7 +87,7 @@ extension IteratorComparable<U, T extends Comparable<U>> on RIterator<T> {
   }
 }
 
-extension IteratorComparableSelf<T extends Comparable<T>> on RIterator<T> {
+extension IteratorComparableSelf<T extends Comparable<T>> on Iter<T> {
   /// Checks if the elements of this iterator are sorted.
   /// That is, for each element a and its following element b, a <= b must hold. If the iterator yields exactly zero or one element, true is returned.
   bool isSorted() {
@@ -131,10 +131,10 @@ extension IteratorComparableSelf<T extends Comparable<T>> on RIterator<T> {
   }
 }
 
-extension IteratorOptionExtension<T extends Object> on RIterator<Option<T>> {
+extension IteratorOptionExtension<T extends Object> on Iter<Option<T>> {
   /// Creates an iterator which ends after the first None.
-  RIterator<T> fuse() {
-    return RIterator(_fuseHelper().iterator);
+  Iter<T> fuse() {
+    return Iter(_fuseHelper().iterator);
   }
 
   Iterable<T> _fuseHelper() sync* {
@@ -148,7 +148,7 @@ extension IteratorOptionExtension<T extends Object> on RIterator<Option<T>> {
 }
 
 extension IteratorResultExtension<T, E extends Object>
-    on RIterator<Result<T, E>> {
+    on Iter<Result<T, E>> {
   /// Transforms an iterator into a collection, short circuiting if a Err is encountered.
   Result<List<T>, E> tryCollect() {
     final result = <T>[];
@@ -217,7 +217,7 @@ extension IteratorResultExtension<T, E extends Object>
   }
 }
 
-extension IteratorResultFuncExtension<T> on RIterator<T> {
+extension IteratorResultFuncExtension<T> on Iter<T> {
   /// Applies function to the elements of iterator and returns the first true result or the first error.
   Result<Option<T>, E> tryFind<E extends Object>(
       Result<bool, E> Function(T) f) {
@@ -277,7 +277,7 @@ extension IteratorResultFuncExtension<T> on RIterator<T> {
   }
 }
 
-extension IteratorOnIteratorTUExtension<T, U> on RIterator<(T, U)> {
+extension IteratorOnIteratorTUExtension<T, U> on Iter<(T, U)> {
   /// Converts an iterator of pairs into a pair of containers.
   (List<T>, List<U>) unzip() {
     final first = <T>[];
@@ -294,17 +294,17 @@ extension IteratorOnIteratorTUExtension<T, U> on RIterator<(T, U)> {
 
 /// Overrides built in extension methods on nullable [Iterable].
 extension NullableIterableExtensionsOverrides<T extends Object>
-    on RIterator<T?> {
-  /// Returns an RIterator over the non-null elements of this iterator.
-  RIterator<T> nonNulls() =>
-      RIterator.fromIterable(NullableIterableExtensions(this).nonNulls);
+    on Iter<T?> {
+  /// Returns an Iter over the non-null elements of this iterator.
+  Iter<T> nonNulls() =>
+      Iter.fromIterable(NullableIterableExtensions(this).nonNulls);
 }
 
 /// Overrides built in extension methods on [Iterable].
-extension IterableExtensionsOverrides<T> on RIterator<T> {
-  /// Returns an RIterator over the elements of this iterable, paired with their index.
-  RIterator<(int, T)> get indexed =>
-      RIterator.fromIterable(IterableExtensions(this).indexed);
+extension IterableExtensionsOverrides<T> on Iter<T> {
+  /// Returns an Iter over the elements of this iterable, paired with their index.
+  Iter<(int, T)> get indexed =>
+      Iter.fromIterable(IterableExtensions(this).indexed);
 
   @Deprecated(
       "FirstOrNull is not supported as it would require consuming part of the iterator, which is likely not the users intent. Use next() instead.")

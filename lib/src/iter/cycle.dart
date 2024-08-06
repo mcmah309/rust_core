@@ -1,7 +1,7 @@
 part of 'iterator.dart';
 
 /// Creates an iterator which repeats the elements of the original iterator endlessly.
-final class Cycle<T> extends RIterator<T> {
+final class Cycle<T> extends Iter<T> {
   final List<T> _cycled = [];
   Iterator<T> _iterator;
   int index = -1;

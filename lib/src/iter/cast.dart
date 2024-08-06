@@ -1,6 +1,6 @@
 part of 'iterator.dart';
 
-class Cast<S, T> extends RIterator<T> {
+class Cast<S, T> extends Iter<T> {
   Iterator<S> _source;
 
   Cast(this._source) : super._late() {

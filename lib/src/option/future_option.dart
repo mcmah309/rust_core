@@ -51,7 +51,7 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   }
 
   @pragma("vm:prefer-inline")
-  Future<RIterator<T>> iter() {
+  Future<Iter<T>> iter() {
     return then((option) => option.iter());
   }
 

@@ -41,8 +41,8 @@ abstract class Receiver<T> {
   /// [TimeoutError] if the time limit is reached before the [Sender] sent any more data.
   Future<Result<T, RecvTimeoutError>> recvTimeout(Duration timeLimit);
 
-  /// Returns an [RIterator] that drains the current buffer.
-  RIterator<T> iter();
+  /// Returns an [Iter] that drains the current buffer.
+  Iter<T> iter();
 
   /// Returns a [Stream] of values ending once [DisconnectedError] is yielded.
   Stream<T> stream();
@@ -151,8 +151,8 @@ class ReceiverImpl<T> implements Receiver<T> {
   }
 
   @override
-  RIterator<T> iter() {
-    return RIterator.fromIterable(_iter());
+  Iter<T> iter() {
+    return Iter.fromIterable(_iter());
   }
 
   Iterable<T> _iter() sync* {

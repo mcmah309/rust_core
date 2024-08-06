@@ -1,7 +1,7 @@
 part of 'iterator.dart';
 
 /// Maps each element of the original iterator to an iterator, and then flattens the result into a single iterator.
-final class FlatMap<S, T> extends RIterator<T> {
+final class FlatMap<S, T> extends Iter<T> {
   Iterator<S> _iterator;
   final Iterator<T> Function(S) _f;
   Iterator<T>? _currentExpansion;

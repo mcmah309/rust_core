@@ -4,24 +4,24 @@ part of 'iterator.dart';
 /// Note: Do not modify the original collection the original [Iterable] is based on while iterating.
 /// Explanation:
 /// Since Dart [Iterator]s cannot be copied,
-/// [Clone] replaces the underlying iterator from the [RIterator] provided in the constructor with itself and
+/// [Clone] replaces the underlying iterator from the [Iter] provided in the constructor with itself and
 /// collects any first calls to [moveNext] from any derived iterator.
 /// Due to this, modifications of the original iterable may have
 /// unintentional behavior on the cloned iterator. i.e. the first encounter of an object during iteration will be the one
-/// seen by the derived [RIterator] and all other subsequent [Clone]s.
+/// seen by the derived [Iter] and all other subsequent [Clone]s.
 /// Therefore if creating a [Clone] do not modify the original
-/// collection the passed in [RIterator] is based on.
-final class Clone<T> extends RIterator<T> {
+/// collection the passed in [Iter] is based on.
+final class Clone<T> extends Iter<T> {
   final List<T> _trackedValues;
   late final _CollectingIterator<T> _iterator;
   int index = -1;
 
-  Clone._original(RIterator<T> rIterator)
+  Clone._original(Iter<T> iter)
       : _trackedValues = [],
         super._late() {
     _wIterator = this;
-    _iterator = _CollectingIterator(rIterator._wIterator, _trackedValues);
-    rIterator._wIterator = _iterator;
+    _iterator = _CollectingIterator(iter._wIterator, _trackedValues);
+    iter._wIterator = _iterator;
   }
 
   /// Clone of the iterator. Creates a separate [Clone] which will not affect the original.

@@ -33,19 +33,19 @@ Result<int, String> usingFunctionChainingExample() =>
 
 void iteratorExample() {
   List<int> list = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  RIterator<int> rIterator = list.iter();
+  Iter<int> iter = list.iter();
   List<int> collect = [];
-  for (final e in rIterator.take(5).map((e) => e * e)) {
+  for (final e in iter.take(5).map((e) => e * e)) {
     if (e.isEven) {
       collect.add(e);
     }
   }
-  Option<int> next = rIterator.next();
+  Option<int> next = iter.next();
   collect.add(next.unwrap());
-  next = rIterator.next();
+  next = iter.next();
   collect.add(next.unwrap());
-  while (rIterator.moveNext()) {
-    collect.add(rIterator.current * rIterator.current);
+  while (iter.moveNext()) {
+    collect.add(iter.current * iter.current);
   }
 }
 

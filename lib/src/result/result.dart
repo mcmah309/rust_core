@@ -135,7 +135,7 @@ sealed class Result<S, F extends Object> {
 
   /// Returns an iterable over the possibly contained value. The iterator yields one value if the result is
   /// [Ok], otherwise none.
-  RIterator<S> iter();
+  Iter<S> iter();
 
   //************************************************************************//
 
@@ -297,8 +297,8 @@ final class Ok<S, F extends Object> implements Result<S, F> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<S> iter() {
-    return RIterator([ok].iterator);
+  Iter<S> iter() {
+    return Iter([ok].iterator);
   }
 
   //************************************************************************//
@@ -509,8 +509,8 @@ final class Err<S, F extends Object> implements Result<S, F> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<S> iter() {
-    return RIterator(<S>[].iterator);
+  Iter<S> iter() {
+    return Iter(<S>[].iterator);
   }
 
   //************************************************************************//

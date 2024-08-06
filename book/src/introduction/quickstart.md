@@ -91,7 +91,7 @@ There are a lot of methods here that many Dart developers may not be familiar wi
 
 ```dart
 List<int> list = [1, 2, 3, 4, 5];
-RIterator<int> filtered = list.iter().filterMap((e) {
+Iter<int> filtered = list.iter().filterMap((e) {
   if (e % 2 == 0) {
     return Some(e * 2);
   }
@@ -100,7 +100,7 @@ RIterator<int> filtered = list.iter().filterMap((e) {
 expect(filtered, [4, 8]);
 ```
 
-`RIterator` functions the same as a Rust `Iterator`. For Dart developers, you can think of it as the union of Dart's `Iterator` and `Iterable`. 
+`Iter` functions the same as a Rust `Iterator`. For Dart developers, you can think of it as the union of Dart's `Iterator` and `Iterable`. 
 check [here](../libs/iter/iter.md) for more info.
 
 #### Slice

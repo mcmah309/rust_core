@@ -13,21 +13,24 @@ part 'cycle.dart';
 part 'flat_map.dart';
 part 'zip.dart';
 
-/// RIterator is the union between an Iterator and an Iterable. Most iterator methods are consuming
+@Deprecated("Use `Iter` instead.")
+typedef RIterator<T> = Iter<T>;
+
+/// Iter is the union between an Iterator and an Iterable. Most iterator methods are consuming
 /// and should be assumed to be so unless otherwise stated.
-class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
+class Iter<T> extends Iterable<T> implements Iterator<T>, _Iter<T> {
   late Iterator<T> _wIterator;
 
   @pragma("vm:prefer-inline")
-  RIterator(this._wIterator);
+  Iter(this._wIterator);
 
   @pragma("vm:prefer-inline")
-  RIterator.fromIterable(Iterable<T> iterable) : _wIterator = iterable.iterator;
+  Iter.fromIterable(Iterable<T> iterable) : _wIterator = iterable.iterator;
 
   @pragma("vm:prefer-inline")
-  RIterator.empty() : _wIterator = <T>[].iterator;
+  Iter.empty() : _wIterator = <T>[].iterator;
 
-  RIterator._late();
+  Iter._late();
 
   @override
   @pragma("vm:prefer-inline")
@@ -43,7 +46,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   operator ==(Object other) {
-    return other is RIterator<T> && other._wIterator == _wIterator;
+    return other is Iter<T> && other._wIterator == _wIterator;
   }
 
   @override
@@ -103,7 +106,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> clone() {
+  Iter<T> clone() {
     return Clone<T>._original(this);
   }
 
@@ -146,7 +149,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<(int, T)> enumerate() => RIterator.fromIterable(indexed);
+  Iter<(int, T)> enumerate() => Iter.fromIterable(indexed);
 
   @override
   bool eq<U>(Iterator<U> other) {
@@ -190,14 +193,14 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> filter(bool Function(T) f) {
-    return RIterator.fromIterable(where((f)));
+  Iter<T> filter(bool Function(T) f) {
+    return Iter.fromIterable(where((f)));
   }
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> filterMap<U extends Object>(Option<U> Function(T) f) {
-    return RIterator.fromIterable(_filterMapHelper(f));
+  Iter<U> filterMap<U extends Object>(Option<U> Function(T) f) {
+    return Iter.fromIterable(_filterMapHelper(f));
   }
 
   Iterable<U> _filterMapHelper<U extends Object>(
@@ -239,8 +242,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> inspect(void Function(T) f) {
-    return RIterator.fromIterable(_inspectHelper(f));
+  Iter<T> inspect(void Function(T) f) {
+    return Iter.fromIterable(_inspectHelper(f));
   }
 
   @pragma("vm:prefer-inline")
@@ -253,8 +256,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> intersperse(T element) {
-    return RIterator.fromIterable(_intersperseHelper(element));
+  Iter<T> intersperse(T element) {
+    return Iter.fromIterable(_intersperseHelper(element));
   }
 
   Iterable<T> _intersperseHelper(T element) sync* {
@@ -337,8 +340,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> intersperseWith(T Function() f) {
-    return RIterator.fromIterable(_intersperseWithHelper(f));
+  Iter<T> intersperseWith(T Function() f) {
+    return Iter.fromIterable(_intersperseWithHelper(f));
   }
 
   Iterable<T> _intersperseWithHelper(T Function() f) sync* {
@@ -383,8 +386,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> mapWhile<U extends Object>(Option<U> Function(T) f) {
-    return RIterator.fromIterable(_mapWhileHelper(f));
+  Iter<U> mapWhile<U extends Object>(Option<U> Function(T) f) {
+    return Iter.fromIterable(_mapWhileHelper(f));
   }
 
   Iterable<U> _mapWhileHelper<U extends Object>(Option<U> Function(T) f) sync* {
@@ -400,9 +403,9 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> mapWindows<U>(int size, U Function(Arr<T>) f) {
+  Iter<U> mapWindows<U>(int size, U Function(Arr<T>) f) {
     assert(size > 0, "Size must be greater than 0");
-    return RIterator.fromIterable(_mapWindowsHelper(size, f));
+    return Iter.fromIterable(_mapWindowsHelper(size, f));
   }
 
   Iterable<U> _mapWindowsHelper<U>(int size, U Function(Arr<T>) f) sync* {
@@ -499,7 +502,7 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   }
 
   @override
-  Result<Arr<T>, RIterator<T>> nextChunk(int size) {
+  Result<Arr<T>, Iter<T>> nextChunk(int size) {
     final arr = Arr<T?>(null, size);
     for (var i = 0; i < size; i++) {
       if (!moveNext()) {
@@ -576,8 +579,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> rev() =>
-      RIterator.fromIterable(toList(growable: false).reversed);
+  Iter<T> rev() =>
+      Iter.fromIterable(toList(growable: false).reversed);
 
   @override
   Option<int> rposition(bool Function(T) f) {
@@ -594,8 +597,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> scan<U extends Object>(U initial, Option<U> Function(U, T) f) {
-    return RIterator.fromIterable(_scanHelper(initial, f));
+  Iter<U> scan<U extends Object>(U initial, Option<U> Function(U, T) f) {
+    return Iter.fromIterable(_scanHelper(initial, f));
   }
 
   Iterable<U> _scanHelper<U extends Object>(
@@ -614,9 +617,9 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> stepBy(int step) {
+  Iter<T> stepBy(int step) {
     assert(step > 0, 'Step must be greater than 0');
-    return RIterator.fromIterable(_stepByHelper(step));
+    return Iter.fromIterable(_stepByHelper(step));
   }
 
   Iterable<T> _stepByHelper(int step) sync* {
@@ -637,10 +640,10 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   // Iterable: Overriding iterable methods
   //************************************************************************//
 
-  /// Casts this RIterator<T> to an RIterator<U>.
+  /// Casts this Iter<T> to an Iter<U>.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> cast<U>() => RIterator.fromIterable(super.cast<U>());
+  Iter<U> cast<U>() => Iter.fromIterable(super.cast<U>());
 
   // bool contains(Object? element) => iterable.contains(element);
 
@@ -648,11 +651,11 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   // bool every(bool Function(T) f) => iterable.every(f);
 
-  /// Expands each element of this RIterator into zero or more elements.
+  /// Expands each element of this Iter into zero or more elements.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> expand<U>(Iterable<U> Function(T) f) =>
-      RIterator.fromIterable(super.expand(f));
+  Iter<U> expand<U>(Iterable<U> Function(T) f) =>
+      Iter.fromIterable(super.expand(f));
 
   // T firstWhere(bool Function(T) f, {T Function()? orElse}) => iterable.firstWhere(f, orElse: orElse);
 
@@ -661,8 +664,8 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   /// Creates the lazy concatenation of this Iterator and [other]
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> followedBy(Iterable<T> other) =>
-      RIterator.fromIterable(super.followedBy(other));
+  Iter<T> followedBy(Iterable<T> other) =>
+      Iter.fromIterable(super.followedBy(other));
 
   // void forEach(void Function(T) f) => iterable.forEach(f);
 
@@ -670,10 +673,10 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   // T lastWhere(bool Function(T) f, {T Function()? orElse}) => iterable.lastWhere(f, orElse: orElse);
 
-  /// Maps each element of this RIterator to a new RIterator<U> using the function f.
+  /// Maps each element of this Iter to a new Iter<U> using the function f.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> map<U>(U Function(T) f) => RIterator.fromIterable(super.map(f));
+  Iter<U> map<U>(U Function(T) f) => Iter.fromIterable(super.map(f));
 
   // T reduce(T Function(T, T) f) => iterable.reduce(f);
 
@@ -682,24 +685,24 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
   /// Consumes and skips the first [count] elements.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> skip(int count) => RIterator.fromIterable(super.skip(count));
+  Iter<T> skip(int count) => Iter.fromIterable(super.skip(count));
 
   /// Consumes and skips elements while [f] is true and returns the rest.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> skipWhile(bool Function(T) f) =>
-      RIterator.fromIterable(super.skipWhile(f));
+  Iter<T> skipWhile(bool Function(T) f) =>
+      Iter.fromIterable(super.skipWhile(f));
 
-  /// Takes the first [count] elements from the RIterator.
+  /// Takes the first [count] elements from the Iter.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> take(int count) => RIterator.fromIterable(super.take(count));
+  Iter<T> take(int count) => Iter.fromIterable(super.take(count));
 
-  /// TTakes the first [count] elements from the RIterator while [f] is true.
+  /// TTakes the first [count] elements from the Iter while [f] is true.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> takeWhile(bool Function(T) f) =>
-      RIterator.fromIterable(super.takeWhile(f));
+  Iter<T> takeWhile(bool Function(T) f) =>
+      Iter.fromIterable(super.takeWhile(f));
 
   // List<T> toList({bool growable = true}) => iterable.toList(growable: growable);
 
@@ -707,16 +710,16 @@ class RIterator<T> extends Iterable<T> implements Iterator<T>, _RIterator<T> {
 
   // String toString() => iterable.toString();
 
-  /// Creates an RIterator where all the elements satisfy the predicate [f].
+  /// Creates an Iter where all the elements satisfy the predicate [f].
   @override
   @pragma("vm:prefer-inline")
-  RIterator<T> where(bool Function(T) f) =>
-      RIterator.fromIterable(super.where(f));
+  Iter<T> where(bool Function(T) f) =>
+      Iter.fromIterable(super.where(f));
 
-  /// Creates an RIterator where all the elements are of Type U.
+  /// Creates an Iter where all the elements are of Type U.
   @override
   @pragma("vm:prefer-inline")
-  RIterator<U> whereType<U>() => RIterator.fromIterable(super.whereType());
+  Iter<U> whereType<U>() => Iter.fromIterable(super.whereType());
 
   //************************************************************************//
 
