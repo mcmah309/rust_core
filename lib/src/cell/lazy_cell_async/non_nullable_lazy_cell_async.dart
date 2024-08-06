@@ -1,4 +1,3 @@
-import 'package:rust_core/cell.dart';
 import 'package:rust_core/rust_core.dart';
 
 /// A value which is asynchronously initialized on the first access. Non-nullable implementation of [LazyCellAsync]

@@ -93,12 +93,12 @@ extension ListVec<T> on List<T> {
   @pragma('vm:prefer-inline')
   void extendFromWithin(int start, int end) => addAll(getRange(start, end));
 
-  /// Creates an [RIterator] which uses a closure to determine if an element should be removed.
+  /// Creates an [Iter] which uses a closure to determine if an element should be removed.
   /// If the closure returns true, then the element is removed and yielded. If the closure returns false,
   /// the element will remain in the vector and will not be yielded by the iterator.
   @pragma('vm:prefer-inline')
-  RIterator<T> extractIf(bool Function(T) f) =>
-      RIterator.fromIterable(ExtractIfIterable(this, f));
+  Iter<T> extractIf(bool Function(T) f) =>
+      Iter.fromIterable(ExtractIfIterable(this, f));
 
 // from_raw_parts: will not be implemented, not possible
 // from_raw_parts_in: will not be implemented, not possible
