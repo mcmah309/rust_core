@@ -9,7 +9,7 @@
 
 Types include [Result](https://mcmah309.github.io/rust_core/libs/result/result.html), [Option](https://mcmah309.github.io/rust_core/libs/option/option.html), [Cell](https://mcmah309.github.io/rust_core/libs/cell/cell.html), [Slice](https://mcmah309.github.io/rust_core/libs/slice/slice.html), [Array](https://mcmah309.github.io/rust_core/libs/array/array.html), [Iterator](https://mcmah309.github.io/rust_core/libs/iter/iter.html), [Channels](https://mcmah309.github.io/rust_core/libs/sync/channels.html), [Mutex](https://mcmah309.github.io/rust_core/libs/sync/mutex.html), and more.
 
-[Rust Core Book 📖](https://mcmah309.github.io/rust_core)
+See the [Rust Core Book 📖](https://mcmah309.github.io/rust_core)
 
 ## Example
 > Goal: Get the index of every "!" in a string not followed by a "?"
