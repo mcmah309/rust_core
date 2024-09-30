@@ -8,6 +8,11 @@ typedef FutureOption<T> = Future<Option<T>>;
 /// {@endtemplate}
 extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   @pragma("vm:prefer-inline")
+  Future<T?> get v {
+    return then((option) => option.v);
+  }
+
+  @pragma("vm:prefer-inline")
   Future<Option<U>> and<U extends Object>(Option<U> other) {
     return then((option) => option.and(other));
   }
