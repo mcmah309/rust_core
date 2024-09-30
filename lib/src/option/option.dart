@@ -10,7 +10,7 @@ import 'package:rust_core/iter.dart';
 part 'future_option_extensions.dart';
 part 'future_option.dart';
 part 'option_extensions.dart';
-part 'option_record_extensions.dart';
+part 'record_to_option_extensions.dart';
 
 /// Option represents the union of two types - `Some<T>` and `None`. As an extension type of `T?`, `Option<T>`
 /// has the same runtime cost of `T?` with the advantage of being able to chain null specific operations.
