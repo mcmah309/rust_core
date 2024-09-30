@@ -28,6 +28,13 @@ switch(Some(2)){
     // do something
 }
 ```
+or
+```dart
+final x = switch(Some(2)){
+  Some(:final v) => "some"
+  _ => "none"
+}
+```
 
 ### Early Return Key Notation
 Option also supports "Early Return Key Notation" (ERKN), which is a derivative of "Do Notation". It allows a 
@@ -63,8 +70,35 @@ option = nullable as Option<int>; // or
 ```
 If Dart already supports nullable types, why use an option type? - with null, chaining null specific operations is not possible and the only alternate solution is a bunch of if statements and implicit and explicit type promotion. The `Option` type solves these issues.
 ```dart
-Option<String> optionFunc();
-final (x, y) = optionFunc().map((e) => e + " added string").zip(Some(1)).unwrap();
+final x;
+final y;
+switch(optionFunc1().map((e) => e + " added string").zip(optionFunc2())){
+  case Some(:final v):
+    (x, y) = v;
+  default:
+    return
+}
+// use x and y
+```
+or if using early return notation.
+```dart
+final (x,y) = optionFunc1().map((e) => e + " added string").zip(optionFunc2())[$];
+// use x and y
+```
+vs
+```dart
+final x = optionFunc1();
+if (x == null) {
+  return;
+}
+else {
+  x = x + " added string";
+}
+final y = optionFunc2();
+if (y == null) {
+  return;
+}
+// use x and y
 ```
 With `Option` you will also never get another null assertion error again.
 
