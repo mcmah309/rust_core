@@ -1,3 +1,8 @@
+## 1.3.2
+
+- Add `v` field to `FutureOption`
+- Add `RecordToOption*` extensions to `Option`
+
 ## 1.3.1
 
 - Add `asVec` and `asList` to array
