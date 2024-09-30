@@ -102,5 +102,5 @@ if (y == null) {
 ```
 With `Option` you will also never get another null assertion error again.
 
-As in the previous example, it is strongly recommended to use `Option` type as the return type, since it allows chaining operations.
-But the choice is up to the developer.
+As in the previous example, it is recommended to use the `Option` type as the return type, since it allows 
+early return and chaining operations. But the choice is up to the developer.
