@@ -1,7 +1,6 @@
 // ignore_for_file: pattern_never_matches_value_type
 
-import 'package:rust_core/option.dart';
-import 'package:rust_core/result.dart';
+import 'package:rust_core/rust_core.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -33,8 +32,7 @@ void main() {
 
     expect(Ok(2).andThen(sqThenToString), Ok(4.toString()));
     expect(Ok(1000000).andThen(sqThenToString), Err("overflowed"));
-    expect(Err<int, String>("not a number").andThen(sqThenToString),
-        Err("not a number"));
+    expect(Err<int, String>("not a number").andThen(sqThenToString), Err("not a number"));
   });
 
   test("expect", () {
@@ -330,6 +328,23 @@ void main() {
     option = nullable as Option<int>; // or
   });
 
+  test("Example", () {
+    Option<Profile> fetchUserProfile() => Some(Profile("John"));
+    Option<String> fetchUserPreferences() => Some("Prefs");
+
+    final profile;
+    final preferences;
+
+    switch (fetchUserProfile()
+        .map((e1) => "${e1.name} - profile")
+        .andThen((e1) => fetchUserPreferences().zip(Some(e1)))) {
+      case Some(:final v):
+        (profile, preferences) = v;
+      default:
+        return;
+    }
+  });
+
   group("Option Early Return", () {
     Option<int> int3Some() => Some(3);
     Option<int> intNone() => None;
@@ -395,4 +410,9 @@ class Point {
 
   @override
   String toString() => 'Point { x: $x, y: $y }';
+}
+
+class Profile {
+  final String name;
+  Profile(this.name);
 }
