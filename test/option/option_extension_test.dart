@@ -1,4 +1,5 @@
 import 'package:rust_core/option.dart';
+import 'package:rust_core/src/panic/panic.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -31,5 +32,15 @@ void main() {
     var unzippedY = y.unzip();
     expect(unzippedY.$1, None);
     expect(unzippedY.$2, None);
+  });
+
+  test("nested tuple", () {
+    Option<String> string() => Some("Prefs");
+
+    final z = string().zip(string()).zip(string()).zip(string()).flatten();
+    final (one, two, three, four) = switch (z) {
+      Some(:final v) => v,
+      _ => panic(),
+    };
   });
 }
