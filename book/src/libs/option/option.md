@@ -68,10 +68,12 @@ FutureOption<double> earlyReturn() => Option.async(($) async {
 ```
 
 ### To Option or Not To Option
-If Dart already supports nullable types, why use an option type? Null may required an
-uncomfortable level of null checking and nesting. Even so, you may still need to write a null
+If Dart already supports nullable types, why use an option type? Nullable types may required an
+uncomfortable level of null checking and nesting. Even so, one may also still need to write a null
 assertion `!` for some edge cases where the compiler is not smart enough.
 The `Option` type provides an alternative solution with methods and early return.
+
+Methods:
 ```dart
 final profile;
 final preferences;
@@ -88,7 +90,7 @@ switch (fetchUserProfile()
 print('Profile: $profile, Preferences: $preferences');
 
 ```
-or if using early return notation.
+Early Return Notation:
 ```dart
 final (profile, preferences) = fetchUserProfile()
       .map((e) => "${e.name} - profile")
@@ -96,7 +98,7 @@ final (profile, preferences) = fetchUserProfile()
 
 print('Profile: $profile, Preferences: $preferences');
 ```
-vs traditional null-based approach:
+Traditional Null-Based Approach:
 ```dart
 final profile = fetchUserProfile();
 if (profile == null) {
@@ -113,6 +115,30 @@ if (preferences == null) {
 print('Profile: $profile, Preferences: $preferences');
 ```
 
+#### Drawbacks
+Currently in Dart, one cannot rebind variables and `Option` does not support type promotion like nullable types. 
+This makes using `Option` less ergonomic in some scenarios.
+```dart
+Option<int> xOpt = ...;
+int x;
+switch(xOpt) {
+  Some(:final v):
+    x = v;
+  default:
+    return;
+}
+// use `int` x
+```
+vs
+```dart
+int? x = ...;
+if(x == null){
+  return;
+}
+// use `int` x
+```
+
+#### Conclusion
 If you can't decide between the two, it is recommended to use the `Option` type as the return type, since it allows 
-early return, chaining operations, and easy conversion to a nullable type. But the choice is up to the developer.
+early return, chaining operations, and easy conversion to a nullable type with `.v`. But the choice is up to the developer.
 You can easily use this package and never use `Option`.
