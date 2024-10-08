@@ -78,7 +78,7 @@ final preferences;
 
 switch (fetchUserProfile()
     .map((e) => "${e.name} - profile")
-    .andThen((e) => fetchUserPreferences().zip(Some(e)))) {
+    .andThen((e) => Some(e).zip(fetchUserPreferences()))) {
   case Some(:final v):
     (profile, preferences) = v;
   default:
@@ -92,7 +92,7 @@ or if using early return notation.
 ```dart
 final (profile, preferences) = fetchUserProfile()
       .map((e) => "${e.name} - profile")
-      .andThen((e) => fetchUserPreferences().zip(Some(e)))[$];
+      .andThen((e) => Some(e).zip(fetchUserPreferences()))[$];
 
 print('Profile: $profile, Preferences: $preferences');
 ```

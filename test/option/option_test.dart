@@ -332,17 +332,19 @@ void main() {
     Option<Profile> fetchUserProfile() => Some(Profile("John"));
     Option<String> fetchUserPreferences() => Some("Prefs");
 
-    final profile;
-    final preferences;
+    final String profile;
+    final String preferences;
 
     switch (fetchUserProfile()
         .map((e1) => "${e1.name} - profile")
-        .andThen((e1) => fetchUserPreferences().zip(Some(e1)))) {
+        .andThen((e1) => Some(e1).zip(fetchUserPreferences()))) {
       case Some(:final v):
         (profile, preferences) = v;
       default:
         return;
     }
+    expect(profile, "John - profile");
+    expect(preferences, "Prefs");
   });
 
   group("Option Early Return", () {
