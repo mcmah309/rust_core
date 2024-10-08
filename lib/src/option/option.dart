@@ -313,6 +313,7 @@ extension OptionMethodsExtension<T extends Object> on Option<T> {
 
   /// Returns the inner type as the nullable version of [T]
   @pragma("vm:prefer-inline")
+  @Deprecated("Use `v`")
   T? toNullable() {
     return v;
   }
@@ -427,6 +428,7 @@ extension SomeMethodsExtension<T extends Object> on Some<T> {
   }
 
   @pragma("vm:prefer-inline")
+  @Deprecated("Use `v`")
   T? toNullable() {
     return v;
   }
@@ -611,6 +613,7 @@ extension NoneMethodsExtension on _None {
   //************************************************************************//
 
   @pragma("vm:prefer-inline")
+  @Deprecated("Use `v`")
   // ignore: prefer_void_to_null
   T? toNullable<T>() {
     return null;

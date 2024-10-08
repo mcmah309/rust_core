@@ -325,7 +325,6 @@ void main() {
     Option<int> intNone() => None;
     Option<int> option = intNone();
     int? nullable = option.v;
-    nullable = option.toNullable(); // or
     nullable = option as int?; // or
     option = Option.from(nullable);
     option = nullable as Option<int>; // or

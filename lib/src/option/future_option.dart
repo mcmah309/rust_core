@@ -9,7 +9,7 @@ typedef FutureOption<T> = Future<Option<T>>;
 extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   @pragma("vm:prefer-inline")
   Future<T?> get v {
-    return then((option) => option.v);
+    return this as Future<T?>;
   }
 
   @pragma("vm:prefer-inline")
@@ -129,6 +129,7 @@ extension FutureOptionExtension<T extends Object> on FutureOption<T> {
   //************************************************************************//
 
   @pragma("vm:prefer-inline")
+  @Deprecated("Use `v`")
   Future<T?> toNullable() {
     return then((option) => option.toNullable());
   }

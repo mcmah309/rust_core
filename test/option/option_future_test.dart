@@ -204,12 +204,12 @@ void main() {
       expect(await x.zipWith(y, (a, b) => a + b), None);
     });
 
-    test("toNullable", () async {
+    test("v", () async {
       FutureOption<int> x = Future.value(Some(1));
-      expect(await x.toNullable(), 1);
+      expect(await x.v, 1);
 
       x = Future.value(None);
-      expect(await x.toNullable(), null);
+      expect(await x.v, null);
     });
 
     group("Async Early Return Key", () {
