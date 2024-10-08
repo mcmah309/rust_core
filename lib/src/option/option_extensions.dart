@@ -28,7 +28,8 @@ extension OptionRecord2Extension<T, U> on Option<(T, U)> {
   }
 }
 
-extension OptionResultExtension<S extends Object, F extends Object> on Option<Result<S?, F>> {
+extension OptionResultExtension<S extends Object, F extends Object>
+    on Option<Result<S?, F>> {
   /// Transposes an Option of a Result into a Result of an Option.
   Result<Option<S>, F> transpose() {
     if (isSome()) {
@@ -66,9 +67,11 @@ extension OptionNestedRecord4Extension<A, B, C, D> on Option<(((A, B), C), D)> {
   }
 }
 
-extension OptionNestedRecord5Extension<A, B, C, D, E> on Option<((((A, B), C), D), E)> {
+extension OptionNestedRecord5Extension<A, B, C, D, E>
+    on Option<((((A, B), C), D), E)> {
   /// Flattens an option into a single tuple.
   Option<(A, B, C, D, E)> flatten() {
-    return map((e) => (e.$1.$1.$1.$1, e.$1.$1.$1.$2, e.$1.$1.$2, e.$1.$2, e.$2));
+    return map(
+        (e) => (e.$1.$1.$1.$1, e.$1.$1.$1.$2, e.$1.$1.$2, e.$1.$2, e.$2));
   }
 }
