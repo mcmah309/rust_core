@@ -32,7 +32,8 @@ void main() {
 
     expect(Ok(2).andThen(sqThenToString), Ok(4.toString()));
     expect(Ok(1000000).andThen(sqThenToString), Err("overflowed"));
-    expect(Err<int, String>("not a number").andThen(sqThenToString), Err("not a number"));
+    expect(Err<int, String>("not a number").andThen(sqThenToString),
+        Err("not a number"));
   });
 
   test("expect", () {
