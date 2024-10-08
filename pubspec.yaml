@@ -1,6 +1,6 @@
 name: rust_core
 description: Pure Dart implementation of patterns in Rust's core library. Types include Result, Option, Cell, Slice, Array, Iterator, etc. Facilitates functional programming and error handling.
-version: 1.3.2
+version: 1.3.3
 repository: https://github.com/mcmah309/rust_core
 
 environment:

@@ -1,3 +1,8 @@
+## 1.3.3
+
+- Deprecate `toNullable`
+- Add nested option extensions
+
 ## 1.3.2
 
 - Add `v` field to `FutureOption`
