@@ -1,6 +1,6 @@
 part of 'cell.dart';
 
-extension IntConstCellExtensions on ConstCell<int> {
+extension IntConstCellExtension on ConstCell<int> {
   Cell<int> operator +(ConstCell<int> other) {
     return Cell<int>(_val + other._val);
   }
@@ -68,7 +68,7 @@ extension IntConstCellExtensions on ConstCell<int> {
   }
 }
 
-extension IntCellExtensions on Cell<int> {
+extension IntCellExtension on Cell<int> {
   /// Add
   void add(int val) {
     _val = _val + val;

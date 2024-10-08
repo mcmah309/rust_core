@@ -91,7 +91,7 @@ extension NullResultExtension<S, F extends Object> on Result<S, F>? {
 
 //************************************************************************//
 
-extension IterableResultExtensions<S, F extends Object>
+extension IterableResultExtension<S, F extends Object>
     on Iterable<Result<S, F>> {
   /// Transforms an Iterable of results into a single result where the ok value is the list of all successes. If any
   /// error is encountered, the first error is used as the error result.
@@ -129,7 +129,7 @@ extension IterableResultExtensions<S, F extends Object>
   }
 }
 
-extension FutureIterableResultExtensions<S, F extends Object>
+extension FutureIterableResultExtension<S, F extends Object>
     on Future<Iterable<Result<S, F>>> {
   @pragma("vm:prefer-inline")
   FutureResult<List<S>, F> toResultEager() {
@@ -142,7 +142,7 @@ extension FutureIterableResultExtensions<S, F extends Object>
   }
 }
 
-extension IterableFutureResultExtensions<S, F extends Object>
+extension IterableFutureResultExtension<S, F extends Object>
     on Iterable<FutureResult<S, F>> {
   /// Transforms an Iterable of [FutureResult]s into a single result where the ok value is the list of all successes. If
   /// any error is encountered, the first error is used as the error result. The order of [S] and [F] is determined by
@@ -183,7 +183,7 @@ extension IterableFutureResultExtensions<S, F extends Object>
   }
 }
 
-extension FutureIterableFutureResultExtensions<S, F extends Object>
+extension FutureIterableFutureResultExtension<S, F extends Object>
     on Future<Iterable<FutureResult<S, F>>> {
   @pragma("vm:prefer-inline")
   FutureResult<List<S>, F> toResultEager() async {

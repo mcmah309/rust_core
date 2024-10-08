@@ -52,3 +52,4 @@ extension FutureOptionResultExtension<S extends Object, F extends Object>
     return then((result) => result.transpose());
   }
 }
+

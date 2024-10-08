@@ -292,14 +292,14 @@ extension IteratorOnIteratorTUExtension<T, U> on Iter<(T, U)> {
 //************************************************************************//
 
 /// Overrides built in extension methods on nullable [Iterable].
-extension NullableIterableExtensionsOverrides<T extends Object> on Iter<T?> {
+extension NullableIterableExtensionOverrides<T extends Object> on Iter<T?> {
   /// Returns an Iter over the non-null elements of this iterator.
   Iter<T> nonNulls() =>
       Iter.fromIterable(NullableIterableExtensions(this).nonNulls);
 }
 
 /// Overrides built in extension methods on [Iterable].
-extension IterableExtensionsOverrides<T> on Iter<T> {
+extension IterableExtensionOverrides<T> on Iter<T> {
   /// Returns an Iter over the elements of this iterable, paired with their index.
   Iter<(int, T)> get indexed =>
       Iter.fromIterable(IterableExtensions(this).indexed);

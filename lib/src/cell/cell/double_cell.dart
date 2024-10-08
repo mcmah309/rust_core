@@ -1,6 +1,6 @@
 part of 'cell.dart';
 
-extension DoubleConstCellExtensions on ConstCell<double> {
+extension DoubleConstCellExtension on ConstCell<double> {
   Cell<double> operator +(ConstCell<double> other) {
     return Cell<double>(_val + other._val);
   }
@@ -67,7 +67,7 @@ extension DoubleConstCellExtensions on ConstCell<double> {
   }
 }
 
-extension DoubleCellExtensions on Cell<double> {
+extension DoubleCellExtension on Cell<double> {
   /// Add
   void add(double val) {
     _val = _val + val;
