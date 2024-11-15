@@ -1,8 +1,8 @@
 # Cell
 ***
-Cell is library of useful wrappers of values (cells) - [pub.dev](https://pub.dev/documentation/rust_core/latest/cell/cell-library.html).
+Cell is library of useful wrappers types (cells) - [pub.dev](https://pub.dev/documentation/rust_core/latest/cell/cell-library.html).
 
-[Cell](#cell) - A wrapper around a mutable value.
+[Cell](#cell) - A wrapper with interior mutability.
 
 [OnceCell](#oncecell) - A cell which can be written to only once.
 
@@ -12,15 +12,15 @@ Cell is library of useful wrappers of values (cells) - [pub.dev](https://pub.dev
 
 
 ## Cell
-A wrapper around a mutable value. Useful for mimicking references and wrapping primitives. Extensions exist for 
+A wrapper with interior mutability. Useful for primitives and an escape hatch for working with immutable data patterns. Extensions exist for 
 primitives. e.g. `Cell<int>` can be used similar to a normal `int`.
 ```dart
-final cell = Cell<int>(10);
+Cell<int> cell = Cell<int>(10);
 expect(cell.get(), 10);
 cell.add(2);
 expect(cell.get(), 12);
-final anotherCell = Cell<int>(10);
-final newCell = cell + anotherCell;
+Cell<int> anotherCell = Cell<int>(10);
+Cell<int> newCell = cell + anotherCell;
 expect(newCell, 22);
 expect(cell, 12);
 expect(antherCell, 10);
@@ -31,7 +31,7 @@ The base type for all `Cell`s is `ConstCell`.
 A cell which can be written to only once. Similar to `late final <variable>`, but will never throw an error.
 
 ```dart
-final cell = OnceCell<int>();
+OnceCell<int> cell = OnceCell<int>();
 var result = cell.set(10);
 expect(result, const Ok(()));
 result = cell.set(20);
@@ -44,14 +44,14 @@ A value which is initialized on the first access.
 
 ```dart
 int callCount = 0;
-final lazyCell = LazyCell<int>(() {
+LazyCell<int> lazyCell = LazyCell<int>(() {
   callCount++;
   return 20;
 });
-final firstCall = lazyCell();
+LazyCell<int> firstCall = lazyCell();
 expect(callCount, equals(1));
 expect(firstCall, equals(20));
-final secondCall = lazyCell();
+LazyCell<int> secondCall = lazyCell();
 expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```
@@ -62,14 +62,14 @@ A value which is asynchronously initialized on the first access.
 
 ```dart
 int callCount = 0;
-final lazyCell = LazyCellAsync<int>(() async {
+LazyCellAsync<int> lazyCell = LazyCellAsync<int>(() async {
   callCount++;
   return 20;
 });
-final firstCall = await lazyCell.force();
+LazyCellAsync<int> firstCall = await lazyCell.force();
 expect(callCount, equals(1));
 expect(firstCall, equals(20));
-final secondCall = lazyCell(); // Could also call `await lazyCell.force()` again.
+LazyCellAsync<int> secondCall = lazyCell(); // Could also call `await lazyCell.force()` again.
 expect(callCount, equals(1));
 expect(secondCall, equals(20));
 ```

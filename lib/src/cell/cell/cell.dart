@@ -4,7 +4,7 @@ part 'double_cell.dart';
 part 'bool_cell.dart';
 part 'string_cell.dart';
 
-/// A mutable container. Useful for primitives.
+/// A wrapper with interior mutability. Useful for primitives and an escape hatch for working with immutable data patterns.
 class Cell<T> implements ConstCell<T> {
   @override
   T _val;
