@@ -12,14 +12,25 @@ Cell is library of useful wrappers types (cells) - [pub.dev](https://pub.dev/doc
 
 
 ## Cell
-A wrapper with interior mutability. Useful for primitives and an escape hatch for working with immutable data patterns. Extensions exist for 
-primitives. e.g. `Cell<int>` can be used similar to a normal `int`.
+A wrapper with interior mutability. Useful for primitives and an escape hatch for working with immutable data patterns.
+`Cell<T>` can be thought of as a `List<T>` with a single object.
 ```dart
-Cell<int> cell = Cell<int>(10);
+void main() {
+  Cell<int> cell = Cell(1);
+  mutate(cell);
+}
+
+void mutate(Cell<int> cell){
+  cell.set(2);
+}
+```
+Extensions exist for primitives. e.g. `Cell<int>` can be used similar to a normal `int`.
+```dart
+Cell<int> cell = Cell(10);
 expect(cell.get(), 10);
 cell.add(2);
 expect(cell.get(), 12);
-Cell<int> anotherCell = Cell<int>(10);
+Cell<int> anotherCell = Cell(10);
 Cell<int> newCell = cell + anotherCell;
 expect(newCell, 22);
 expect(cell, 12);
@@ -31,7 +42,7 @@ The base type for all `Cell`s is `ConstCell`.
 A cell which can be written to only once. Similar to `late final <variable>`, but will never throw an error.
 
 ```dart
-OnceCell<int> cell = OnceCell<int>();
+OnceCell<int> cell = OnceCell();
 var result = cell.set(10);
 expect(result, const Ok(()));
 result = cell.set(20);
@@ -44,7 +55,7 @@ A value which is initialized on the first access.
 
 ```dart
 int callCount = 0;
-LazyCell<int> lazyCell = LazyCell<int>(() {
+LazyCell<int> lazyCell = LazyCell(() {
   callCount++;
   return 20;
 });
@@ -62,7 +73,7 @@ A value which is asynchronously initialized on the first access.
 
 ```dart
 int callCount = 0;
-LazyCellAsync<int> lazyCell = LazyCellAsync<int>(() async {
+LazyCellAsync<int> lazyCell = LazyCellAsync(() async {
   callCount++;
   return 20;
 });
