@@ -24,6 +24,8 @@ void mutate(Cell<int> cell){
   cell.set(2);
 }
 ```
+In a reactive context, such as with flutter, the conceptual equivalent is `ValueNotifier`.
+
 Extensions exist for primitives. e.g. `Cell<int>` can be used similar to a normal `int`.
 ```dart
 Cell<int> cell = Cell(10);
